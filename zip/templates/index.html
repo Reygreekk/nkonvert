@@ -1,0 +1,219 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NKALAA | Folder to ZIP</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reset de base pour la cohérence */
+        * { box-sizing: border-box; }
+
+        body { 
+            font-family: 'Segoe UI', sans-serif; 
+            background: #f4f7f6; 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            min-height: 100vh; 
+            margin: 0; 
+            padding: 20px; /* Espace minimal sur les bords du téléphone */
+        }
+
+        .converter-card { 
+            background: white; 
+            padding: 40px; 
+            border-radius: 20px; 
+            box-shadow: 0 15px 35px rgba(0,0,0,0.1); 
+            width: 100%; 
+            max-width: 500px; /* Taille max sur PC */
+            text-align: center; 
+        }
+
+        h2 { 
+            color: #003366; 
+            margin-bottom: 25px; 
+            font-size: 1.8rem;
+        }
+
+        .input-group { 
+            margin-bottom: 20px; 
+            text-align: left; 
+        }
+        
+        /* Style responsive pour le bouton de sélection */
+        .file-label {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            background: #f8f9fa;
+            border: 2px dashed #003366;
+            padding: 30px 20px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: 0.3s;
+            color: #003366;
+            font-weight: bold;
+            gap: 10px;
+        }
+
+        .file-label i { font-size: 2rem; }
+
+        .file-label:hover { background: #eef2f7; }
+        input[type="file"] { display: none; }
+        
+        #folderName { 
+            display: block; 
+            margin-top: 10px; 
+            font-size: 13px; 
+            color: #666; 
+            font-style: italic; 
+            word-break: break-all; /* Empêche le nom du dossier de déborder */
+        }
+
+        button { 
+            background: #e63946; 
+            color: white; 
+            border: none; 
+            padding: 15px 30px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            font-size: 1rem;
+            transition: 0.3s; 
+            margin-top: 10px; 
+        }
+
+        button:hover { background: #003366; transform: translateY(-2px); }
+        button:disabled { background: #ccc; cursor: not-allowed; transform: none; }
+        
+        #status { margin-top: 20px; font-size: 14px; line-height: 1.4; }
+
+        .loader { 
+            display: none; 
+            margin: 10px auto; 
+            border: 4px solid #f3f3f3; 
+            border-top: 4px solid #003366; 
+            border-radius: 50%; 
+            width: 35px; 
+            height: 35px; 
+            animation: spin 1s linear infinite; 
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+
+        .btn-download { 
+            display: none; 
+            background: #27ae60; 
+            margin-top: 15px; 
+            text-decoration: none; 
+            color: white; 
+            padding: 15px; 
+            border-radius: 10px; 
+            font-weight: bold; 
+            width: 100%;
+            text-align: center;
+        }
+
+        /* --- RESPONSIVE DESIGN --- */
+        @media (max-width: 480px) {
+            .converter-card {
+                padding: 25px 20px; /* Plus petit padding sur mobile */
+            }
+
+            h2 {
+                font-size: 1.4rem;
+            }
+
+            .file-label {
+                padding: 20px 10px;
+            }
+
+            button, .btn-download {
+                padding: 12px 20px;
+                font-size: 0.95rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+<div class="converter-card">
+    <h2><i class="fa-solid fa-file-zipper"></i> Folder to ZIP</h2>
+    
+    <div class="input-group">
+        <label for="folderInput" class="file-label">
+            <i class="fa-solid fa-folder-plus"></i>
+            <span>Choisir un dossier</span>
+        </label>
+        <input type="file" id="folderInput" webkitdirectory directory multiple>
+        <span id="folderName">Aucun dossier sélectionné</span>
+    </div>
+
+    <button onclick="startZipping()" id="actionBtn">Compresser en ZIP</button>
+    
+    <div class="loader" id="loader"></div>
+    <div id="status"></div>
+    <a href="#" id="downloadLink" class="btn-download"><i class="fa-solid fa-download"></i> Télécharger le ZIP</a>
+</div>
+
+<script>
+    /* ... Votre JavaScript reste identique ... */
+    const folderInput = document.getElementById('folderInput');
+    const folderNameDisplay = document.getElementById('folderName');
+
+    folderInput.addEventListener('change', () => {
+        if (folderInput.files.length > 0) {
+            const path = folderInput.files[0].webkitRelativePath;
+            const folderName = path.split('/')[0];
+            folderNameDisplay.textContent = `Dossier prêt : ${folderName} (${folderInput.files.length} fichiers)`;
+        }
+    });
+
+    async function startZipping() {
+        const files = folderInput.files;
+        const status = document.getElementById('status');
+        const loader = document.getElementById('loader');
+        const btn = document.getElementById('actionBtn');
+        const dl = document.getElementById('downloadLink');
+
+        if (files.length === 0) return alert("Veuillez sélectionner un dossier !");
+
+        status.innerHTML = "";
+        dl.style.display = "none";
+        loader.style.display = "block";
+        btn.disabled = true;
+
+        const formData = new FormData();
+        for (const file of files) {
+            formData.append('files', file, file.webkitRelativePath);
+        }
+
+        try {
+            const response = await fetch('/zip_folder', {
+                method: 'POST',
+                body: formData 
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                status.innerHTML = `<span style="color:green">${data.message}</span>`;
+                dl.href = data.download_url;
+                dl.style.display = "block";
+            } else {
+                status.innerHTML = `<span style="color:red">Erreur: ${data.error}</span>`;
+            }
+        } catch (e) {
+            status.innerHTML = `<span style="color:red">Erreur lors de l'envoi des fichiers.</span>`;
+        } finally {
+            loader.style.display = "none";
+            btn.disabled = false;
+        }
+    }
+</script>
+
+</body>
+</html>

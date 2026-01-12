@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NKALAA | Boost Instantané</title>
+    <style>
+        :root { --gold: #d4af37; --bg: #0f172a; --green: #10b981; }
+        
+        body { 
+            background: var(--bg); 
+            color: white; 
+            font-family: 'Segoe UI', sans-serif; 
+            display: flex; 
+            align-items: center; 
+            justify-content: center; 
+            min-height: 100vh; 
+            margin: 0; 
+        }
+
+        .card { 
+            background: #1e293b; 
+            padding: 40px; 
+            border-radius: 24px; 
+            border: 1px solid rgba(212, 175, 55, 0.3); 
+            text-align: center; 
+            width: 90%; 
+            max-width: 500px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+        }
+
+        h1 { color: var(--gold); margin-bottom: 25px; }
+
+        .form-group { margin-bottom: 15px; }
+        
+        input { 
+            width: 100%; 
+            padding: 14px; 
+            border-radius: 12px; 
+            border: 1px solid #334155; 
+            background: #0f172a; 
+            color: white; 
+            box-sizing: border-box; 
+            font-size: 16px;
+        }
+
+        button { 
+            background: var(--gold); 
+            color: #0f172a; 
+            padding: 16px; 
+            border: none; 
+            border-radius: 50px; 
+            font-weight: bold; 
+            cursor: pointer; 
+            width: 100%; 
+            text-transform: uppercase; 
+            transition: 0.3s; 
+            font-size: 16px;
+        }
+
+        button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
+
+        /* CADRE VERT RÉSULTAT */
+        #result-container {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 15px;
+            border: 2px solid var(--green);
+            background: rgba(16, 185, 129, 0.1);
+            display: none; /* Caché au début */
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        .quote-text {
+            font-size: 20px;
+            font-style: italic;
+            color: #ecfdf5;
+            line-height: 1.5;
+        }
+
+        .user-tag {
+            display: block;
+            margin-top: 10px;
+            font-size: 12px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--green);
+            font-weight: bold;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .loader {
+            display: none;
+            margin: 20px auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--gold);
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <h1>✨ Boost Spirit</h1>
+        <form id="boostForm">
+            <div class="form-group">
+                <input type="text" id="prenom" name="prenom" placeholder="Prénom" required>
+            </div>
+            <div class="form-group">
+                <input type="text" id="nom" name="nom" placeholder="Nom">
+            </div>
+            <button type="submit" id="submitBtn">Révéler ma parole de motivation</button>
+        </form>
+
+        <div class="loader" id="loader"></div>
+
+        <div id="result-container">
+            <span class="user-tag" id="res-user"></span>
+            <p class="quote-text" id="res-phrase"></p>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('boostForm').addEventListener('submit', function(e) {
+            e.preventDefault(); // Empêche le rechargement
+            
+            const btn = document.getElementById('submitBtn');
+            const loader = document.getElementById('loader');
+            const resultBox = document.getElementById('result-container');
+            const formData = new FormData(this);
+
+            // UI : Chargement
+            btn.style.display = 'none';
+            loader.style.display = 'block';
+            resultBox.style.display = 'none';
+
+            fetch('/generate_ajax', {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json())
+            .then(data => {
+                // UI : Succès
+                loader.style.display = 'none';
+                btn.style.display = 'block';
+                
+                document.getElementById('res-user').innerText = "Message pour " + data.username;
+                document.getElementById('res-phrase').innerText = "« " + data.phrase + " »";
+                
+                resultBox.style.display = 'block';
+            })
+            .catch(error => {
+                console.error('Erreur:', error);
+                alert("Une erreur est survenue.");
+                loader.style.display = 'none';
+                btn.style.display = 'block';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NKONVERT | Multi-Converter</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { --red: #E63946; --dark: #00234E; --gray: #F8FAFC; --blue: #457B9D; }
+        body { font-family: 'Segoe UI', sans-serif; background: var(--gray); margin: 0; }
+        .nav { background: white; padding: 0.8rem 5%; display: flex; justify-content: space-between; align-items: center; box-shadow: 0 2px 15px rgba(0,0,0,0.05); position: sticky; top:0; z-index:100; }
+        .logo { font-size: 1.5rem; font-weight: 900; color: var(--dark); text-decoration: none; }
+        .logo span { color: var(--red); }
+        .menu-links { display: flex; gap: 20px; }
+        .menu-links a { text-decoration: none; color: var(--dark); font-weight: 600; font-size: 0.9rem; transition: 0.3s; }
+        .hero { background: var(--dark); color: white; padding: 60px 20px; text-align: center; }
+        .container { max-width: 900px; margin: -40px auto 40px; padding: 0 15px; }
+        .converter-card { background: white; border-radius: 24px; padding: 40px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); text-align: center; }
+        .upload-area { border: 3px dashed #E2E8F0; border-radius: 20px; padding: 50px 20px; cursor: pointer; background: #FBFCFE; }
+        .upload-area:hover { border-color: var(--red); background: #FFF5F5; }
+        .upload-area i { font-size: 3.5rem; color: var(--red); }
+        .controls { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-top: 30px; }
+        select, .btn-submit { width: 100%; padding: 15px; border-radius: 12px; font-weight: 600; border: 1px solid #E2E8F0; }
+        .btn-submit { background: var(--red); color: white; border: none; cursor: pointer; }
+        .btn-submit:disabled { background: #ccc; cursor: not_allowed; }
+        .result-box { display: none; margin-top: 30px; padding: 20px; border-radius: 15px; background: #F0FFF4; border: 1px solid #C6F6D5; }
+        .btn-download { display: inline-block; padding: 12px 25px; background: #2F855A; color: white; text-decoration: none; border-radius: 8px; font-weight: bold; }
+        #loader { display: none; margin-top: 20px; color: var(--blue); }
+    </style>
+</head>
+<body>
+
+<nav class="nav">
+    <a href="#" class="logo">NK<span>ONVERT</span></a>
+    <div class="menu-links">
+        <a href="#"><i class="fa fa-lightbulb"></i> Motivation</a>
+        <a href="#"><i class="fa fa-file-zipper"></i> Compresser ZIP</a>
+    </div>
+</nav>
+
+<div class="hero">
+    <h1>Le Convertisseur Tout-en-Un</h1>
+    <p>PDF, Word et Images transformés instantanément sans PHP.</p>
+</div>
+
+<div class="container">
+    <div class="converter-card">
+        <form id="convertForm">
+            <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+                <i class="fa-solid fa-cloud-arrow-up"></i>
+                <p>Cliquez ici pour charger un fichier</p>
+                <input type="file" id="fileInput" hidden required>
+                <div id="file-chosen" style="margin-top:10px; font-weight:bold; color:var(--dark);"></div>
+            </div>
+
+            <div class="controls">
+                <select id="targetFormat">
+                    <optgroup label="Documents">
+                        <option value="docx">Vers Word (.docx)</option>
+                        <option value="pdf">Vers PDF (.pdf)</option>
+                    </optgroup>
+                    <optgroup label="Images">
+                        <option value="jpg">Vers Image (.jpg)</option>
+                    </optgroup>
+					<optgroup label="Présentations">
+        <option value="pptx">Vers PowerPoint (.pptx)</option>
+        <option value="pdf">Vers PDF (.pdf)</option>
+    </optgroup>
+                </select>
+                <button type="submit" class="btn-submit" id="submitBtn">Convertir maintenant</button>
+            </div>
+        </form>
+
+        <div id="loader"><i class="fas fa-spinner fa-spin"></i> Conversion en cours...</div>
+
+        <div class="result-box" id="resultBox">
+            <p>✅ Conversion réussie !</p>
+            <a href="#" id="downloadBtn" class="btn-download">Télécharger le résultat</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const fileChosen = document.getElementById('file-chosen');
+    const form = document.getElementById('convertForm');
+    const submitBtn = document.getElementById('submitBtn');
+    const loader = document.getElementById('loader');
+    const resultBox = document.getElementById('resultBox');
+    const downloadBtn = document.getElementById('downloadBtn');
+
+    fileInput.addEventListener('change', () => {
+        if (fileInput.files.length > 0) {
+            fileChosen.textContent = fileInput.files[0].name;
+        }
+    });
+
+    form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const formData = new FormData();
+        formData.append('file', fileInput.files[0]);
+        formData.append('target_format', document.getElementById('targetFormat').value);
+
+        // UI Update
+        submitBtn.disabled = true;
+        loader.style.display = 'block';
+        resultBox.style.display = 'none';
+
+        try {
+            const response = await fetch('/convert', {
+                method: 'POST',
+                body: formData
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                downloadBtn.href = data.download_url;
+                resultBox.style.display = 'block';
+            } else {
+                alert("Erreur: " + data.error);
+            }
+        } catch (error) {
+            alert("Erreur lors de la connexion au serveur Python.");
+        } finally {
+            loader.style.display = 'none';
+            submitBtn.disabled = false;
+        }
+    });
+</script>
+</body>
+</html>
