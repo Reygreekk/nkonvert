@@ -1,2 +1,36 @@
-flask
-werkzeug
+# Serveur
+Flask==3.1.2
+Werkzeug==3.1.5
+flask-cors==6.0.2
+gunicorn==23.0.0
+
+# Manipulation PDF & Docs (Compatibles Linux)
+aspose-pdf==25.12.0
+aspose-slides==25.12.0
+pdf2docx==0.5.8
+PyMuPDF==1.26.7
+pypdf==6.6.0
+python-docx==1.2.0
+python-pptx==1.0.2
+pdf2image==1.17.0
+img2pdf==0.6.3
+
+# Moteurs de rendu PDF
+weasyprint==67.0
+xhtml2pdf==0.2.17
+fpdf2==2.8.5
+reportlab==4.4.7
+Pillow==12.1.0
+
+# Traitement de données
+pandas==2.3.3
+numpy==2.2.6
+openpyxl==3.1.5
+xlsxwriter==3.2.9
+
+# Utilitaires
+arabic-reshaper==3.0.0
+python-bidi==0.6.7
+cryptography==46.0.3
+requests==2.32.5
+
