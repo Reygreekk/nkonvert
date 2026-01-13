@@ -2,14 +2,11 @@ from flask import Flask, render_template, request, send_from_directory, jsonify
 import os
 import uuid
 import img2pdf
-import io
-from pdf2docx import Converter
-
-# Remplacements pour Linux (Render)
-import aspose.words as aw
-import aspose.slides as slides
-import aspose.pdf as ap
-from xhtml2pdf import pisa
+import aspose.words as aw        # Pour Word vers PDF
+import aspose.slides as slides   # Pour PPTX vers PDF
+import aspose.pdf as ap         # Pour PDF vers PPTX
+from pdf2docx import Converter   # Pour PDF vers Word
+from xhtml2pdf import pisa      # Pour HTML vers PDF
 
 app = Flask(__name__)
 UPLOAD_FOLDER = 'uploads'
@@ -88,3 +85,4 @@ if __name__ == '__main__':
     app.run(host='0.0.0.0', port=port)
 
     app.run(host='0.0.0.0', port=port)
+
