@@ -99,15 +99,20 @@
 
             <div class="controls">
                 <select id="targetFormat">
-                    <optgroup label="Documents">
-                        <option value="docx">Vers Word (.docx)</option>
-                        <option value="pdf">Vers PDF (.pdf)</option>
-                        <option value="pptx">Vers PowerPoint (.pptx)</option>
-                    </optgroup>
-                    <optgroup label="Images">
-                        <option value="jpg">Vers Image (.jpg)</option>
-                        <option value="png">Vers Image (.png)</option>
-                    </optgroup>
+                    <optgroup label="📄 Créer un document PDF">
+            <option value="pdf">Convertir Word (.docx) en PDF</option>
+            <option value="pdf">Convertir Image (JPG, PNG) en PDF</option>
+            <option value="pdf">Convertir Page Web (HTML) en PDF</option>
+            <option value="pdf">Convertir Texte (RTF, TXT) en PDF</option>
+        </optgroup>
+                    <optgroup label="📝 Extraire le contenu d'un PDF">
+            <option value="docx">Transformer PDF en Word (.docx)</option>
+            <option value="png">Transformer PDF en Image (.png)</option>
+            <option value="jpg">Transformer PDF en Image (.jpg)</option>
+        </optgroup>
+                <optgroup label="🎨 Design & Vectoriel">
+            <option value="svg">Vectoriser une image (JPG/PNG vers SVG)</option>
+        </optgroup>    
                 </select>
                 <button type="submit" class="btn-submit" id="submitBtn">Convertir maintenant</button>
             </div>
@@ -180,5 +185,6 @@
 </script>
 </body>
 </html>
+
 
 
