@@ -3,131 +3,71 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NKALAA | Boost Instantané</title>
+    <title>NKALAA | Parole de motivation</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        :root { --gold: #d4af37; --bg: #0f172a; --green: #10b981; }
+        :root { --gold: #d4af37; --bg: #0f172a; --nav-bg: #001A3A; --red: #E63946; }
+        body { background: var(--bg); color: white; font-family: 'Segoe UI', sans-serif; margin: 0; }
+
+        .main-nav { background: var(--nav-bg); padding: 1rem 5%; display: flex; justify-content: center; gap: 20px; box-shadow: 0 4px 15px rgba(0,0,0,0.5); }
+        .main-nav a { color: white; text-decoration: none; font-weight: 600; font-size: 0.9rem; padding: 8px 15px; border-radius: 8px; transition: 0.3s; display: flex; align-items: center; gap: 8px; }
+        .main-nav a:hover { color: var(--red); }
+        .main-nav a.active { background: var(--red); color: white; }
+
+        .container { display: flex; align-items: center; justify-content: center; min-height: 80vh; padding: 20px; }
+        .card { background: #1e293b; padding: 40px; border-radius: 24px; border: 1px solid rgba(212, 175, 55, 0.3); text-align: center; width: 100%; max-width: 500px; box-shadow: 0 20px 50px rgba(0,0,0,0.5); }
         
-        body { 
-            background: var(--bg); 
-            color: white; 
-            font-family: 'Segoe UI', sans-serif; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            min-height: 100vh; 
-            margin: 0; 
-        }
-
-        .card { 
-            background: #1e293b; 
-            padding: 40px; 
-            border-radius: 24px; 
-            border: 1px solid rgba(212, 175, 55, 0.3); 
-            text-align: center; 
-            width: 90%; 
-            max-width: 500px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
-        }
-
         h1 { color: var(--gold); margin-bottom: 25px; }
-
-        .form-group { margin-bottom: 15px; }
-        
-        input { 
-            width: 100%; 
-            padding: 14px; 
-            border-radius: 12px; 
-            border: 1px solid #334155; 
-            background: #0f172a; 
-            color: white; 
-            box-sizing: border-box; 
-            font-size: 16px;
-        }
-
-        button { 
-            background: var(--gold); 
-            color: #0f172a; 
-            padding: 16px; 
-            border: none; 
-            border-radius: 50px; 
-            font-weight: bold; 
-            cursor: pointer; 
-            width: 100%; 
-            text-transform: uppercase; 
-            transition: 0.3s; 
-            font-size: 16px;
-        }
-
+        input { width: 100%; padding: 14px; border-radius: 12px; border: 1px solid #334155; background: #0f172a; color: white; margin-bottom: 15px; box-sizing: border-box; }
+        button { background: var(--gold); color: #0f172a; padding: 16px; border: none; border-radius: 50px; font-weight: bold; cursor: pointer; width: 100%; text-transform: uppercase; transition: 0.3s; }
         button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
 
-        /* CADRE VERT RÉSULTAT */
-        #result-container {
-            margin-top: 30px;
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid var(--green);
-            background: rgba(16, 185, 129, 0.1);
-            display: none; /* Caché au début */
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        .quote-text {
-            font-size: 20px;
-            font-style: italic;
-            color: #ecfdf5;
-            line-height: 1.5;
-        }
-
-        .user-tag {
-            display: block;
-            margin-top: 10px;
-            font-size: 12px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: var(--green);
-            font-weight: bold;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .loader {
-            display: none;
-            margin: 20px auto;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--gold);
-            border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        #result-box { margin-top: 30px; padding: 20px; border-radius: 15px; border: 2px solid #10b981; background: rgba(16, 185, 129, 0.1); display: none; }
+        .quote { font-size: 1.2rem; font-style: italic; line-height: 1.5; }
     </style>
 </head>
 <body>
 
+<nav class="main-nav">
+    <a href="/"><i class="fa fa-sync"></i> NKONVERT</a>
+    <a href="/boost" class="active"><i class="fa fa-lightbulb"></i> BOOST</a>
+    <a href="/zip"><i class="fa fa-file-zipper"></i> ZIP TOOL</a>
+</nav>
+
+<div class="container">
     <div class="card">
         <h1>✨ Boost Spirit</h1>
         <form id="boostForm">
-            <div class="form-group">
-                <input type="text" id="prenom" name="prenom" placeholder="Prénom" required>
-            </div>
-            <div class="form-group">
-                <input type="text" id="nom" name="nom" placeholder="Nom">
-            </div>
-            <button type="submit" id="submitBtn">Révéler ma parole de motivation</button>
+            <input type="text" name="prenom" placeholder="Ton Prénom" required>
+            <input type="text" name="nom" placeholder="Ton Nom (Optionnel)">
+            <button type="submit" id="btn">Révéler ma motivation</button>
         </form>
 
-        <div class="loader" id="loader"></div>
-
-        <div id="result-container">
-            <span class="user-tag" id="res-user"></span>
-            <p class="quote-text" id="res-phrase"></p>
+        <div id="result-box">
+            <small id="user-tag" style="color: #10b981; font-weight: bold;"></small>
+            <p class="quote" id="phrase-text"></p>
         </div>
     </div>
+</div>
+
+<script>
+    document.getElementById('boostForm').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const btn = document.getElementById('btn');
+        btn.innerText = "Chargement...";
+        
+        try {
+            const res = await fetch('/generate_ajax', { method: 'POST', body: new FormData(e.target) });
+            const data = await res.json();
+            document.getElementById('user-tag').innerText = "Message pour " + data.username;
+            document.getElementById('phrase-text').innerText = "« " + data.phrase + " »";
+            document.getElementById('result-box').style.display = "block";
+        } catch(e) { alert("Erreur"); }
+        finally { btn.innerText = "Révéler ma motivation"; }
+    });
+</script>
+</body>
+</html>
 
     <script>
         document.getElementById('boostForm').addEventListener('submit', function(e) {
@@ -167,4 +107,5 @@
         });
     </script>
 </body>
+
 </html>
