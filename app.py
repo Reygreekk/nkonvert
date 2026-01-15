@@ -6,7 +6,6 @@ import time
 import base64
 import tempfile
 from io import BytesIO
-from datetime import timedelta
 # Import Flask avec 'session' (indispensable pour ton Oracle)
 from flask import Flask, render_template, request, send_from_directory, jsonify, session
 from werkzeug.utils import secure_filename
@@ -23,7 +22,6 @@ from fpdf import FPDF
 app = Flask(__name__)
 # --- CONFIGURATION SESSION ---
 app.secret_key = "nkonvert_oracle_secret_key_2026"
-app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 # CONFIGURATION
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
@@ -353,6 +351,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
