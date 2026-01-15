@@ -11,6 +11,7 @@ from PIL import Image
 
 # --- BIBLIOTHÈQUES LÉGÈRES ---
 import img2pdf
+import mammoth
 import fitz  # PyMuPDF
 from docx import Document
 from pdf2image import convert_from_path
@@ -65,9 +66,20 @@ def convert():
     
     file.save(input_path)
 
-    try:
+   try:
+        # --- WORD (.docx) vers PDF ---
+        if ext == '.docx' and target_format == 'pdf':
+            # 1. Convertir Word en HTML simple avec mammoth
+            with open(input_path, "rb") as docx_file:
+                result = mammoth.convert_to_html(docx_file)
+                html_content = result.value 
+            
+            # 2. Convertir ce HTML en PDF avec pisa (que tu as déjà)
+            with open(output_path, "wb") as pdf_file:
+                pisa.CreatePDF(html_content, dest=pdf_file)
+                
         # 1. PDF -> DOCX (Version Ultra-Rapide avec PyMuPDF)
-        if ext == '.pdf' and target_format == 'docx':
+        elif ext == '.pdf' and target_format == 'docx':
             doc_pdf = fitz.open(input_path)
             doc_word = Document()
             for page in doc_pdf:
@@ -186,6 +198,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
