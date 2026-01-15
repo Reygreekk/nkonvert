@@ -2,112 +2,128 @@ import os
 import uuid
 import shutil
 import random
-import tempfile
+import time
+import base64
+from io import BytesIO
 from flask import Flask, render_template, request, send_from_directory, jsonify
 from werkzeug.utils import secure_filename
+from PIL import Image
 
-# --- IMPORTS CONVERSION ---
+# --- BIBLIOTHÈQUES LÉGÈRES ---
 import img2pdf
-import aspose.words as aw
-import aspose.slides as slides
-import aspose.pdf as ap
-from pdf2docx import Converter
+import fitz  # PyMuPDF
+from docx import Document
+from pdf2image import convert_from_path
+from xhtml2pdf import pisa
+from striprtf.striprtf import rtf_to_text
+from fpdf import FPDF
 
 app = Flask(__name__)
 
-# --- CONFIGURATION DOSSIERS ---
+# CONFIGURATION
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 EXPORT_FOLDER = os.path.join(BASE_DIR, 'exports')
 
-# Nettoyage et création des dossiers au démarrage
 for folder in [UPLOAD_FOLDER, EXPORT_FOLDER]:
-    if os.path.exists(folder):
-        shutil.rmtree(folder)
     os.makedirs(folder, exist_ok=True)
 
-# --- ROUTES DE NAVIGATION ---
+def cleanup_old_files():
+    """Supprime les fichiers de plus de 10 minutes pour le plan Starter"""
+    now = time.time()
+    for folder in [UPLOAD_FOLDER, EXPORT_FOLDER]:
+        for f in os.listdir(folder):
+            path = os.path.join(folder, f)
+            if os.stat(path).st_mtime < now - 600:
+                try: os.remove(path)
+                except: pass
 
+# --- ROUTES NAVIGATION ---
 @app.route('/')
-def index():
-    return render_template('index.html')
+def index(): return render_template('index.html')
 
 @app.route('/boost')
-def boost_page():
-    # Correction : vérifie que le fichier s'appelle bien boost.html ou motivation.html
-    return render_template('motivation.html')
+def boost_page(): return render_template('motivation.html')
 
 @app.route('/zip')
-def zip_page():
-    return render_template('zip.html')
+def zip_page(): return render_template('zip.html')
 
-# --- LOGIQUE 1 : NKONVERT (Conversion) ---
-
+# --- LOGIQUE DE CONVERSION ---
 @app.route('/convert', methods=['POST'])
 def convert():
-    if 'file' not in request.files:
-        return jsonify({"success": False, "error": "Aucun fichier envoyé"}), 400
+    cleanup_old_files()
+    if 'file' not in request.files: return jsonify({"success": False, "error": "Aucun fichier"}), 400
     
     file = request.files['file']
     target_format = request.form.get('target_format')
-    
-    if file.filename == '':
-        return jsonify({"success": False, "error": "Fichier vide"}), 400
-
     ext = os.path.splitext(file.filename)[1].lower()
     unique_id = str(uuid.uuid4())[:8]
+    
     input_path = os.path.join(UPLOAD_FOLDER, f"{unique_id}{ext}")
     output_filename = f"{unique_id}.{target_format}"
     output_path = os.path.join(EXPORT_FOLDER, output_filename)
-
+    
     file.save(input_path)
 
     try:
-        # --- 1. DOCS UNIVERSELS (Word, RTF, HTML, ODT, TXT) -> PDF ---
-        if ext in ['.docx', '.doc', '.rtf', '.html', '.odt', '.txt'] and target_format == 'pdf':
-            doc = aw.Document(input_path)
-            doc.save(output_path)
+        # 1. PDF -> DOCX (Version Ultra-Rapide avec PyMuPDF)
+        if ext == '.pdf' and target_format == 'docx':
+            doc_pdf = fitz.open(input_path)
+            doc_word = Document()
+            for page in doc_pdf:
+                doc_word.add_paragraph(page.get_text())
+            doc_word.save(output_path)
+            doc_pdf.close()
 
-        # --- 2. PPTX -> PDF ---
-        elif ext in ['.pptx', '.ppt'] and target_format == 'pdf':
-            pres = slides.Presentation(input_path)
-            pres.save(output_path, slides.export.SaveFormat.PDF)
-
-        # --- 3. PDF -> PPTX ---
-        elif ext == '.pdf' and target_format == 'pptx':
-            doc = ap.Document(input_path)
-            doc.save(output_path, ap.PptxSaveOptions())
-        
-        # --- 4. PDF -> DOCX ---
-        elif ext == '.pdf' and target_format == 'docx':
-            cv = Converter(input_path)
-            cv.convert(output_path)
-            cv.close()
-
-        # --- 5. PDF -> IMAGES (PNG/JPG) ---
-        elif ext == '.pdf' and target_format in ['png', 'jpg']:
-            doc = ap.Document(input_path)
-            # On convertit la 1ère page (pour économiser la RAM Starter)
-            resolution = ap.devices.Resolution(150)
-            if target_format == 'png':
-                device = ap.devices.PngDevice(resolution)
-            else:
-                device = ap.devices.JpegDevice(resolution)
-            device.process(doc.pages[1], output_path)
-
-        # --- 6. IMAGES -> PDF ---
+        # 2. IMAGES -> PDF
         elif ext in ['.jpg', '.jpeg', '.png'] and target_format == 'pdf':
             with open(output_path, "wb") as f:
                 f.write(img2pdf.convert(input_path))
+
+        # 3. PDF -> IMAGES (PNG/JPG)
+        elif ext == '.pdf' and target_format in ['png', 'jpg']:
+            images = convert_from_path(input_path, first_page=1, last_page=1)
+            images[0].save(output_path, target_format.upper())
+
+        # 4. HTML -> PDF
+        elif ext == '.html' and target_format == 'pdf':
+            with open(input_path, "r", encoding="utf-8") as hf:
+                source_html = hf.read()
+            with open(output_path, "wb") as pf:
+                pisa.CreatePDF(source_html, dest=pf)
+
+        # 5. RTF -> PDF
+        elif ext == '.rtf' and target_format == 'pdf':
+            with open(input_path, "r", encoding="utf-8", errors="ignore") as rf:
+                text = rtf_to_text(rf.read())
+            pdf = FPDF()
+            pdf.add_page(); pdf.set_font("Arial", size=12)
+            pdf.multi_cell(0, 10, text.encode('latin-1', 'replace').decode('latin-1'))
+            pdf.output(output_path)
+
+        # 6. IMAGE -> SVG (NOUVEAU)
+        elif ext in ['.jpg', '.jpeg', '.png'] and target_format == 'svg':
+            with Image.open(input_path) as img:
+                width, height = img.size
+                buffered = BytesIO()
+                img.save(buffered, format=img.format)
+                img_str = base64.b64encode(buffered.getvalue()).decode()
                 
+                svg_data = f'<?xml version="1.0" encoding="UTF-8" standalone="no"?>\n'
+                svg_data += f'<svg width="{width}" height="{height}" viewBox="0 0 {width} {height}" xmlns="http://www.w3.org/2000/svg">\n'
+                svg_data += f'  <image width="{width}" height="{height}" href="data:image/{img.format.lower()};base64,{img_str}" />\n'
+                svg_data += f'</svg>'
+                
+                with open(output_path, "w") as svg_file:
+                    svg_file.write(svg_data)
+
         else:
-            return jsonify({"success": False, "error": f"Conversion {ext} vers {target_format} non supportée"}), 400
+            return jsonify({"success": False, "error": f"Format {ext} vers {target_format} non supporté"}), 400
 
         return jsonify({"success": True, "download_url": f"/download_file/{output_filename}"})
 
     except Exception as e:
-        print(f"Erreur : {str(e)}") # Visible dans les logs Render
-        return jsonify({"success": False, "error": "Erreur lors du traitement du fichier"}), 500
+        return jsonify({"success": False, "error": str(e)}), 500
 # --- LOGIQUE 2 : BOOST SPIRIT (Motivation) ---
 
 @app.route('/generate_ajax', methods=['POST'])
@@ -170,5 +186,6 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
