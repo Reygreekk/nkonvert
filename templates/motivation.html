@@ -12,18 +12,18 @@
             --nav-bg: #001A3A; 
             --green: #10b981; 
             --purple: #a29bfe; 
-            --red: #E63946; 
+            --red: #ff7675; 
         }
         
         body { 
             background: var(--bg); 
             color: white; 
-            font-family: 'Segoe UI', sans-serif; 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
             margin: 0; 
             min-height: 100vh;
         }
 
-        /* Barre de navigation style NKONVERT */
+        /* --- BARRE DE NAVIGATION --- */
         .main-nav { 
             background: var(--nav-bg); 
             padding: 1rem 5%; 
@@ -37,21 +37,22 @@
             text-decoration: none; 
             font-weight: 600; 
             font-size: 0.9rem; 
-            padding: 8px 15px; 
+            padding: 10px 18px; 
             border-radius: 8px; 
             transition: 0.3s; 
             display: flex; 
             align-items: center; 
             gap: 8px; 
         }
-        .main-nav a:hover { color: var(--gold); }
-        .main-nav a.active { background: var(--red); color: white; }
+        .main-nav a:hover { background: rgba(255,255,255,0.1); color: var(--gold); }
+        .main-nav a.active { background: var(--gold); color: #001A3A; }
 
+        /* --- CONTENU PRINCIPAL --- */
         .container { 
             display: flex; 
             align-items: center; 
             justify-content: center; 
-            min-height: 85vh; 
+            min-height: 80vh; 
             padding: 20px; 
         }
 
@@ -61,34 +62,35 @@
             border-radius: 24px; 
             border: 1px solid rgba(212, 175, 55, 0.3); 
             text-align: center; 
-            width: 90%; 
-            max-width: 500px; 
-            box-shadow: 0 20px 50px rgba(0,0,0,0.5); 
+            width: 100%; 
+            max-width: 550px; 
+            box-shadow: 0 20px 50px rgba(0,0,0,0.6); 
         }
 
-        h1 { color: var(--gold); margin-bottom: 25px; letter-spacing: 2px; }
+        h1 { color: var(--gold); margin-bottom: 25px; letter-spacing: 1px; }
 
+        .input-group { margin-bottom: 20px; }
         input { 
             width: 100%; 
-            padding: 14px; 
+            padding: 15px; 
             border-radius: 12px; 
             border: 1px solid #334155; 
             background: #0f172a; 
             color: white; 
             box-sizing: border-box; 
             font-size: 16px;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             transition: 0.3s;
         }
-        input:focus { border-color: var(--gold); outline: none; }
+        input:focus { border-color: var(--gold); outline: none; box-shadow: 0 0 10px rgba(212, 175, 55, 0.2); }
 
         button { 
             background: var(--gold); 
             color: #0f172a; 
-            padding: 16px; 
+            padding: 18px; 
             border: none; 
             border-radius: 50px; 
-            font-weight: bold; 
+            font-weight: 800; 
             cursor: pointer; 
             width: 100%; 
             text-transform: uppercase; 
@@ -96,26 +98,26 @@
             font-size: 14px;
             letter-spacing: 1px;
         }
-        button:hover { transform: scale(1.02); box-shadow: 0 0 20px rgba(212, 175, 55, 0.4); }
-        button:disabled { opacity: 0.6; cursor: not-allowed; }
+        button:hover { transform: translateY(-2px); box-shadow: 0 10px 20px rgba(212, 175, 55, 0.3); }
+        button:disabled { opacity: 0.5; cursor: not-allowed; }
 
-        /* CADRE RÉSULTAT */
+        /* --- ZONE DE RÉSULTAT --- */
         #result-container {
             margin-top: 30px;
             padding: 25px;
-            border-radius: 15px;
+            border-radius: 18px;
             border: 2px solid var(--green);
             background: rgba(16, 185, 129, 0.05);
             display: none;
-            animation: fadeIn 0.5s ease-out;
+            animation: slideUp 0.5s ease-out;
         }
 
-        .intro-text { display: block; font-size: 14px; color: var(--purple); margin-bottom: 15px; font-weight: 500; }
-        .quote-text { font-size: 20px; font-weight: 700; color: #ffffff; line-height: 1.4; margin: 10px 0; font-style: italic; }
-        .badge { display: inline-block; margin-top: 10px; padding: 4px 12px; border-radius: 20px; font-size: 10px; background: rgba(255,255,255,0.1); color: var(--gold); border: 1px solid var(--gold); }
-        .user-tag { display: block; margin-top: 15px; font-size: 11px; text-transform: uppercase; letter-spacing: 2px; color: var(--green); font-weight: bold; opacity: 0.8; }
+        .intro-text { display: block; font-size: 14px; color: var(--purple); margin-bottom: 12px; font-weight: 500; }
+        .quote-text { font-size: 22px; font-weight: 700; color: #ffffff; line-height: 1.5; margin: 15px 0; }
+        .badge { display: inline-block; margin-top: 10px; padding: 5px 15px; border-radius: 20px; font-size: 11px; background: rgba(255,255,255,0.05); color: var(--gold); border: 1px solid var(--gold); }
+        .user-tag { display: block; margin-top: 20px; font-size: 11px; text-transform: uppercase; letter-spacing: 1px; color: var(--green); font-weight: bold; opacity: 0.8; }
 
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes slideUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
 
         .loader {
             display: none;
@@ -123,8 +125,8 @@
             border: 4px solid rgba(255,255,255,0.1);
             border-top: 4px solid var(--gold);
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
+            width: 40px;
+            height: 40px;
             animation: spin 1s linear infinite;
         }
         @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
@@ -133,21 +135,21 @@
 <body>
 
 <nav class="main-nav">
-    <a href="/"><i class="fa fa-sync"></i> NKONVERT</a>
-    <a href="/boost" class="active"><i class="fa fa-lightbulb"></i> BOOST</a>
+    <a href="/"><i class="fa fa-file-export"></i> NKONVERT</a>
+    <a href="/boost" class="active"><i class="fa fa-bolt"></i> BOOST SPIRIT</a>
     <a href="/zip"><i class="fa fa-file-zipper"></i> ZIP TOOL</a>
 </nav>
 
 <div class="container">
     <div class="card">
-        <h1>✨ Boost Spirit by Nkalaa</h1>
+        <h1>✨ Boost spirit by Nkalaa</h1>
         
         <form id="boostForm">
             <div id="input-fields">
                 <input type="text" id="prenom" name="prenom" placeholder="Ton Prénom" required>
-                <input type="text" id="nom" name="nom" placeholder="Ton Nom (Facultatif)">
+                <input type="text" id="nom" name="nom" placeholder="Ton Nom (Optionnel)">
             </div>
-            <button type="submit" id="submitBtn">Révéler ma motivation</button>
+            <button type="submit" id="submitBtn">Révéler ma parole motivation</button>
         </form>
 
         <div class="loader" id="loader"></div>
@@ -172,7 +174,7 @@
         const inputFields = document.getElementById('input-fields');
         const formData = new FormData(this);
 
-        // UI : Activation du chargement
+        // UI : Chargement
         btn.disabled = true;
         loader.style.display = 'block';
         resultBox.style.display = 'none';
@@ -185,22 +187,24 @@
         .then(data => {
             loader.style.display = 'none';
             btn.disabled = false;
-            btn.innerText = "Recevoir un autre boost";
+            btn.innerText = "Demander un autre conseil";
             
-            // Cacher les champs après le premier clic
+            // On cache les champs pour focus sur le texte
             inputFields.style.display = 'none';
 
-            // Injection des données venant d'app.py
+            // Injection des données
             document.getElementById('res-intro').innerText = data.intro;
             document.getElementById('res-phrase').innerText = "« " + data.phrase + " »";
-            document.getElementById('res-type').innerText = data.type;
+            document.getElementById('res-type').innerText = "Thème : " + data.type;
             
-            // On affiche le compteur et l'identité
-            const identite = (document.getElementById('prenom').value + " " + document.getElementById('nom').value).trim();
-            document.getElementById('res-user').innerText = "Consultation n°" + data.compteur + " pour " + identite;
+            // Identité pour le tag de bas de page
+            const p = document.getElementById('prenom').value;
+            const n = document.getElementById('nom').value;
+            const qui = (p + " " + n).trim() || "Aventurier";
+            document.getElementById('res-user').innerText = "CONSULTATION N°" + data.compteur + " • " + qui;
 
-            // Changement d'ambiance si l'IA s'agace (> 7 clics)
-            if(data.compteur > 1é) {
+            // Logique de couleur selon le compteur (> 12 selon ton app.py)
+            if(data.compteur > 12) {
                 document.getElementById('res-intro').style.color = "var(--red)";
                 resultBox.style.borderColor = "var(--red)";
                 document.getElementById('res-user').style.color = "var(--red)";
@@ -212,15 +216,18 @@
 
             resultBox.style.display = 'block';
         })
-        .catch(error => {
-            console.error('Erreur:', error);
+        .catch(err => {
+            console.error(err);
             loader.style.display = 'none';
             btn.disabled = false;
-            alert("NKUTA est fatigué, réessaie plus tard.");
+            alert("Nkuta est indisponible pour le moment.");
         });
     });
 </script>
 
 </body>
 </html>
+</body>
+</html>
+
 
