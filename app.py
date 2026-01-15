@@ -3,38 +3,33 @@ import uuid
 import shutil
 import random
 import time
-from datetime import timedelta  
 import base64
 import tempfile
 from io import BytesIO
-from flask import Flask, render_template, request, send_from_directory, jsonify
+from datetime import timedelta
+# Import Flask avec 'session' (indispensable pour ton Oracle)
+from flask import Flask, render_template, request, send_from_directory, jsonify, session
 from werkzeug.utils import secure_filename
 from PIL import Image
-
-# --- BIBLIOTHÈQUES LÉGÈRES ---
+# --- BIBLIOTHÈQUES ---
 import img2pdf
 import mammoth
-import fitz  # C'est PyMuPDF
+import fitz  # PyMuPDF
 from docx import Document
 from pdf2image import convert_from_path
 from xhtml2pdf import pisa
 from striprtf.striprtf import rtf_to_text
 from fpdf import FPDF
-
 app = Flask(__name__)
-
-# --- CONFIGURATION SESSION (24H) ---
+# --- CONFIGURATION SESSION ---
 app.secret_key = "nkonvert_oracle_secret_key_2026"
 app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
-
 # CONFIGURATION
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 EXPORT_FOLDER = os.path.join(BASE_DIR, 'exports')
-
 for folder in [UPLOAD_FOLDER, EXPORT_FOLDER]:
     os.makedirs(folder, exist_ok=True)
-
 def cleanup_old_files():
     """Supprime les fichiers de plus de 10 minutes"""
     now = time.time()
@@ -154,9 +149,7 @@ def generate_boost():
         session['counter'] = 1
     else:
         session['counter'] += 1
-    
     compteur = session['counter']
-
     # --- LOGIQUE D'INTRODUCTION ---
     if compteur == 1:
         intro = f"Bonjour {identite}... J'espère que ta journée se déroule bien jusque-là. Voici ton message boost :"
@@ -169,11 +162,7 @@ def generate_boost():
         intro = random.choice(intros_normales)
     else:
         # APRES 7 CLICS : L'Oracle devient drôle / piquant
-        intros_droles = [
-            "Dis donc, tu as pris un abonnement ?",
-            "On dirait que tu cherches le bon conseil, je vais essayer de te donner du sourire...",
-            f"Je wanda seulement sur toi {prenom or 'ami'} , voici ta parole de motivation..",
-            "Tu n'as pas un travail qui t'attend ? Voici ta dose :"
+        intros_droles = ["Dis donc, tu as pris un abonnement ?", "On dirait que tu cherches le bon conseil, je vais essayer de te donner du sourire...", f"Je wanda seulement sur toi {prenom or 'ami'} , voici ta parole de motivation..", "Tu n'as pas un travail qui t'attend ? Voici ta dose :"
         ]
         intro = random.choice(intros_droles)
 
@@ -181,22 +170,11 @@ def generate_boost():
     branches = {
         "Confiance & Puissance": {
         # 11 Sujets (Féminin Singulier)
-        "sujets": [
-            "Ta valeur", "Ta lumière", "Ta force intérieure", "Ta destinée", "Ton intuition", 
-            "Ta détermination", "Ta confiance", "Ta vision", "Ta réussite", "Ta persévérance", "Ta passion"
-        ],
+        "sujets": ["Ta valeur", "Ta lumière", "Ta force intérieure", "Ta destinée", "Ton intuition","Ta détermination", "Ta confiance", "Ta vision", "Ta réussite", "Ta persévérance", "Ta passion"],
         # 10 Actions (Liaison vers Infinitif)
-        "actions": [
-            "est une énergie qui va", "te donne le pouvoir de", "est faite pour", 
-            "finit toujours par", "commence enfin à", "te pousse chaque jour à", 
-            "agit en silence pour", "ne demande qu'à", "est la clé pour", "te permet réellement de"
-        ],
+        "actions": ["est une énergie qui va", "te donne le pouvoir de", "est faite pour","finit toujours par", "commence enfin à", "te pousse chaque jour à","agit en silence pour", "ne demande qu'à", "est la clé pour", "te permet réellement de"],
         # 10 Finalités (Verbes à l'infinitif)
-        "finalites": [
-            "réaliser l'impossible.", "transformer tes rêves en réalité.", "briser tes propres limites.", 
-            "attirer l'abondance.", "changer ton monde.", "illuminer ton entourage.", 
-            "bâtir un empire durable.", "écraser tes doutes.", "devenir inarrêtable.", "laisser une trace indélébile."
-        ]
+        "finalites": ["réaliser l'impossible.", "transformer tes rêves en réalité.", "briser tes propres limites.", "attirer l'abondance.", "changer ton monde.", "illuminer ton entourage.", "bâtir un empire durable.", "écraser tes doutes.", "devenir inarrêtable.", "laisser une trace indélébile."]
         # TOTAL : 11 x 10 x 10 = 1 100 combinaisons parfaites
     },
         "Confiance en soi": {
@@ -226,41 +204,13 @@ def generate_boost():
         },
         "Espoir & Résilience": {
     # 20 Sujets : Valider la douleur tout en ouvrant une porte
-    "sujets": [
-        "Ta douleur actuelle", "Ce sentiment d'abandon", "Ton cœur épuisé", 
-        "Cette tempête intérieure", "L'obscurité qui t'entoure", "Ton âme blessée", 
-        "Ce poids sur tes épaules", "Ta lassitude profonde", "Le silence de tes nuits", 
-        "Chaque larme versée", "Ton combat invisible", "Cette sensation de vide", 
-        "Ton désir de paix", "La fatigue de ton esprit", "Ton histoire inachevée", 
-        "Ce passage difficile", "Ton besoin de lumière", "Ta vulnérabilité", 
-        "Ton sentiment d'impasse", "Cette épreuve immense"
-    ],
+    "sujets": ["Ta douleur actuelle", "Ce sentiment d'abandon", "Ton cœur épuisé", "Cette tempête intérieure", "L'obscurité qui t'entoure", "Ton âme blessée", "Ce poids sur tes épaules", "Ta lassitude profonde", "Le silence de tes nuits", "Chaque larme versée", "Ton combat invisible", "Cette sensation de vide",  "Ton désir de paix", "La fatigue de ton esprit", "Ton histoire inachevée", "Ce passage difficile", "Ton besoin de lumière", "Ta vulnérabilité", "Ton sentiment d'impasse", "Cette épreuve immense" ],
     
     # 16 Liaisons : Le pont vers la transformation
-    "actions": [
-        "n'est pas ta destination finale car elle", "est le terreau fertile qui", 
-        "te prépare doucement à", "cache une force insoupçonnée pour", 
-        "finit inévitablement par ouvrir sur", "contient les graines de", 
-        "travaille en silence pour", "n'est qu'un chapitre qui précède", 
-        "te forge une résilience pour", "est le signe précurseur de", 
-        "finira par s'effacer devant", "t'invite à découvrir enfin", 
-        "ne pourra jamais éteindre", "est la preuve que tu possèdes", 
-        "se transformera bientôt en", "s'aligne aujourd'hui pour protéger"
-    ],
+    "actions": [ "n'est pas ta destination finale car elle", "est le terreau fertile qui",  "te prépare doucement à", "cache une force insoupçonnée pour",  "finit inévitablement par ouvrir sur", "contient les graines de",  "travaille en silence pour", "n'est qu'un chapitre qui précède", "te forge une résilience pour", "est le signe précurseur de",  "finira par s'effacer devant", "t'invite à découvrir enfin",  "ne pourra jamais éteindre", "est la preuve que tu possèdes",  "se transformera bientôt en", "s'aligne aujourd'hui pour protéger" ],
     
     # 10 Finalités : La lumière au bout du tunnel
-    "finalites": [
-        "une aube plus radieuse que jamais.", 
-        "une guérison profonde et durable.", 
-        "la rencontre avec ta force véritable.", 
-        "un renouveau que tu mérites vraiment.", 
-        "une paix intérieure inébranlable.", 
-        "la plus belle version de ta vie.", 
-        "une lumière que rien ne pourra ternir.", 
-        "un avenir où tu seras enfin fier.", 
-        "la joie de t'être choisi(e) à nouveau.", 
-        "une raison d'être plus grande que ta peine."
-    ]
+    "finalites": [ "une aube plus radieuse que jamais.", "une guérison profonde et durable.",  "la rencontre avec ta force véritable.", "un renouveau que tu mérites vraiment.", "une paix intérieure inébranlable.",   "la plus belle version de ta vie.",  "une lumière que rien ne pourra ternir.","un avenir où tu seras enfin fier.", "la joie de t'être choisi(e) à nouveau.","une raison d'être plus grande que ta peine." ]
 },
         
         "Audace & Discipline": {
@@ -280,75 +230,31 @@ def generate_boost():
         },
         "Ton histoire s'écrit aujourd'hui": {
     # 15 Sujets (La cible)
-    "sujets": [
-        "L'héritage d'une vie", "La gloire éternelle", "Une trace indélébile", 
-        "L'entrée dans la légende", "La véritable grandeur",  "Une influence mondiale", "La destinée héroïque", "Une trace générationnelle", "La couronne du succès", "La mémoire collective", 
-        "La marche du progrès", "Une victoire historique" ],
+    "sujets": [ "L'héritage d'une vie", "La gloire éternelle", "Une trace indélébile",  "L'entrée dans la légende", "La véritable grandeur",  "Une influence mondiale", "La destinée héroïque", "Une trace générationnelle", "La couronne du succès", "La mémoire collective", "La marche du progrès", "Une victoire historique" ],
     
     # 15 Liaisons (Le moteur vers "ceux qui")
-    "actions": [
-        "ne s'offre désormais qu'à", "se forge uniquement par", "est le trophée réservé à", 
-        "est la juste récompense de", "s'écrit par la main de", "appartient exclusivement à", 
-        "ne reconnaît aujourd'hui que", "attend patiemment l'arrivée de", "devient le privilège de", 
-        "se laisse dompter par", "ne couronne finalement que", "est gravée par l'audace de", 
-        "s'aligne sur le destin de", "se mérite par la force de", "est le sanctuaire de"
-    ],
+    "actions": [ "ne s'offre désormais qu'à", "se forge uniquement par", "est le trophée réservé à",  "est la juste récompense de", "s'écrit par la main de", "appartient exclusivement à",  "ne reconnaît aujourd'hui que", "attend patiemment l'arrivée de", "devient le privilège de",  "se laisse dompter par", "ne couronne finalement que", "est gravée par l'audace de",  "s'aligne sur le destin de", "se mérite par la force de", "est le sanctuaire de"],
     
     # 10 Profils (L'identité "ceux qui" + l'action)
-    "finalites": [
-        "ceux qui refusent de suivre le troupeau.", 
-        "ceux qui osent défier les lois de l'impossible.", 
-        "ceux qui bâtissent dans le silence et le sacrifice.", 
-        "ceux qui transforment leurs blessures en armes.", 
-        "ceux qui marchent quand tous les autres s'arrêtent.", 
-        "ceux qui gardent la vision malgré la tempête.", 
-        "ceux qui placent l'honneur au-dessus de la facilité.", 
-        "ceux qui décident de briser les chaînes du passé.", 
-        "ceux qui cultivent une discipline de fer au quotidien.", 
-        "ceux qui voient la lumière là où d'autres voient le vide."
-    ]
+    "finalites": [ "ceux qui refusent de suivre le troupeau.", "ceux qui osent défier les lois de l'impossible.",  "ceux qui bâtissent dans le silence et le sacrifice.",  "ceux qui transforment leurs blessures en armes.",  "ceux qui marchent quand tous les autres s'arrêtent.","ceux qui gardent la vision malgré la tempête.",  "ceux qui placent l'honneur au-dessus de la facilité.","ceux qui décident de briser les chaînes du passé.",  "ceux qui cultivent une discipline de fer au quotidien.", "ceux qui voient la lumière là où d'autres voient le vide." ]
 },
         
         "Spirituel & Vision": {
             "sujets": ["La Foi", "Le miracle", "La vision", "Le destin", "L'authenticité", "La transformation véritable"],
             "actions": ["choisit son camp chez ceux qui", "s'aligne avec ceux qui", "fleurit entre les mains de ceux qui"],
-            "finalites": [
-                "écoutent leur intuition malgré le bruit du monde.", 
-                "voient des opportunités partout.", 
-                "marchent avec la certitude de la victoire." # Ajout cohérent
-            ]
+            "finalites": [ "écoutent leur intuition malgré le bruit du monde.", "voient des opportunités partout.", "marchent avec la certitude de la victoire." # Ajout cohérent ]
         },
         "Leadership & Impact": {
     # 15 Sujets : Vocabulaire de haute stature
-    "sujets": [
-        "Le leadership d'exception", "L'impact véritable", "Le succès durable", 
-        "L'autorité naturelle", "La force de l'exemple", "Une ascension fulgurante", 
-        "Le prestige professionnel", "L'influence positive", "La suprématie mentale", 
-        "Un parcours exemplaire", "L'excellence opérationnelle", "La maîtrise de soi", 
-        "Le charisme pur", "La marque des grands", "Le sommet du succès"
+    "sujets": [ "Le leadership d'exception", "L'impact véritable", "Le succès durable",  "L'autorité naturelle", "La force de l'exemple", "Une ascension fulgurante",  "Le prestige professionnel", "L'influence positive", "La suprématie mentale",  "Un parcours exemplaire", "L'excellence opérationnelle", "La maîtrise de soi",  "Le charisme pur", "La marque des grands", "Le sommet du succès"
     ],
     
     # 14 Liaisons : Pour une connexion fluide avec "ceux qui"
-    "actions": [
-        "ne se révèle que chez", "finit par choisir", "est le reflet de l'âme de", 
-        "se construit à travers", "est la signature de", "s'ancre profondément dans", 
-        "devient le bouclier de", "couronne uniquement", "fleurit entre les mains de", 
-        "exige la rigueur de", "ne sourit qu'à", "reste le privilège de", 
-        "définit l'identité de", "valorise avant tout"
-    ],
+    "actions": ["ne se révèle que chez", "finit par choisir", "est le reflet de l'âme de",  "se construit à travers", "est la signature de", "s'ancre profondément dans",  "devient le bouclier de", "couronne uniquement", "fleurit entre les mains de", "exige la rigueur de", "ne sourit qu'à", "reste le privilège de", "définit l'identité de", "valorise avant tout" ],
     
     # 10 Finalités : Profils de leaders inspirants
     "finalites": [
-        "ceux qui agissent avec une intégrité absolue.", 
-        "ceux qui savent écouter avant de commander.", 
-        "ceux qui transforment les obstacles en opportunités.", 
-        "ceux qui placent le bien commun avant leur propre ego.", 
-        "ceux qui osent décider quand tout le monde hésite.", 
-        "ceux qui inspirent par leurs actes plutôt que par leurs mots.", 
-        "ceux qui apprennent une leçon de chaque défaite.", 
-        "ceux qui maintiennent une discipline de fer dans le chaos.", 
-        "ceux qui croient en leur vision malgré les critiques.", 
-        "ceux qui cultivent l'excellence dans les plus petits détails."
+        "ceux qui agissent avec une intégrité absolue.",  "ceux qui savent écouter avant de commander.", "ceux qui transforment les obstacles en opportunités.",  "ceux qui placent le bien commun avant leur propre ego.",   "ceux qui osent décider quand tout le monde hésite.",   "ceux qui inspirent par leurs actes plutôt que par leurs mots.",   "ceux qui apprennent une leçon de chaque défaite.",  "ceux qui maintiennent une discipline de fer dans le chaos.",  "ceux qui croient en leur vision malgré les critiques.",   "ceux qui cultivent l'excellence dans les plus petits détails."
     ]
 },
         "Profondeur": {
@@ -394,10 +300,8 @@ def generate_boost():
             selected_branch = random.choice(list(branches.keys()))
     else:
         selected_branch = random.choice(list(branches.keys()))
-
     data = branches[selected_branch]
     phrase = f"{random.choice(data['sujets'])} {random.choice(data['actions'])} {random.choice(data['finalites'])}"
-    
     return jsonify({
         "status": "success",
         "intro": intro,
@@ -449,6 +353,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
