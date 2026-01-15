@@ -131,7 +131,7 @@ def convert():
 # --- LOGIQUE 2 : BOOST SPIRIT (Motivation) ---
 @app.route('/generate_ajax', methods=['POST'])
 def generate_boost():
-    session.permanent = True
+    
     # Récupération prénom et nom (facultatifs)
     prenom = request.form.get('prenom', '').strip()
     nom = request.form.get('nom', '').strip()
@@ -351,6 +351,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
