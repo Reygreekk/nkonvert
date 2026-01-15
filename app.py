@@ -137,7 +137,7 @@ def generate_boost():
     prenom = request.form.get('prenom', 'Aventurier')
     nom = request.form.get('nom', '')
     
-    sujets = ["L'avenir", "Le succès", "La réussite", "Le destin", "La persévérance", "L'audace", "La Foi", "Dieu", "Avoir de l'audace", "L'authenticité"]
+    sujets = ["L'avenir", "Le succès", "La réussite", "Le destin", "La persévérance", "L'audace", "La Foi", "Avoir de l'audace", "L'authenticité"]
     actions = ["appartient à ceux qui", "se construit par ceux qui", "sourit à ceux qui", "récompense ceux qui", "aime ceux qui", "est la marque de ceux qui", "caractérise ceux qui"]
     finalites = ["n'abandonnent jamais.", "osent sortir de leur zone de confort.", "travaillent avec passion.", "voient des opportunités partout.", "marchent dans le respect du travail bien fait."]
     
@@ -192,6 +192,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
