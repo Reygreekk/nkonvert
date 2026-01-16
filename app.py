@@ -156,15 +156,18 @@ def generate_boost():
             "Dis donc, tu as pris un abonnement ?",
             "On dirait que tu cherches le bon conseil...",
             f"Je wanda seulement sur toi {prenom or 'ami'}...",
-            "Tu n'as pas un travail qui t'attend ? Voici ta dose :"
+            "j'apprecie beaucoup ta compagnie et cette discussion ;  Voici une autre parole :"
         ])
 
     branches = {
-        "Confiance": {
-            "sujets": ["Ta valeur", "Ta lumière", "Ta force"],
-            "actions": ["est une énergie qui va", "te donne le pouvoir de"],
-            "finalites": ["réaliser l'impossible.", "transformer tes rêves."]
-        },
+        "Confiance & Puissance": {
+        "sujets": ["Ta valeur", "Ta lumière", "Ta force intérieure", "Ta destinée", "Ton intuition", "Ta détermination", "Ta confiance", "Ta vision", "Ta réussite", "Ta persévérance", "Ta passion"],
+    
+        "actions": ["est une énergie qui va", "te donne le pouvoir de", "est faite pour", "finit toujours par", "commence enfin à", "te pousse chaque jour à","agit en silence pour", "ne demande qu'à", "est la clé pour", "te permet réellement de"],
+        
+        "finalites": ["réaliser l'impossible.", "transformer tes rêves en réalité.", "briser tes propres limites.", "attirer l'abondance.", "changer ton monde.", "illuminer ton entourage.","bâtir un empire durable.", "écraser tes doutes.", "devenir inarrêtable.", "laisser une trace indélébile."]
+    
+    },
         "Espoir": {
             "sujets": ["Ta douleur", "Ton combat"],
             "actions": ["te prépare à", "ouvrira sur"],
@@ -232,6 +235,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
