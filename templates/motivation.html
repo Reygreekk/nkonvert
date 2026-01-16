@@ -196,7 +196,7 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
         inputs.style.display = "none";
 
         // --- LOGIQUE DE CHANGEMENT DE COULEUR (Compteur > 15) ---
-        if (data.compteur > 15) {
+        if (data.compteur > 20) {
             resultBox.style.borderColor = "var(--orange)";
             resultBox.style.background = "rgba(249, 115, 22, 0.1)";
             phraseTxt.style.color = "var(--orange)";
@@ -229,3 +229,4 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
 </script>
 </body>
 </html>
+
