@@ -149,11 +149,12 @@ def generate_boost():
         intro = random.choice([
             f"Je vois que tu apprécies l'énergie, {prenom or 'ami'}.",
             "On ne s'arrête plus ! Voici encore pour toi :",
+             "Je suis là pour toi si besoin ! Voici une parole pour te faire sourire :",
             "Voici encore une parole pour toi et te faire du bien :"
         ])
     else:
         intro = random.choice([
-            "Dis donc, tu as pris un abonnement ?",
+            "On a toujours besoin d'une personne qui nous dit ce qu'il faut:",
             "On dirait que tu cherches le bon conseil...",
             f"Je wanda seulement sur toi {prenom or 'ami'}...",
             "j'apprecie beaucoup ta compagnie et cette discussion ;  Voici une autre parole :"
@@ -175,7 +176,7 @@ def generate_boost():
         },
         "positivité": {
             "sujets": ["Un esprit positif"],
-            "actions": ["engendre une vie qui", "est un feu qui"],
+            "actions": ["engendre une vie qui"],
             "finalites": ["est productive.", "réalise l'impossible."]
         },
         "Leadership": {
@@ -193,6 +194,11 @@ def generate_boost():
             "actions": ["n'est pas ta destination finale car elle", "est le terreau fertile qui", "te prépare doucement à", "cache une force insoupçonnée pour", "finit inévitablement par ouvrir sur", "contient les graines de", "travaille en silence pour", "n'est qu'un chapitre qui précède", "te forge une résilience pour", "est le signe précurseur de", "finira par s'effacer devant", "t'invite à découvrir enfin", "se transformera bientôt en"],
             "finalites": ["une aube plus radieuse que jamais.", "une guérison profonde et durable.", "la rencontre avec ta force véritable.", "un renouveau que tu mérites vraiment.", "une paix intérieure inébranlable.", "la plus belle version de ta vie.", "une lumière que rien ne pourra ternir.", "un avenir où tu seras enfin fier.", "la joie de t'être choisi(e) à nouveau."]
         },
+        "Profondeur": {
+            "sujets": ["Notre Foi"],
+            "actions": ["vient de ce que "],
+            "finalites": ["l'on entend."]
+        },
         "Le moment 'Wanda'": {
             "sujets": ["Même dans le chaos,", "Avant d'agir,"],
             "actions": ["prends toujours"],
@@ -202,6 +208,21 @@ def generate_boost():
             "sujets": ["Le leadership d'exception", "L'impact véritable", "Le succès durable", "L'autorité naturelle", "La force de l'exemple", "Le prestige professionnel", "La suprématie mentale", "L'excellence opérationnelle", "La maîtrise de soi", "Le charisme pur", "Le sommet du succès"],
             "actions": ["ne se révèle que chez", "finit par choisir", "est le reflet de l'âme de", "se construit à travers", "est la signature de", "s'ancre profondément dans", "couronne uniquement", "fleurit entre les mains de", "ne sourit qu'à", "définit l'identité de"],
             "finalites": ["ceux qui agissent avec une intégrité absolue.", "ceux qui savent écouter avant de commander.", "ceux qui transforment les obstacles en opportunités.", "ceux qui placent le bien commun avant leur propre ego.", "ceux qui osent décider quand tout le monde hésite.", "ceux qui inspirent par leurs actes.", "ceux qui apprennent une leçon de chaque défaite.", "ceux qui maintiennent une discipline de fer."]
+        },
+        "Une motivation pour ta vie": {
+            "sujets": ["Le doute", "la Peur de se lancer"],
+            "actions": ["détruit plus de rêves"],
+            "finalites": ["que l'échec ne le fera jamais."]
+        },
+        "Audace & Discipline": {
+            "sujets": ["L'audace", "Avoir de l'audace", "La discipline", "La persévérance", "La victoire"],
+            "actions": ["caractérise ceux qui", "devient une réalité pour ceux qui", "finit par couronner ceux qui", "récompense ceux qui"],
+            "finalites": ["n'abandonnent jamais.", "osent sortir de leur zone de confort.","travaillent avec passion.","placent la discipline au-dessus de la motivation." ]
+        },
+        "réussite": {
+            "sujets": ["Le succès", "La réussite", "Le leadership", "L'excellence", "L'impact", "La grandeur"],
+            "actions": ["se construit par ceux qui", "sourit à ceux qui", "récompense ceux qui", "est la marque de ceux qui"],
+            "finalites": ["refusent de se contenter de la médiocrité.","construisent chaque jour une meilleure version d'eux-mêmes.", "placent la discipline au-dessus de la motivation.","marchent dans le respect du travail bien fait."]
         },
         "Ton histoire s'écrit aujourd'hui": {
             "sujets": ["L'héritage d'une vie", "La gloire éternelle", "Une trace indélébile", "L'entrée dans la légende", "La véritable grandeur", "Une influence mondiale", "La destinée héroïque", "Une trace générationnelle", "La couronne du succès", "La mémoire collective", "La marche du progrès", "Une victoire historique", "L'ascension finale", "Le prestige éternel", "Le triomphe de l'âme"],
@@ -283,6 +304,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
