@@ -170,9 +170,14 @@ def generate_boost():
     
     },
         "Confiance en tes capacités": {
-            "sujets": ["Vous etes la réponse"],
-            "actions": ["de Dieu aux prieres"],
-            "finalites": ["Aux prieres d'une personne."]
+            "sujets": ["Tu es la réponse"],
+            "actions": ["de Dieu"],
+            "finalites": ["aux prieres de quelqu'un."]
+        },
+         "Confiance en ta personne": {
+            "sujets": ["Ta vie compte"],
+            "actions": ["pour quelqu'un"],
+            "finalites": ["ne l'oublie pas."]
         },
         "positivité": {
             "sujets": ["Un esprit positif"],
@@ -304,6 +309,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
