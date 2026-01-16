@@ -168,19 +168,32 @@ def generate_boost():
         "finalites": ["réaliser l'impossible.", "transformer tes rêves en réalité.", "briser tes propres limites.", "attirer l'abondance.", "changer ton monde.", "illuminer ton entourage.","bâtir un empire durable.", "écraser tes doutes.", "devenir inarrêtable.", "laisser une trace indélébile."]
     
     },
-        "Espoir": {
-            "sujets": ["Ta douleur", "Ton combat"],
-            "actions": ["te prépare à", "ouvrira sur"],
-            "finalites": ["une aube radieuse.", "une paix durable."]
+        "Espoir & Résilience": {
+            "sujets": ["Ta douleur actuelle", "Ce sentiment d'abandon", "Ton cœur épuisé", "Cette tempête intérieure", "L'obscurité qui t'entoure", "Ton âme blessée", "Ce poids sur tes épaules", "Ta lassitude profonde", "Le silence de tes nuits", "Chaque larme versée", "Ton combat invisible", "Cette sensation de vide", "Ton désir de paix", "La fatigue de ton esprit", "Ce passage difficile", "Ta vulnérabilité", "Cette épreuve immense"],
+            "actions": ["n'est pas ta destination finale car elle", "est le terreau fertile qui", "te prépare doucement à", "cache une force insoupçonnée pour", "finit inévitablement par ouvrir sur", "contient les graines de", "travaille en silence pour", "n'est qu'un chapitre qui précède", "te forge une résilience pour", "est le signe précurseur de", "finira par s'effacer devant", "t'invite à découvrir enfin", "se transformera bientôt en"],
+            "finalites": ["une aube plus radieuse que jamais.", "une guérison profonde et durable.", "la rencontre avec ta force véritable.", "un renouveau que tu mérites vraiment.", "une paix intérieure inébranlable.", "la plus belle version de ta vie.", "une lumière que rien ne pourra ternir.", "un avenir où tu seras enfin fier.", "la joie de t'être choisi(e) à nouveau."]
+        },
+        "Leadership & Impact": {
+            "sujets": ["Le leadership d'exception", "L'impact véritable", "Le succès durable", "L'autorité naturelle", "La force de l'exemple", "Le prestige professionnel", "La suprématie mentale", "L'excellence opérationnelle", "La maîtrise de soi", "Le charisme pur", "Le sommet du succès"],
+            "actions": ["ne se révèle que chez", "finit par choisir", "est le reflet de l'âme de", "se construit à travers", "est la signature de", "s'ancre profondément dans", "couronne uniquement", "fleurit entre les mains de", "ne sourit qu'à", "définit l'identité de"],
+            "finalites": ["ceux qui agissent avec une intégrité absolue.", "ceux qui savent écouter avant de commander.", "ceux qui transforment les obstacles en opportunités.", "ceux qui placent le bien commun avant leur propre ego.", "ceux qui osent décider quand tout le monde hésite.", "ceux qui inspirent par leurs actes.", "ceux qui apprennent une leçon de chaque défaite.", "ceux qui maintiennent une discipline de fer."]
         },
         "Comique": {
-            "sujets": ["Sache que si tu dors,"],
-            "actions": ["ta vie"],
-            "finalites": ["dort aussi, réveille-toi !", "Dort ohhh, je t'ai prévenu."]
+            "sujets": ["Sache que si tu dors,", "Si tu attends demain,"],
+            "actions": ["ta vie", "ton succès"],
+            "finalites": ["dort aussi, réveille-toi !", "Dort ohhh, je t'ai prévenu.", "va t'appeler pour te dire au revoir."]
+        },
+        "Satire & Réalité": {
+            "sujets": ["Ne sois pas"],
+            "actions": ["le Tonton ou la tata radine", "l'édoughe"],
+            "finalites": ["de ta famille.", "du quartier."]
         }
     }
 
-    selected_branch = random.choice(list(branches.keys()))
+    if compteur > 19:
+        selected_branch = "Comique" if random.random() < 0.3 else random.choice(list(branches.keys()))
+    else:
+        selected_branch = random.choice(list(branches.keys()))
     data = branches[selected_branch]
     phrase = f"{random.choice(data['sujets'])} {random.choice(data['actions'])} {random.choice(data['finalites'])}"
     
@@ -235,6 +248,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
