@@ -168,15 +168,50 @@ def generate_boost():
         "finalites": ["réaliser l'impossible.", "transformer tes rêves en réalité.", "briser tes propres limites.", "attirer l'abondance.", "changer ton monde.", "illuminer ton entourage.","bâtir un empire durable.", "écraser tes doutes.", "devenir inarrêtable.", "laisser une trace indélébile."]
     
     },
+        "Confiance en tes capacités": {
+            "sujets": ["Vous etes la réponse"],
+            "actions": ["de Dieu aux prieres"],
+            "finalites": ["Aux prieres d'une personne."]
+        },
+        "positivité": {
+            "sujets": ["Un esprit positif"],
+            "actions": ["engendre une vie qui", "est un feu qui"],
+            "finalites": ["est productive.", "réalise l'impossible."]
+        },
+        "Leadership": {
+            "sujets": ["Un vrai leader", "Ton autorité"],
+            "actions": ["se construit par", "naît quand tu"],
+            "finalites": ["l'exemplarité.", "acceptes tes échecs."]
+        },
+        "C'est le moment d'écrire l'histoire": {
+            "sujets": ["L'Avenir appartient"],
+            "actions": ["à ceux qui croient"],
+            "finalites": ["en la valeur de leurs rêves."]
+        },
         "Espoir & Résilience": {
             "sujets": ["Ta douleur actuelle", "Ce sentiment d'abandon", "Ton cœur épuisé", "Cette tempête intérieure", "L'obscurité qui t'entoure", "Ton âme blessée", "Ce poids sur tes épaules", "Ta lassitude profonde", "Le silence de tes nuits", "Chaque larme versée", "Ton combat invisible", "Cette sensation de vide", "Ton désir de paix", "La fatigue de ton esprit", "Ce passage difficile", "Ta vulnérabilité", "Cette épreuve immense"],
             "actions": ["n'est pas ta destination finale car elle", "est le terreau fertile qui", "te prépare doucement à", "cache une force insoupçonnée pour", "finit inévitablement par ouvrir sur", "contient les graines de", "travaille en silence pour", "n'est qu'un chapitre qui précède", "te forge une résilience pour", "est le signe précurseur de", "finira par s'effacer devant", "t'invite à découvrir enfin", "se transformera bientôt en"],
             "finalites": ["une aube plus radieuse que jamais.", "une guérison profonde et durable.", "la rencontre avec ta force véritable.", "un renouveau que tu mérites vraiment.", "une paix intérieure inébranlable.", "la plus belle version de ta vie.", "une lumière que rien ne pourra ternir.", "un avenir où tu seras enfin fier.", "la joie de t'être choisi(e) à nouveau."]
         },
+        "Le moment 'Wanda'": {
+            "sujets": ["Même dans le chaos,", "Avant d'agir,"],
+            "actions": ["prends toujours"],
+            "finalites": ["une minute pour wanda.", "un temps de recul."]
+        },
         "Leadership & Impact": {
             "sujets": ["Le leadership d'exception", "L'impact véritable", "Le succès durable", "L'autorité naturelle", "La force de l'exemple", "Le prestige professionnel", "La suprématie mentale", "L'excellence opérationnelle", "La maîtrise de soi", "Le charisme pur", "Le sommet du succès"],
             "actions": ["ne se révèle que chez", "finit par choisir", "est le reflet de l'âme de", "se construit à travers", "est la signature de", "s'ancre profondément dans", "couronne uniquement", "fleurit entre les mains de", "ne sourit qu'à", "définit l'identité de"],
             "finalites": ["ceux qui agissent avec une intégrité absolue.", "ceux qui savent écouter avant de commander.", "ceux qui transforment les obstacles en opportunités.", "ceux qui placent le bien commun avant leur propre ego.", "ceux qui osent décider quand tout le monde hésite.", "ceux qui inspirent par leurs actes.", "ceux qui apprennent une leçon de chaque défaite.", "ceux qui maintiennent une discipline de fer."]
+        },
+        "Ton histoire s'écrit aujourd'hui": {
+            "sujets": ["L'héritage d'une vie", "La gloire éternelle", "Une trace indélébile", "L'entrée dans la légende", "La véritable grandeur", "Une influence mondiale", "La destinée héroïque", "Une trace générationnelle", "La couronne du succès", "La mémoire collective", "La marche du progrès", "Une victoire historique", "L'ascension finale", "Le prestige éternel", "Le triomphe de l'âme"],
+            "actions": ["ne s'offre désormais qu'à", "se forge uniquement par", "est le trophée réservé à", "est la juste récompense de", "s'écrit par la main de", "appartient exclusivement à", "ne reconnaît aujourd'hui que", "attend patiemment l'arrivée de", "devient le privilège de", "se laisse dompter par", "ne couronne finalement que", "est gravée par l'audace de", "s'aligne sur le destin de", "se mérite par la force de", "est le sanctuaire de"],
+            "finalites": ["ceux qui refusent de suivre le troupeau.", "ceux qui osent défier les lois de l'impossible.", "ceux qui bâtissent dans le silence et le sacrifice.", "ceux qui transforment leurs blessures en armes.", "ceux qui marchent quand tous les autres s'arrêtent.", "ceux qui gardent la vision malgré la tempête.", "ceux qui placent l'honneur au-dessus de la facilité.", "ceux qui décident de briser les chaînes du passé.", "ceux qui cultivent une discipline de fer au quotidien.", "ceux qui voient la lumière là où d'autres voient le vide."]
+        },
+        "Spirituel & Vision": {
+            "sujets": ["La Foi", "Le miracle", "La vision", "Le destin", "L'authenticité", "La transformation véritable"],
+            "actions": ["choisit son camp chez ceux qui", "s'aligne avec ceux qui", "fleurit entre les mains de ceux qui"],
+            "finalites": ["écoutent leur intuition malgré le bruit du monde.", "voient des opportunités partout.", "marchent avec la certitude de la victoire."]
         },
         "Comique": {
             "sujets": ["Sache que si tu dors,", "Si tu attends demain,"],
@@ -248,6 +283,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
