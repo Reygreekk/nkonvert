@@ -11,6 +11,7 @@
             --bg: #0f172a;
             --nav-bg: #001A3A;
             --green: #10b981;
+            --orange: #f97316;
             --purple: #a29bfe;
         }
 
@@ -77,7 +78,7 @@
             background: #0f172a;
             color: white;
             margin-bottom: 12px;
-            box-sizing: border-box; /* IMPORTANT */
+            box-sizing: border-box;
         }
 
         button {
@@ -90,6 +91,7 @@
             cursor: pointer;
             width: 100%;
             text-transform: uppercase;
+            transition: 0.3s;
         }
 
         button:disabled { opacity: 0.6; }
@@ -114,10 +116,12 @@
             border-radius: 18px;
             border: 2px solid var(--green);
             background: rgba(16,185,129,0.05);
+            transition: all 0.5s ease; /* Transition fluide des couleurs */
         }
 
         .intro-text { color: var(--purple); font-size: 14px; margin-bottom: 10px; }
-        .quote-text { font-size: 22px; font-weight: 700; line-height: 1.4; }
+        .quote-text { font-size: 22px; font-weight: 700; line-height: 1.4; transition: color 0.5s; }
+        
         .badge {
             display: inline-block;
             margin-top: 15px;
@@ -126,6 +130,7 @@
             border: 1px solid var(--gold);
             color: var(--gold);
             font-size: 11px;
+            transition: 0.5s;
         }
     </style>
 </head>
@@ -139,14 +144,14 @@
 
 <div class="container">
     <div class="card">
-        <h1>✨ Boost Spirit</h1>
+        <h1>✨ Boost Spirit by nkalaa</h1>
 
         <form id="boostForm">
             <div id="input-fields">
                 <input type="text" name="prenom" id="prenom" placeholder="Ton prénom" required>
                 <input type="text" name="nom" id="nom" placeholder="Ton nom (optionnel)">
             </div>
-            <button type="submit" id="submitBtn">Révéler ma parole</button>
+            <button type="submit" id="submitBtn">Révéler ma parole de motivation</button>
         </form>
 
         <div class="loader" id="loader"></div>
@@ -155,7 +160,7 @@
             <div class="intro-text" id="res-intro"></div>
             <div class="quote-text" id="res-phrase"></div>
             <div class="badge" id="res-type"></div>
-            <div style="margin-top:15px; font-size:11px; color:var(--green);" id="res-user"></div>
+            <div style="margin-top:15px; font-size:11px; transition: 0.5s;" id="res-user"></div>
         </div>
     </div>
 </div>
@@ -168,6 +173,9 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
     const loader = document.getElementById("loader");
     const resultBox = document.getElementById("result-container");
     const inputs = document.getElementById("input-fields");
+    const phraseTxt = document.getElementById("res-phrase");
+    const userTxt = document.getElementById("res-user");
+    const badgeTxt = document.getElementById("res-type");
 
     btn.disabled = true;
     loader.style.display = "block";
@@ -184,13 +192,30 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
     .then(data => {
         loader.style.display = "none";
         btn.disabled = false;
-        btn.textContent = "Encore un message";
+        btn.textContent = "Encore un message de motivation";
         inputs.style.display = "none";
 
+        // --- LOGIQUE DE CHANGEMENT DE COULEUR (Compteur > 15) ---
+        if (data.compteur > 15) {
+            resultBox.style.borderColor = "var(--orange)";
+            resultBox.style.background = "rgba(249, 115, 22, 0.1)";
+            phraseTxt.style.color = "var(--orange)";
+            userTxt.style.color = "var(--orange)";
+            badgeTxt.style.borderColor = "var(--orange)";
+            badgeTxt.style.color = "var(--orange)";
+        } else {
+            resultBox.style.borderColor = "var(--green)";
+            resultBox.style.background = "rgba(16, 185, 129, 0.05)";
+            phraseTxt.style.color = "white";
+            userTxt.style.color = "var(--green)";
+            badgeTxt.style.borderColor = "var(--gold)";
+            badgeTxt.style.color = "var(--gold)";
+        }
+
         document.getElementById("res-intro").textContent = data.intro;
-        document.getElementById("res-phrase").textContent = "« " + data.phrase + " »";
-        document.getElementById("res-type").textContent = "Thème : " + data.type;
-        document.getElementById("res-user").textContent = "CONSULTATION N°" + data.compteur;
+        phraseTxt.textContent = "« " + data.phrase + " »";
+        badgeTxt.textContent = "Thème : " + data.type;
+        userTxt.textContent = "CONSULTATION N°" + data.compteur;
 
         resultBox.style.display = "block";
     })
@@ -198,10 +223,9 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
         console.error(err);
         loader.style.display = "none";
         btn.disabled = false;
-        alert("⚠️ Le serveur ne répond pas. Vérifie tes logs sur Render.");
+        alert("⚠️ Nkuta ne répond pas pour le moment.");
     });
 });
 </script>
 </body>
 </html>
-
