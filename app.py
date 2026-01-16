@@ -179,7 +179,7 @@ def generate_boost():
             "actions": ["pour quelqu'un"],
             "finalites": ["ne l'oublie pas."]
         },
-        "Confiance en ta personne": {
+        "Confiance": {
             "sujets": ["Pour Dieu"],
             "actions": ["tu as plus de valeur"],
             "finalites": ["que le plus beau diamant du monde alors ne laisse personne te dévaloriser."]
@@ -199,7 +199,7 @@ def generate_boost():
             "actions": [""se façonne quand tu"],
             "finalites": ["admets et apprends tes échecs."]
         },
-        "C'est le moment d'écrire l'histoire": {
+        "C'est le moment d'écrire ton histoire": {
             "sujets": ["L'Avenir appartient"],
             "actions": ["à ceux qui croient"],
             "finalites": ["en la valeur de leurs rêves."]
@@ -319,6 +319,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
