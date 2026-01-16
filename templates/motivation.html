@@ -4,9 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>NKALAA | Boost Spirit</title>
-
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-
     <style>
         :root {
             --gold: #d4af37;
@@ -14,18 +12,16 @@
             --nav-bg: #001A3A;
             --green: #10b981;
             --purple: #a29bfe;
-            --red: #ff7675;
         }
 
         body {
             background: var(--bg);
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', sans-serif;
             margin: 0;
             min-height: 100vh;
         }
 
-        /* NAV */
         .main-nav {
             background: var(--nav-bg);
             padding: 1rem 5%;
@@ -39,7 +35,6 @@
             color: white;
             text-decoration: none;
             font-weight: 600;
-            font-size: 0.9rem;
             padding: 10px 18px;
             border-radius: 8px;
             transition: 0.3s;
@@ -48,17 +43,11 @@
             gap: 8px;
         }
 
-        .main-nav a:hover {
-            background: rgba(255,255,255,0.1);
-            color: var(--gold);
-        }
-
         .main-nav a.active {
             background: var(--gold);
             color: #001A3A;
         }
 
-        /* CONTENU */
         .container {
             display: flex;
             justify-content: center;
@@ -78,10 +67,7 @@
             text-align: center;
         }
 
-        h1 {
-            color: var(--gold);
-            margin-bottom: 25px;
-        }
+        h1 { color: var(--gold); margin-bottom: 25px; }
 
         input {
             width: 100%;
@@ -91,7 +77,7 @@
             background: #0f172a;
             color: white;
             margin-bottom: 12px;
-            font-size: 16px;
+            box-sizing: border-box; /* IMPORTANT */
         }
 
         button {
@@ -103,14 +89,10 @@
             border: none;
             cursor: pointer;
             width: 100%;
-            letter-spacing: 1px;
             text-transform: uppercase;
         }
 
-        button:disabled {
-            opacity: 0.6;
-            cursor: not-allowed;
-        }
+        button:disabled { opacity: 0.6; }
 
         .loader {
             display: none;
@@ -123,9 +105,7 @@
             animation: spin 1s linear infinite;
         }
 
-        @keyframes spin {
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 100% { transform: rotate(360deg); } }
 
         #result-container {
             display: none;
@@ -136,36 +116,19 @@
             background: rgba(16,185,129,0.05);
         }
 
-        .intro-text {
-            color: var(--purple);
-            font-size: 14px;
-            margin-bottom: 10px;
-        }
-
-        .quote-text {
-            font-size: 22px;
-            font-weight: 700;
-        }
-
+        .intro-text { color: var(--purple); font-size: 14px; margin-bottom: 10px; }
+        .quote-text { font-size: 22px; font-weight: 700; line-height: 1.4; }
         .badge {
             display: inline-block;
-            margin-top: 10px;
+            margin-top: 15px;
             padding: 5px 15px;
             border-radius: 20px;
             border: 1px solid var(--gold);
             color: var(--gold);
             font-size: 11px;
         }
-
-        .user-tag {
-            margin-top: 15px;
-            font-size: 11px;
-            color: var(--green);
-            letter-spacing: 1px;
-        }
     </style>
 </head>
-
 <body>
 
 <nav class="main-nav">
@@ -176,14 +139,14 @@
 
 <div class="container">
     <div class="card">
-        <h1>✨ Boost Spirit by Nkalaa</h1>
+        <h1>✨ Boost Spirit</h1>
 
         <form id="boostForm">
             <div id="input-fields">
-                <input type="text" name="prenom" id="prenom" placeholder="Ton prénom">
+                <input type="text" name="prenom" id="prenom" placeholder="Ton prénom" required>
                 <input type="text" name="nom" id="nom" placeholder="Ton nom (optionnel)">
             </div>
-            <button id="submitBtn">Révéler ma parole de motivation</button>
+            <button type="submit" id="submitBtn">Révéler ma parole</button>
         </form>
 
         <div class="loader" id="loader"></div>
@@ -192,7 +155,7 @@
             <div class="intro-text" id="res-intro"></div>
             <div class="quote-text" id="res-phrase"></div>
             <div class="badge" id="res-type"></div>
-            <div class="user-tag" id="res-user"></div>
+            <div style="margin-top:15px; font-size:11px; color:var(--green);" id="res-user"></div>
         </div>
     </div>
 </div>
@@ -215,23 +178,19 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
         body: new FormData(this)
     })
     .then(res => {
-        if (!res.ok) throw new Error("Erreur serveur");
+        if (!res.ok) throw new Error("Serveur injoignable");
         return res.json();
     })
     .then(data => {
-        if (data.status !== "success") throw new Error(data.error);
-
         loader.style.display = "none";
         btn.disabled = false;
         btn.textContent = "Encore un message";
-
         inputs.style.display = "none";
 
         document.getElementById("res-intro").textContent = data.intro;
         document.getElementById("res-phrase").textContent = "« " + data.phrase + " »";
         document.getElementById("res-type").textContent = "Thème : " + data.type;
-        document.getElementById("res-user").textContent =
-            "CONSULTATION N°" + data.compteur;
+        document.getElementById("res-user").textContent = "CONSULTATION N°" + data.compteur;
 
         resultBox.style.display = "block";
     })
@@ -239,10 +198,10 @@ document.getElementById("boostForm").addEventListener("submit", function(e) {
         console.error(err);
         loader.style.display = "none";
         btn.disabled = false;
-        alert("⚠️ Nkuta est temporairement indisponible.");
+        alert("⚠️ Le serveur ne répond pas. Vérifie tes logs sur Render.");
     });
 });
 </script>
-
 </body>
 </html>
+
