@@ -179,15 +179,25 @@ def generate_boost():
             "actions": ["pour quelqu'un"],
             "finalites": ["ne l'oublie pas."]
         },
+        "Confiance en ta personne": {
+            "sujets": ["Pour Dieu"],
+            "actions": ["tu as plus de valeur"],
+            "finalites": ["que le plus beau diamant du monde alors ne laisse personne te dévaloriser."]
+        },
         "positivité": {
             "sujets": ["Un esprit positif"],
             "actions": ["engendre une vie qui"],
             "finalites": ["est productive.", "réalise l'impossible."]
         },
         "Leadership": {
-            "sujets": ["Un vrai leader", "Ton autorité"],
-            "actions": ["se construit par", "naît quand tu"],
-            "finalites": ["l'exemplarité.", "acceptes tes échecs."]
+            "sujets": ["Un vrai leader"],
+            "actions": ["se construit par"],
+            "finalites": ["l'exemplarité."]
+        },
+         "C'est toi": {
+            "sujets": ["Ton autorité"],
+            "actions": [""se façonne quand tu"],
+            "finalites": ["admets et apprends tes échecs."]
         },
         "C'est le moment d'écrire l'histoire": {
             "sujets": ["L'Avenir appartient"],
@@ -309,6 +319,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
