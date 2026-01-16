@@ -142,7 +142,22 @@ def generate_boost():
     else: session['counter'] += 1
     compteur = session['counter']
 
-    intro = f"Bonjour {identite}. Voici ton message :" if compteur == 1 else "Voici une autre parole :"
+   # --- SÉLECTION DE L'INTRO ---
+    if compteur == 1:
+        intro = f"Bonjour {identite}... J'espère que ta journée se déroule bien jusque-là. Voici ton message boost :"
+    elif 1 < compteur <= 12:
+        intro = random.choice([
+            f"Je vois que tu apprécies l'énergie, {prenom or 'ami'}.",
+            "On ne s'arrête plus ! Voici encore pour toi :",
+            "Voici encore une parole pour toi et te faire du bien :"
+        ])
+    else:
+        intro = random.choice([
+            "Dis donc, tu as pris un abonnement ?",
+            "On dirait que tu cherches le bon conseil...",
+            f"Je wanda seulement sur toi {prenom or 'ami'}...",
+            "Tu n'as pas un travail qui t'attend ? Voici ta dose :"
+        ])
 
     branches = {
         "Confiance": {
@@ -217,6 +232,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
