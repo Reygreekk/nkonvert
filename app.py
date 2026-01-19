@@ -214,6 +214,46 @@ def generate_boost():
             "actions": ["se construit par"],
             "finalites": ["l'exemplarité."]
         },
+        "La sagesse guide tes pas": {
+    "sujets": ["La sagesse"],
+    "actions": ["éclaire"],
+    "finalites": ["le chemin de celui qui l’écoute."]
+  },
+  "La patience élève l’homme": {
+    "sujets": ["Celui qui sait attendre"],
+    "actions": ["construit"],
+    "finalites": ["un avenir solide."]
+  },
+  "La parole juste a du poids": {
+    "sujets": ["Une parole douce"],
+    "actions": ["apaise"],
+    "finalites": ["les cœurs les plus troublés."]
+  },
+  "La discipline précède l’honneur": {
+    "sujets": ["La rigueur"],
+    "actions": ["ouvre"],
+    "finalites": ["les portes de la réussite."]
+  },
+  "Le cœur droit est une force": {
+    "sujets": ["L’homme intègre"],
+    "actions": ["marche"],
+    "finalites": ["sans crainte ni détour."]
+  },
+  "La crainte de Dieu élève": {
+    "sujets": ["La crainte de l’Éternel"],
+    "actions": ["engendre"],
+    "finalites": ["la sagesse et la paix."]
+  },
+  "Le travail fidèle porte du fruit": {
+    "sujets": ["La main diligente"],
+    "actions": ["produit"],
+    "finalites": ["l’abondance en son temps."]
+  },
+  "La sagesse vaut plus que l’or": {
+    "sujets": ["La sagesse"],
+    "actions": ["surpasse"],
+    "finalites": ["toutes les richesses visibles."]
+  },
          "C'est toi": {
             "sujets": ["Ton autorité"],
             "actions": ["se façonne quand tu"],
@@ -339,6 +379,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
