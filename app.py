@@ -174,10 +174,30 @@ def generate_boost():
             "actions": ["de Dieu"],
             "finalites": ["aux prieres de quelqu'un."]
         },
+          "Confiance à ton aura": {
+            "sujets": ["A la Base "],
+            "actions": ["nous sommes"],
+            "finalites": ["là pour le Buzz."]
+        },
          "Confiance en ta personne": {
             "sujets": ["Ta vie compte"],
             "actions": ["pour quelqu'un"],
             "finalites": ["ne l'oublie pas."]
+        },
+          "Patiente": {
+            "sujets": ["Sans expérience l'enthousiasme"],
+            "actions": ["n'est pas bon,"],
+            "finalites": ["à trop se hater on commet des erreurs."]
+        },
+          "la critique": {
+            "sujets": ["Celui qui accepte"],
+            "actions": ["les reproches aime s'instruire"],
+            "finalites": [";il est stupide de détester les critiques."]
+        },
+          "Proverbes du sage": {
+            "sujets": ["Il y'a des amis qui menent"],
+            "actions": ["au malheur,"],
+            "finalites": ["Un ami véritable est plus loyal qu'un frere."]
         },
         "Confiance": {
             "sujets": ["Pour Dieu"],
@@ -319,6 +339,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
