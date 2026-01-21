@@ -144,27 +144,50 @@ def extract_yt():
     if not url: return jsonify({"success": False, "error": "Lien vide"}), 400
 
     ydl_opts = {
-        'format': 'best',
+        'format': 'best', # Récupère le meilleur combo audio/vidéo
         'quiet': True,
         'no_warnings': True,
-        'cachedir': False,
         'nocheckcertificate': True,
+        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+        'referer': 'https://www.google.com/',
+        'youtube_include_dash_manifest': False,
     }
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
-            thumb = info.get('thumbnail') or (info.get('thumbnails')[-1]['url'] if info.get('thumbnails') else '')
             
+            # --- LOGIQUE DE RÉCUPÉRATION DU LIEN ---
+            video_url = None
+            
+            # Cas 1 : Lien direct dans info (YouTube / Twitter)
+            video_url = info.get('url')
+            
+            # Cas 2 : Lien caché dans les formats (Facebook / Instagram)
+            if not video_url and 'formats' in info:
+                # On cherche un format qui a à la fois la vidéo ET l'audio (pour éviter le muet)
+                best_formats = [f for f in info['formats'] if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
+                if best_formats:
+                    video_url = best_formats[-1]['url']
+
+            # Cas 3 : Cas des Reels/Entries
+            if not video_url and 'entries' in info:
+                video_url = info['entries'][0].get('url')
+
+            if not video_url:
+                return jsonify({"success": False, "error": "Impossible d'extraire le lien direct."})
+
             return jsonify({
                 "success": True,
-                "title": info.get('title', 'Médias trouvé'),
-                "thumbnail": thumb,
-                "video_url": info.get('url'), # Lien direct vers le flux (pas de RAM utilisée)
-                "audio_url": info.get('url')
+                "title": info.get('title', 'Médias TOOLTUBE'),
+                "thumbnail": info.get('thumbnail', ''),
+                "video_url": video_url,
+                "audio_url": video_url
             })
+            
     except Exception as e:
-        return jsonify({"success": False, "error": "Lien invalide ou protégé."}), 500
+        print(f"Erreur TOOLTUBE : {str(e)}")
+        return jsonify({"success": False, "error": "Lien privé, protégé ou invalide."})
 
 
 # --- LOGIQUE 2 : BOOST SPIRIT (Oracle) ---
@@ -416,6 +439,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
