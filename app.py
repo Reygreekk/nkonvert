@@ -5,6 +5,7 @@ import random
 import time
 import base64
 import tempfile
+import yt_dlp
 from io import BytesIO
 from datetime import timedelta
 # Import obligatoire pour l'Oracle
@@ -54,7 +55,10 @@ def boost_page():
 @app.route('/zip')
 def zip_page(): 
     return render_template('zip.html')
-
+    
+@app.route('/tooltube')
+def youtube_page():
+    return render_template('tooltube.html')
 # --- LOGIQUE DE CONVERSION ---
 @app.route('/convert', methods=['POST'])
 def convert():
@@ -130,6 +134,42 @@ def convert():
 
     except Exception as e:
         return jsonify({"success": False, "error": str(e)}), 500
+
+
+# --- LOGIQUE 2 : NYOUTUBE (NOUVEAU) ---
+@app.route('/extract_yt', methods=['POST'])
+def extract_yt():
+    cleanup_old_files()
+    url = request.form.get('url')
+    if not url: return jsonify({"success": False, "error": "Lien vide"}), 400
+
+    ydl_opts = {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+        'cachedir': False,
+        'nocheckcertificate': True,
+    }
+
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
+            thumb = info.get('thumbnail') or (info.get('thumbnails')[-1]['url'] if info.get('thumbnails') else '')
+            
+            return jsonify({
+                "success": True,
+                "title": info.get('title', 'Médias trouvé'),
+                "thumbnail": thumb,
+                "video_url": info.get('url'), # Lien direct vers le flux (pas de RAM utilisée)
+                "audio_url": info.get('url')
+            })
+    except Exception as e:
+        return jsonify({"success": False, "error": "Lien invalide ou protégé."}), 500
+
+
+
+
+
 # --- LOGIQUE 2 : BOOST SPIRIT (Oracle) ---
 @app.route('/generate_ajax', methods=['POST'])
 def generate_boost():
@@ -379,6 +419,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
