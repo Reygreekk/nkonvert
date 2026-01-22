@@ -3,11 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>tooltube | NKALAA</title>
+    <title>TOOLTUBE | NKALAA</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
-            /* Palette Rouge & Bleu */
             --primary-blue: #00d2ff;
             --secondary-blue: #0045ff;
             --primary-red: #ff003c;
@@ -22,204 +21,199 @@
             background-image: radial-gradient(circle at 20% 30%, rgba(0, 70, 255, 0.15) 0%, transparent 40%),
                               radial-gradient(circle at 80% 70%, rgba(255, 0, 60, 0.1) 0%, transparent 40%);
             color: white;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
             margin: 0;
             min-height: 100vh;
         }
 
-        /* Barre de navigation */
+        /* Navigation Responsive */
         .main-nav {
             background: var(--nav-bg);
             padding: 1rem 5%;
             display: flex;
             justify-content: center;
-            gap: 15px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8), 0 0 15px rgba(0, 69, 255, 0.2);
+            flex-wrap: wrap;
+            gap: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
             border-bottom: 1px solid rgba(0, 210, 255, 0.3);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
         }
 
         .main-nav a {
             color: #94a3b8;
             text-decoration: none;
             font-weight: 600;
-            padding: 10px 20px;
+            padding: 8px 15px;
             border-radius: 8px;
-            font-size: 14px;
+            font-size: 13px;
             transition: 0.3s;
             text-transform: uppercase;
-            letter-spacing: 1px;
-        }
-
-        .main-nav a:hover {
-            color: white;
-            text-shadow: 0 0 8px var(--primary-blue);
         }
 
         .main-nav a.active { 
             background: linear-gradient(45deg, var(--secondary-blue), var(--primary-blue));
             color: white;
-            box-shadow: 0 0 15px rgba(0, 210, 255, 0.5);
         }
 
         .container {
-            max-width: 600px;
-            margin: 60px auto;
-            padding: 20px;
-            text-align: center;
+            max-width: 650px;
+            margin: 40px auto;
+            padding: 0 15px;
+            box-sizing: border-box;
         }
 
-        /* Boîte de recherche */
         .search-box {
             background: var(--card-bg);
-            padding: 40px;
-            border-radius: 30px;
+            padding: 30px;
+            border-radius: 24px;
             border: 1px solid rgba(255, 0, 60, 0.2);
-            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.6);
-            position: relative;
-            overflow: hidden;
-        }
-
-        /* Effet de lueur sur la boîte */
-        .search-box::before {
-            content: '';
-            position: absolute;
-            top: -2px; left: -2px; right: -2px; bottom: -2px;
-            background: linear-gradient(45deg, var(--primary-red), transparent, var(--primary-blue));
-            z-index: -1;
-            border-radius: 32px;
-            opacity: 0.3;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            text-align: center;
         }
 
         h1 { 
             background: linear-gradient(to right, var(--primary-red), var(--primary-blue));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            font-size: 2.5rem;
+            font-size: clamp(1.8rem, 5vw, 2.5rem);
             margin-bottom: 10px;
             font-weight: 900;
         }
 
-        .input-group {
+        .social-icons {
+            margin: 15px 0;
+            font-size: 20px;
             display: flex;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 6px;
-            border-radius: 50px;
-            border: 1px solid rgba(0, 210, 255, 0.4);
-            margin-top: 30px;
-            margin-bottom: 20px;
-            transition: 0.3s;
+            justify-content: center;
+            gap: 15px;
+            opacity: 0.8;
         }
 
-        .input-group:focus-within {
-            border-color: var(--primary-red);
-            box-shadow: 0 0 15px rgba(255, 0, 60, 0.3);
+        .input-group {
+            display: flex;
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.4);
+            padding: 8px;
+            border-radius: 16px;
+            border: 1px solid rgba(0, 210, 255, 0.4);
+            margin: 25px 0;
+            gap: 8px;
+        }
+
+        @media (min-width: 600px) {
+            .input-group {
+                flex-direction: row;
+                border-radius: 50px;
+                padding: 5px;
+            }
         }
 
         input {
             flex: 1;
             background: transparent;
             border: none;
-            padding: 15px 25px;
+            padding: 12px 20px;
             color: white;
             outline: none;
-            font-size: 16px;
+            font-size: 15px;
         }
 
         .btn-extract {
             background: linear-gradient(45deg, var(--primary-red), var(--dark-red));
             color: white;
             border: none;
-            padding: 0 30px;
+            padding: 12px 25px;
             border-radius: 50px;
             cursor: pointer;
             font-weight: bold;
             text-transform: uppercase;
-            transition: 0.4s;
+            transition: 0.3s;
         }
 
         .btn-extract:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 20px rgba(255, 0, 60, 0.6);
+            transform: scale(1.02);
+            filter: brightness(1.2);
         }
 
-        /* Aperçu Vidéo */
+        /* Aperçu Vidéo Responsive */
         #video-preview {
             display: none;
-            margin-top: 35px;
-            animation: fadeIn 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            margin-top: 30px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .thumbnail-container {
+            position: relative;
+            width: 100%;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 2px solid var(--primary-blue);
+            margin-bottom: 15px;
         }
 
         .thumbnail {
             width: 100%;
-            border-radius: 20px;
-            margin-bottom: 20px;
-            border: 3px solid var(--primary-blue);
-            box-shadow: 0 0 25px rgba(0, 210, 255, 0.3);
+            display: block;
+            height: auto;
         }
 
         .video-title { 
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600; 
-            margin-bottom: 25px; 
-            display: block;
-            color: #e2e8f0;
+            margin-bottom: 20px;
+            color: #f1f5f9;
+            line-height: 1.4;
         }
 
         .download-options {
             display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
+            grid-template-columns: 1fr;
+            gap: 12px;
+        }
+
+        @media (min-width: 400px) {
+            .download-options { grid-template-columns: 1fr 1fr; }
         }
 
         .dl-btn {
-            padding: 15px;
+            padding: 14px;
             border-radius: 12px;
             text-decoration: none;
             font-weight: 800;
             display: flex;
             align-items: center;
             justify-content: center;
-            gap: 10px;
+            gap: 8px;
             transition: 0.3s;
+            font-size: 12px;
             text-transform: uppercase;
-            font-size: 13px;
         }
 
-        /* Bouton MP4 - Bleu */
-        .mp4 { 
-            background: var(--secondary-blue); 
-            color: white;
-            border: 1px solid var(--primary-blue);
-        }
-        .mp4:hover { background: var(--primary-blue); box-shadow: 0 0 15px var(--primary-blue); }
+        .mp4 { background: var(--secondary-blue); color: white; border: 1px solid var(--primary-blue); }
+        .mp3 { background: var(--dark-red); color: white; border: 1px solid var(--primary-red); }
 
-        /* Bouton MP3 - Rouge */
-        .mp3 { 
-            background: var(--dark-red); 
-            color: white;
-            border: 1px solid var(--primary-red);
-        }
-        .mp3:hover { background: var(--primary-red); box-shadow: 0 0 15px var(--primary-red); }
-
-        /* Loader */
         .loader {
             display: none;
-            width: 40px;
-            height: 40px;
+            width: 35px;
+            height: 35px;
             border: 4px solid rgba(0, 210, 255, 0.1);
             border-top: 4px solid var(--primary-red);
             border-radius: 50%;
-            animation: spin 1s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
-            margin: 30px auto;
+            animation: spin 1s linear infinite;
+            margin: 20px auto;
         }
 
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        /* Mobile */
-        @media (max-width: 480px) {
-            .download-options { grid-template-columns: 1fr; }
-            h1 { font-size: 1.8rem; }
+        footer {
+            margin-top: 40px;
+            font-size: 11px;
+            color: #64748b;
+            text-align: center;
+            padding-bottom: 20px;
         }
     </style>
 </head>
@@ -228,67 +222,91 @@
 <nav class="main-nav">
     <a href="/">NKONVERT</a>
     <a href="/boost">BOOST</a>
+    <a href="/zip">ZIP TOOL</a>
     <a href="/tooltube" class="active">TOOLTUBE</a>
 </nav>
 
 <div class="container">
     <div class="search-box">
         <h1>TOOLTUBE</h1>
-        <p style="color: #94a3b8; font-size: 14px; letter-spacing: 0.5px;">Extraction Haute Vitesse • YouTube • FB • Insta</p>
+        <div class="social-icons">
+            <i class="fab fa-youtube" style="color:#FF0000"></i>
+            <i class="fab fa-facebook" style="color:#1877F2"></i>
+            <i class="fab fa-instagram" style="color:#E4405F"></i>
+            <i class="fab fa-tiktok"></i>
+        </div>
+        <p style="color: #94a3b8; font-size: 13px;">Collez un lien pour forcer le téléchargement</p>
         
         <div class="input-group">
-            <input type="text" id="ytUrl" placeholder="Collez votre lien ici...">
-            <button class="btn-extract" onclick="extractVideo()">Analyser</button>
+            <input type="text" id="ytUrl" placeholder="Lien Vidéo, Short ou Reel...">
+            <button class="btn-extract" id="extractBtn" onclick="extractVideo()">Analyser</button>
         </div>
 
         <div class="loader" id="loader"></div>
 
         <div id="video-preview">
-            <img src="" id="thumb" class="thumbnail">
-            <span class="video-title" id="title">Titre du média</span>
+            <div class="thumbnail-container">
+                <img src="" id="thumb" class="thumbnail" alt="Aperçu">
+            </div>
+            <span class="video-title" id="title">...</span>
             
             <div class="download-options">
-                <a href="#" id="dl-mp4" class="dl-btn mp4"><i class="fa fa-video"></i> Vidéo MP4</a>
+                <a href="#" id="dl-mp4" class="dl-btn mp4"><i class="fa fa-download"></i> Vidéo MP4</a>
                 <a href="#" id="dl-mp3" class="dl-btn mp3"><i class="fa fa-music"></i> Audio MP3</a>
             </div>
-            <p style="margin-top: 20px; font-size: 11px; color: #64748b;">Système NKALAA sécurisé v2.0</p>
         </div>
     </div>
+    <footer>
+        Système NKALAA v2.0 • Propulsé par yt-dlp<br>
+        Les vidéos sont téléchargées directement via tunnel sécurisé.
+    </footer>
 </div>
 
 <script>
-function extractVideo() {
-    const url = document.getElementById('ytUrl').value;
+async function extractVideo() {
+    const urlInput = document.getElementById('ytUrl');
+    const btn = document.getElementById('extractBtn');
     const loader = document.getElementById('loader');
     const preview = document.getElementById('video-preview');
 
-    if(!url) return alert("Veuillez coller un lien valide.");
+    if(!urlInput.value.trim()) {
+        alert("Veuillez entrer une URL.");
+        return;
+    }
 
+    // Reset UI
+    btn.disabled = true;
     loader.style.display = 'block';
     preview.style.display = 'none';
 
-    fetch('/extract_yt', {
-        method: 'POST',
-        headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-        body: 'url=' + encodeURIComponent(url)
-    })
-    .then(res => res.json())
-    .then(data => {
-        loader.style.display = 'none';
+    try {
+        const response = await fetch('/extract_yt', {
+            method: 'POST',
+            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+            body: `url=${encodeURIComponent(urlInput.value.trim())}`
+        });
+
+        const data = await response.json();
+
         if(data.success) {
-            document.getElementById('thumb').src = data.thumbnail;
+            document.getElementById('thumb').src = data.thumbnail || 'https://via.placeholder.com/600x338?text=No+Preview';
             document.getElementById('title').textContent = data.title;
+            
+            // Mise à jour des liens vers la route de téléchargement forcé
             document.getElementById('dl-mp4').href = data.video_url;
             document.getElementById('dl-mp3').href = data.audio_url;
+
             preview.style.display = 'block';
         } else {
             alert("Erreur : " + data.error);
         }
-    })
-    .catch(err => {
+    } catch (err) {
+        alert("Impossible de contacter le serveur. Vérifiez votre connexion.");
+        console.error(err);
+    } finally {
+        btn.disabled = false;
         loader.style.display = 'none';
-        alert("Erreur de connexion au serveur.");
-    });
+    }
 }
 </script>
 </body>
