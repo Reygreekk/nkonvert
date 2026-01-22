@@ -13,6 +13,8 @@ fpdf==1.7.2
 mammoth==1.8.0
 yt-dlp
 requests
+poppler-utils  # Pour pdf2image (installé via apt sur Render)
+
 
 
 
