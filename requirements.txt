@@ -12,6 +12,7 @@ striprtf==0.0.26
 fpdf==1.7.2
 mammoth==1.8.0
 yt-dlp
+requests
 
 
 
