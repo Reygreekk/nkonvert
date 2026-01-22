@@ -140,80 +140,159 @@ def convert():
 # --- LOGIQUE 2 : NYOUTUBE (NOUVEAU) ---
 @app.route('/extract_yt', methods=['POST'])
 def extract_yt():
-    cleanup_old_files()
+    """Extrait les infos vidéo de YouTube, Facebook, Instagram"""
     url = request.form.get('url')
-    if not url: return jsonify({"success": False, "error": "Lien vide"}), 400
-
-    # Options ultra-robustes pour contourner la sécurité 2026
-    ydl_opts = {
-        'format': 'best',
-        'quiet': True,
-        'no_warnings': True,
-        'nocheckcertificate': True,
-        # On simule un client Android, beaucoup moins bloqué que le Web
-        'extractor_args': {
-            'youtube': {
-                'player_client': ['android', 'web'],
-                'po_token': ['web+1'], # Simule un jeton de preuve d'intégrité
-            }
-        },
-        'http_headers': {
-            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
-            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
-            'Accept-Language': 'fr-FR,fr;q=0.9',
-        }
-    }
-
+    
+    if not url:
+        return jsonify({"success": False, "error": "Lien vide"}), 400
+    
+    # Détecter la plateforme
+    platform = detect_platform(url)
+    
+    if platform == 'unknown':
+        return jsonify({"success": False, "error": "URL non supportée. Utilisez YouTube, Facebook ou Instagram."}), 400
+    
+    # Options selon la plateforme (MP4 par défaut)
+    ydl_opts = get_ydl_opts(platform, 'mp4')
+    
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
-            # Recherche du lien vidéo direct
-            video_url = None
-            if 'url' in info:
-                video_url = info['url']
-            elif 'formats' in info:
-                # Priorité aux formats contenant Vidéo + Audio
-                best_f = [f for f in info['formats'] if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
-                video_url = best_f[-1]['url'] if best_f else info['formats'][-1]['url']
-
-            if not video_url:
-                return jsonify({"success": False, "error": "Impossible de décoder le flux."})
-
-            # Pour forcer le téléchargement, on passe par une route de tunnel
-            download_link = f"/proxy_download?url={base64.b64encode(video_url.encode()).decode()}&title={secure_filename(info.get('title', 'video'))}"
-
+            if not info:
+                return jsonify({"success": False, "error": "Impossible de récupérer les infos de la vidéo"}), 500
+            
+            # Récupérer les formats disponibles
+            formats = info.get('formats', [])
+            
+            # Chercher le meilleur format vidéo (MP4)
+            video_format = None
+            for f in formats:
+                if f.get('vcodec') != 'none' and f.get('ext') == 'mp4':
+                    video_format = f
+                    break
+            
+            if not video_format and formats:
+                video_format = formats[-1]  # Prendre le dernier format disponible
+            
+            # Chercher le meilleur format audio pour MP3
+            audio_format = None
+            for f in formats:
+                if f.get('acodec') != 'none' and f.get('vcodec') == 'none':
+                    audio_format = f
+                    break
+            
+            if not audio_format and formats:
+                # Chercher n'importe quel format avec audio
+                for f in formats:
+                    if f.get('acodec') != 'none':
+                        audio_format = f
+                        break
+            
+            # URLs des formats
+            video_url = video_format.get('url') if video_format else None
+            audio_url = audio_format.get('url') if audio_format else None
+            
+            if not video_url and not audio_url:
+                return jsonify({"success": False, "error": "Aucun lien de téléchargement disponible"}), 500
+            
+            # Préparer les URLs encodées pour le streaming
+            video_encoded = base64.urlsafe_b64encode(video_url.encode()).decode() if video_url else ''
+            audio_encoded = base64.urlsafe_b64encode(audio_url.encode()).decode() if audio_url else ''
+            
+            # Nom du fichier sécurisé
+            safe_title = secure_filename(info.get('title', f'video_{platform}')[:50])
+            
+            # Réponse avec les URLs de streaming
             return jsonify({
                 "success": True,
-                "title": info.get('title', 'Médias TOOLTUBE'),
+                "title": info.get('title', f'Vidéo {platform}'),
                 "thumbnail": info.get('thumbnail', ''),
-                "video_url": download_link, # On envoie le lien du proxy
-                "audio_url": download_link + "&type=mp3"
+                "duration": info.get('duration', 0),
+                "platform": platform.capitalize(),
+                "video_url": f"/proxy_download?url={video_encoded}&title={safe_title}&type=mp4" if video_url else '',
+                "audio_url": f"/proxy_download?url={audio_encoded}&title={safe_title}&type=mp3" if audio_url else ''
             })
             
+    except yt_dlp.utils.DownloadError as e:
+        error_msg = str(e)
+        if 'Private' in error_msg or 'private' in error_msg:
+            return jsonify({"success": False, "error": "Vidéo privée ou restreinte"}), 400
+        elif 'unavailable' in error_msg.lower():
+            return jsonify({"success": False, "error": "Vidéo non disponible"}), 400
+        elif 'login' in error_msg.lower() or 'account' in error_msg.lower():
+            return jsonify({"success": False, "error": f"Connexion requise pour {platform}"}), 400
+        else:
+            return jsonify({"success": False, "error": f"Erreur {platform}: {error_msg[:80]}"}), 500
     except Exception as e:
-        print(f"Erreur TOOLTUBE : {str(e)}")
-        return jsonify({"success": False, "error": "Sécurité YouTube active. Réessayez dans un instant."})
+        return jsonify({"success": False, "error": f"Erreur: {str(e)[:80]}"}), 500
 
-# --- NOUVELLE ROUTE : LE TUNNEL DE TÉLÉCHARGEMENT ---
+# --- PROXY DE TÉLÉCHARGEMENT (streaming direct) ---
 @app.route('/proxy_download')
 def proxy_download():
-    """Permet de télécharger la vidéo sans que YouTube bloque le navigateur client"""
+    """Stream directement depuis la source vers l'utilisateur"""
     encoded_url = request.args.get('url')
     title = request.args.get('title', 'video')
-    is_mp3 = request.args.get('type') == 'mp3'
+    file_type = request.args.get('type', 'mp4')
     
-    video_url = base64.b64decode(encoded_url).decode()
+    if not encoded_url:
+        return "URL manquante", 400
     
-    # On demande au navigateur de télécharger le fichier
-    ext = "mp3" if is_mp3 else "mp4"
-    headers = {
-        "Content-Disposition": f"attachment; filename={title}.{ext}"
-    }
-    
-    # On fait un streaming de la réponse pour ne pas saturer la RAM de Render
-    req = requests.get(video_url, stream=True)
-    return app.response_class(req.iter_content(chunk_size=1024*1024), headers=headers, content_type=req.headers.get('Content-Type'))
+    try:
+        # Décoder l'URL
+        video_url = base64.urlsafe_b64decode(encoded_url).decode()
+        
+        # Headers pour contourner les restrictions
+        headers = {
+            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+            'Accept': '*/*',
+            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
+            'Accept-Encoding': 'identity',
+            'Range': request.headers.get('Range', 'bytes=0-'),
+            'Referer': 'https://www.youtube.com/',
+            'Origin': 'https://www.youtube.com',
+        }
+        
+        # Faire la requête avec timeout court
+        response = requests.get(video_url, headers=headers, stream=True, timeout=30)
+        response.raise_for_status()
+        
+        # Déterminer le content-type
+        content_type = response.headers.get('Content-Type', 
+                      'video/mp4' if file_type == 'mp4' else 'audio/mpeg')
+        
+        # Préparer les headers de réponse
+        response_headers = {
+            'Content-Type': content_type,
+            'Content-Disposition': f'attachment; filename="{title}.{file_type}"',
+            'Cache-Control': 'no-cache',
+        }
+        
+        # Si le serveur supporte les ranges
+        if 'Content-Range' in response.headers:
+            response_headers['Content-Range'] = response.headers['Content-Range']
+            response_headers['Accept-Ranges'] = 'bytes'
+        
+        # Stream avec chunks optimisés pour 512MB RAM
+        def generate_stream():
+            chunk_size = 256 * 1024  # 256KB chunks (très léger)
+            for chunk in response.iter_content(chunk_size=chunk_size):
+                if chunk:
+                    yield chunk
+        
+        return Response(
+            generate_stream(),
+            headers=response_headers,
+            status=response.status_code,
+            content_type=content_type
+        )
+        
+    except requests.exceptions.Timeout:
+        return "Timeout lors du téléchargement", 408
+    except requests.exceptions.RequestException as e:
+        return f"Erreur réseau: {str(e)[:80]}", 500
+    except Exception as e:
+        return f"Erreur: {str(e)[:80]}", 500
 # --- LOGIQUE 2 : BOOST SPIRIT (Oracle) ---
 @app.route('/generate_ajax', methods=['POST'])
 def generate_boost():
@@ -463,6 +542,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
