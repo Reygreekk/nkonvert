@@ -6,6 +6,7 @@ import time
 import base64
 import tempfile
 import yt_dlp
+import requests
 from io import BytesIO
 from datetime import timedelta
 # Import obligatoire pour l'Oracle
@@ -143,53 +144,76 @@ def extract_yt():
     url = request.form.get('url')
     if not url: return jsonify({"success": False, "error": "Lien vide"}), 400
 
+    # Options ultra-robustes pour contourner la sécurité 2026
     ydl_opts = {
-        'format': 'best', # Récupère le meilleur combo audio/vidéo
+        'format': 'best',
         'quiet': True,
         'no_warnings': True,
         'nocheckcertificate': True,
-        'user_agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-        'referer': 'https://www.google.com/',
-        'youtube_include_dash_manifest': False,
+        # On simule un client Android, beaucoup moins bloqué que le Web
+        'extractor_args': {
+            'youtube': {
+                'player_client': ['android', 'web'],
+                'po_token': ['web+1'], # Simule un jeton de preuve d'intégrité
+            }
+        },
+        'http_headers': {
+            'User-Agent': 'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Mobile Safari/537.36',
+            'Accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+            'Accept-Language': 'fr-FR,fr;q=0.9',
+        }
     }
 
     try:
         with yt_dlp.YoutubeDL(ydl_opts) as ydl:
             info = ydl.extract_info(url, download=False)
             
-            # --- LOGIQUE DE RÉCUPÉRATION DU LIEN ---
+            # Recherche du lien vidéo direct
             video_url = None
-            
-            # Cas 1 : Lien direct dans info (YouTube / Twitter)
-            video_url = info.get('url')
-            
-            # Cas 2 : Lien caché dans les formats (Facebook / Instagram)
-            if not video_url and 'formats' in info:
-                # On cherche un format qui a à la fois la vidéo ET l'audio (pour éviter le muet)
-                best_formats = [f for f in info['formats'] if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
-                if best_formats:
-                    video_url = best_formats[-1]['url']
-
-            # Cas 3 : Cas des Reels/Entries
-            if not video_url and 'entries' in info:
-                video_url = info['entries'][0].get('url')
+            if 'url' in info:
+                video_url = info['url']
+            elif 'formats' in info:
+                # Priorité aux formats contenant Vidéo + Audio
+                best_f = [f for f in info['formats'] if f.get('vcodec') != 'none' and f.get('acodec') != 'none']
+                video_url = best_f[-1]['url'] if best_f else info['formats'][-1]['url']
 
             if not video_url:
-                return jsonify({"success": False, "error": "Impossible d'extraire le lien direct."})
+                return jsonify({"success": False, "error": "Impossible de décoder le flux."})
+
+            # Pour forcer le téléchargement, on passe par une route de tunnel
+            download_link = f"/proxy_download?url={base64.b64encode(video_url.encode()).decode()}&title={secure_filename(info.get('title', 'video'))}"
 
             return jsonify({
                 "success": True,
                 "title": info.get('title', 'Médias TOOLTUBE'),
                 "thumbnail": info.get('thumbnail', ''),
-                "video_url": video_url,
-                "audio_url": video_url
+                "video_url": download_link, # On envoie le lien du proxy
+                "audio_url": download_link + "&type=mp3"
             })
             
     except Exception as e:
         print(f"Erreur TOOLTUBE : {str(e)}")
-        return jsonify({"success": False, "error": "Lien privé, protégé ou invalide."})
+        return jsonify({"success": False, "error": "Sécurité YouTube active. Réessayez dans un instant."})
 
-
+# --- NOUVELLE ROUTE : LE TUNNEL DE TÉLÉCHARGEMENT ---
+@app.route('/proxy_download')
+def proxy_download():
+    """Permet de télécharger la vidéo sans que YouTube bloque le navigateur client"""
+    encoded_url = request.args.get('url')
+    title = request.args.get('title', 'video')
+    is_mp3 = request.args.get('type') == 'mp3'
+    
+    video_url = base64.b64decode(encoded_url).decode()
+    
+    # On demande au navigateur de télécharger le fichier
+    ext = "mp3" if is_mp3 else "mp4"
+    headers = {
+        "Content-Disposition": f"attachment; filename={title}.{ext}"
+    }
+    
+    # On fait un streaming de la réponse pour ne pas saturer la RAM de Render
+    req = requests.get(video_url, stream=True)
+    return app.response_class(req.iter_content(chunk_size=1024*1024), headers=headers, content_type=req.headers.get('Content-Type'))
 # --- LOGIQUE 2 : BOOST SPIRIT (Oracle) ---
 @app.route('/generate_ajax', methods=['POST'])
 def generate_boost():
@@ -439,6 +463,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
