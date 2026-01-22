@@ -157,6 +157,8 @@
             width: 100%;
             display: block;
             height: auto;
+            max-height: 250px;
+            object-fit: cover;
         }
 
         .video-title { 
@@ -167,10 +169,23 @@
             line-height: 1.4;
         }
 
+        .platform-badge {
+            display: inline-block;
+            background: var(--primary-blue);
+            color: black;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-bottom: 10px;
+            text-transform: uppercase;
+        }
+
         .download-options {
             display: grid;
             grid-template-columns: 1fr;
             gap: 12px;
+            margin-top: 20px;
         }
 
         @media (min-width: 400px) {
@@ -193,6 +208,10 @@
 
         .mp4 { background: var(--secondary-blue); color: white; border: 1px solid var(--primary-blue); }
         .mp3 { background: var(--dark-red); color: white; border: 1px solid var(--primary-red); }
+        .dl-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
 
         .loader {
             display: none;
@@ -205,6 +224,22 @@
             margin: 20px auto;
         }
 
+        .info-box {
+            background: rgba(0, 70, 255, 0.1);
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            border-radius: 10px;
+            padding: 15px;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #94a3b8;
+        }
+
+        .info-box h4 {
+            color: var(--primary-blue);
+            margin-top: 0;
+            margin-bottom: 10px;
+        }
+
         @keyframes spin { 100% { transform: rotate(360deg); } }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
@@ -214,6 +249,31 @@
             color: #64748b;
             text-align: center;
             padding-bottom: 20px;
+        }
+
+        .video-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 12px;
+            color: #94a3b8;
+            margin-top: 10px;
+        }
+
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        /* Animation pour les boutons */
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        .extracting {
+            animation: pulse 1.5s infinite;
         }
     </style>
 </head>
@@ -233,49 +293,105 @@
             <i class="fab fa-youtube" style="color:#FF0000"></i>
             <i class="fab fa-facebook" style="color:#1877F2"></i>
             <i class="fab fa-instagram" style="color:#E4405F"></i>
-            <i class="fab fa-tiktok"></i>
+            <i class="fab fa-tiktok" style="color:#000000"></i>
         </div>
-        <p style="color: #94a3b8; font-size: 13px;">Collez un lien pour forcer le téléchargement</p>
+        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 5px;">YouTube • Facebook • Instagram • TikTok</p>
+        <p style="color: #64748b; font-size: 12px;">Collez un lien pour télécharger la vidéo ou l'audio</p>
         
         <div class="input-group">
-            <input type="text" id="ytUrl" placeholder="Lien Vidéo, Short ou Reel...">
-            <button class="btn-extract" id="extractBtn" onclick="extractVideo()">Analyser</button>
+            <input type="text" id="ytUrl" placeholder="Lien YouTube, Facebook, Instagram ou TikTok...">
+            <button class="btn-extract" id="extractBtn" onclick="extractVideo()">
+                <span id="btnText">Analyser</span>
+            </button>
         </div>
 
         <div class="loader" id="loader"></div>
 
         <div id="video-preview">
+            <div id="platformBadge" class="platform-badge">YouTube</div>
+            
             <div class="thumbnail-container">
-                <img src="" id="thumb" class="thumbnail" alt="Aperçu">
+                <img src="" id="thumb" class="thumbnail" alt="Aperçu de la vidéo">
             </div>
-            <span class="video-title" id="title">...</span>
+            
+            <h3 class="video-title" id="title">Titre de la vidéo</h3>
+            
+            <div class="video-meta">
+                <div class="meta-item">
+                    <i class="fas fa-clock"></i>
+                    <span id="duration">--:--</span>
+                </div>
+                <div class="meta-item">
+                    <i class="fas fa-download"></i>
+                    <span id="size">Téléchargement direct</span>
+                </div>
+            </div>
             
             <div class="download-options">
-                <a href="#" id="dl-mp4" class="dl-btn mp4"><i class="fa fa-download"></i> Vidéo MP4</a>
-                <a href="#" id="dl-mp3" class="dl-btn mp3"><i class="fa fa-music"></i> Audio MP3</a>
+                <a href="#" id="dl-mp4" class="dl-btn mp4">
+                    <i class="fas fa-video"></i> 
+                    <span>Vidéo MP4</span>
+                </a>
+                <a href="#" id="dl-mp3" class="dl-btn mp3">
+                    <i class="fas fa-music"></i> 
+                    <span>Audio MP3</span>
+                </a>
             </div>
         </div>
+
+        <div class="info-box">
+            <h4><i class="fas fa-info-circle"></i> Comment utiliser</h4>
+            <ul style="padding-left: 20px; margin: 10px 0;">
+                <li>Collez n'importe quel lien YouTube, Facebook ou Instagram</li>
+                <li>Cliquez sur "Analyser" pour extraire la vidéo</li>
+                <li>Téléchargez en MP4 (vidéo) ou MP3 (audio seulement)</li>
+                <li>Le téléchargement est direct depuis la source</li>
+            </ul>
+            <p style="margin-top: 10px; font-size: 11px;">
+                <i class="fas fa-shield-alt"></i> Service sécurisé - Pas de stockage de vos vidéos
+            </p>
+        </div>
     </div>
+    
     <footer>
-        Système NKALAA v2.0 • Propulsé par yt-dlp<br>
-        Les vidéos sont téléchargées directement via tunnel sécurisé.
+        <p>Système NKALAA v2.0 • Propulsé par yt-dlp</p>
+        <p>Support: YouTube, Facebook, Instagram, TikTok</p>
+        <p>© 2024 NKONVERT - Service optimisé pour Render Starter</p>
     </footer>
 </div>
 
 <script>
+// Fonction pour extraire la vidéo
 async function extractVideo() {
     const urlInput = document.getElementById('ytUrl');
     const btn = document.getElementById('extractBtn');
+    const btnText = document.getElementById('btnText');
     const loader = document.getElementById('loader');
     const preview = document.getElementById('video-preview');
+    const platformBadge = document.getElementById('platformBadge');
 
     if(!urlInput.value.trim()) {
         alert("Veuillez entrer une URL.");
         return;
     }
 
+    // Détecter la plateforme
+    const url = urlInput.value.toLowerCase();
+    let platform = "YouTube";
+    if(url.includes('facebook.com') || url.includes('fb.watch')) {
+        platform = "Facebook";
+    } else if(url.includes('instagram.com') || url.includes('instagr.am')) {
+        platform = "Instagram";
+    } else if(url.includes('tiktok.com')) {
+        platform = "TikTok";
+    } else if(url.includes('twitter.com') || url.includes('x.com')) {
+        platform = "Twitter/X";
+    }
+
     // Reset UI
     btn.disabled = true;
+    btn.classList.add('extracting');
+    btnText.textContent = 'Analyse en cours...';
     loader.style.display = 'block';
     preview.style.display = 'none';
 
@@ -289,25 +405,144 @@ async function extractVideo() {
         const data = await response.json();
 
         if(data.success) {
-            document.getElementById('thumb').src = data.thumbnail || 'https://via.placeholder.com/600x338?text=No+Preview';
+            // Mise à jour de l'interface
+            document.getElementById('thumb').src = data.thumbnail || getPlaceholderImage(data.platform);
             document.getElementById('title').textContent = data.title;
+            platformBadge.textContent = data.platform;
+            platformBadge.style.display = 'block';
             
-            // Mise à jour des liens vers la route de téléchargement forcé
-            document.getElementById('dl-mp4').href = data.video_url;
-            document.getElementById('dl-mp3').href = data.audio_url;
+            // Mise à jour de la durée
+            const durationElement = document.getElementById('duration');
+            if(data.duration && data.duration > 0) {
+                durationElement.textContent = formatDuration(data.duration);
+            } else {
+                durationElement.textContent = '--:--';
+            }
+            
+            // Mise à jour des liens de téléchargement
+            const mp4Btn = document.getElementById('dl-mp4');
+            const mp3Btn = document.getElementById('dl-mp3');
+            
+            if(data.video_url && data.video_url.trim() !== '') {
+                mp4Btn.href = data.video_url;
+                mp4Btn.style.display = 'flex';
+                mp4Btn.onclick = function(e) {
+                    e.preventDefault();
+                    window.open(this.href, '_blank');
+                };
+            } else {
+                mp4Btn.style.display = 'none';
+            }
+            
+            if(data.audio_url && data.audio_url.trim() !== '') {
+                mp3Btn.href = data.audio_url;
+                mp3Btn.style.display = 'flex';
+                mp3Btn.onclick = function(e) {
+                    e.preventDefault();
+                    window.open(this.href, '_blank');
+                };
+            } else {
+                mp3Btn.style.display = 'none';
+            }
 
+            // Afficher le résultat
             preview.style.display = 'block';
+            
+            // Scroll doux vers le résultat
+            preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+            
         } else {
-            alert("Erreur : " + data.error);
+            alert("Erreur " + platform + " : " + data.error);
         }
     } catch (err) {
-        alert("Impossible de contacter le serveur. Vérifiez votre connexion.");
-        console.error(err);
+        console.error("Erreur détaillée:", err);
+        alert("Erreur de connexion. Vérifiez votre réseau et réessayez.");
     } finally {
         btn.disabled = false;
+        btn.classList.remove('extracting');
+        btnText.textContent = 'Analyser';
         loader.style.display = 'none';
     }
 }
+
+// Formatte la durée en minutes:secondes
+function formatDuration(seconds) {
+    if (!seconds || seconds <= 0) return '--:--';
+    
+    const hours = Math.floor(seconds / 3600);
+    const minutes = Math.floor((seconds % 3600) / 60);
+    const secs = Math.floor(seconds % 60);
+    
+    if (hours > 0) {
+        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
+    } else {
+        return `${minutes}:${secs.toString().padStart(2, '0')}`;
+    }
+}
+
+// Image de placeholder selon la plateforme
+function getPlaceholderImage(platform) {
+    const colors = {
+        'YouTube': 'FF0000',
+        'Facebook': '1877F2',
+        'Instagram': 'E4405F',
+        'TikTok': '000000',
+        'Twitter': '1DA1F2'
+    };
+    
+    const color = colors[platform] || '00d2ff';
+    return `https://via.placeholder.com/600x338/${color}/ffffff?text=${encodeURIComponent(platform)}`;
+}
+
+// Détection automatique du presse-papier
+document.getElementById('ytUrl').addEventListener('focus', function() {
+    if (navigator.clipboard && navigator.clipboard.readText) {
+        navigator.clipboard.readText().then(text => {
+            if(text && (
+                text.includes('youtube') || 
+                text.includes('youtu.be') ||
+                text.includes('facebook') || 
+                text.includes('fb.watch') ||
+                text.includes('instagram') || 
+                text.includes('tiktok.com') ||
+                text.includes('twitter.com') ||
+                text.includes('x.com')
+            )) {
+                this.value = text;
+            }
+        }).catch(err => {
+            // Ignorer les erreurs de permission
+            console.log("Permission clipboard non accordée");
+        });
+    }
+});
+
+// Entrée clavier pour lancer l'extraction
+document.getElementById('ytUrl').addEventListener('keypress', function(e) {
+    if(e.key === 'Enter') {
+        extractVideo();
+    }
+});
+
+// Effet de placeholder animé
+document.getElementById('ytUrl').addEventListener('focus', function() {
+    this.style.border = 'none';
+    this.style.boxShadow = '0 0 0 2px rgba(0, 210, 255, 0.5)';
+});
+
+document.getElementById('ytUrl').addEventListener('blur', function() {
+    this.style.boxShadow = 'none';
+});
+
+// Afficher un message d'info au chargement
+window.addEventListener('DOMContentLoaded', () => {
+    console.log('TOOLTUBE - Prêt pour YouTube, Facebook, Instagram');
+    
+    // Auto-focus sur l'input
+    setTimeout(() => {
+        document.getElementById('ytUrl').focus();
+    }, 500);
+});
 </script>
 </body>
 </html>
