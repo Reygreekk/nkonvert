@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Découper PDF | NKONVERT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Utilise le même CSS que tes autres pages pour la cohérence */
+        :root { --red: #E63946; --dark: #00234E; --blue: #457B9D; }
+        body { font-family: 'Segoe UI', sans-serif; background: #F8FAFC; margin: 0; text-align: center; }
+        .main-nav { background: #001A3A; padding: 1rem; display: flex; justify-content: center; gap: 20px; }
+        .main-nav a { color: white; text-decoration: none; font-weight: bold; }
+        .card { background: white; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .btn { background: var(--red); color: white; border: none; padding: 15px 30px; border-radius: 10px; cursor: pointer; font-weight: bold; width: 100%; }
+        .page-item { display: flex; justify-content: space-between; padding: 10px; border-bottom: 1px solid #eee; }
+        .dl-link { color: var(--blue); text-decoration: none; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <nav class="main-nav">
+        <a href="/">ACCUEIL</a>
+        <a href="/convert_page">CONVERTIR</a>
+        <a href="/split_pdf" style="color: var(--red);">DÉCOUPER</a>
+    </nav>
+    <div class="card">
+        <h1>✂️ Découper un PDF</h1>
+        <p>Séparez chaque page de votre document en un fichier unique.</p>
+        <input type="file" id="pdfInput" accept=".pdf" style="margin-bottom: 20px;">
+        <button class="btn" onclick="splitPDF()">DÉCOUPER LE PDF</button>
+        <div id="result-list" style="margin-top: 30px;"></div>
+    </div>
+
+    <script>
+        async function splitPDF() {
+            const file = document.getElementById('pdfInput').files[0];
+            if(!file) return alert("Choisis un PDF !");
+            const fd = new FormData(); fd.append('file', file);
+            
+            const res = await fetch('/split_pdf_action', { method: 'POST', body: fd });
+            const data = await res.json();
+            
+            if(data.success) {
+                const list = document.getElementById('result-list');
+                list.innerHTML = '<h3>Pages extraites :</h3>';
+                data.files.forEach(f => {
+                    list.innerHTML += `<div class="page-item"><span>${f.name}</span> <a href="${f.url}" class="dl-link">Télécharger</a></div>`;
+                });
+            }
+        }
+    </script>
+</body>
+</html>
