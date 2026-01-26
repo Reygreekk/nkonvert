@@ -47,7 +47,13 @@ def cleanup_old_files():
 # --- ROUTES NAVIGATION ---
 @app.route('/')
 def index(): 
+    # Cette route devient uniquement le menu d'accueil
     return render_template('index.html')
+
+@app.route('/convert_page')
+def convert_page():
+    # C'est ici que se trouve maintenant ton outil multi-fichiers
+    return render_template('convert.html')
     
 @app.route('/boost')
 def boost_page(): 
@@ -542,6 +548,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
