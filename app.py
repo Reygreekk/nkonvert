@@ -46,6 +46,7 @@ def cleanup_old_files():
                     pass
 
 # --- ROUTES NAVIGATION ---
+
 @app.route('/')
 def index(): 
     # Cette route devient uniquement le menu d'accueil
@@ -64,12 +65,14 @@ def boost_page():
 def zip_page(): 
     return render_template('zip.html')
     
-   @app.route('/img_to_pdf')
+@app.route('/img_to_pdf')
 def img_to_pdf_page():
+    # Attention : Vérifie que ton fichier s'appelle bien imago.html ou img_to_pdf.html
     return render_template('imago.html')
     
 @app.route('/split_pdf')
 def split_pdf_page():
+    # Attention : Vérifie que ton fichier s'appelle bien decoupage.html ou split_pdf.html
     return render_template('decoupage.html')
     
 @app.route('/tooltube')
@@ -622,6 +625,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
