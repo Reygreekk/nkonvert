@@ -2,6 +2,7 @@ import os
 import uuid
 import shutil
 import random
+import string
 import time
 import base64
 import tempfile
@@ -11,7 +12,7 @@ import fitz  # Pour le découpage (Split) des PDF
 from io import BytesIO
 from datetime import timedelta
 # Import obligatoire pour l'Oracle
-from flask import Flask, render_template, request, send_from_directory, jsonify, session
+from flask import Flask, render_template, request, send_from_directory, jsonify, session, redirect
 from werkzeug.utils import secure_filename
 from PIL import Image
 # --- BIBLIOTHÈQUES ---
@@ -44,7 +45,7 @@ def cleanup_old_files():
                     os.remove(path)
                 except:
                     pass
-
+url_db = {}
 # --- ROUTES NAVIGATION ---
 
 @app.route('/')
@@ -78,6 +79,10 @@ def split_pdf_page():
 @app.route('/tooltube')
 def youtube_page():
     return render_template('tooltube.html')
+    
+@app.route('/shorten_page')
+def shorten_page():
+    return render_template('shorten.html')
 # --- LOGIQUE DE CONVERSION ---
 @app.route('/convert', methods=['POST'])
 def convert():
@@ -581,7 +586,37 @@ def images_to_pdf_action():
     except Exception as e:
         return jsonify({"success": False, "error": str(e)})
 
+# ROUTE 2 : Logique AJAX pour créer le lien
+@app.route('/shorten', methods=['POST'])
+def shorten():
+    long_url = request.form.get('long_url')
+    if not long_url:
+        return jsonify({"success": False, "error": "URL vide"}), 400
 
+    # Nettoyage de l'URL
+    if not long_url.startswith(('http://', 'https://')):
+        long_url = 'https://' + long_url
+
+    # Génération d'un ID court (5 caractères : ex: aB3xZ)
+    chars = string.ascii_letters + string.digits
+    short_id = ''.join(random.choice(chars) for _ in range(5))
+    
+    # Stockage
+    url_db[short_id] = long_url
+    
+    # Construction du lien final NKONVERT
+    short_url = f"{request.host_url}s/{short_id}"
+    
+    return jsonify({"success": True, "short_url": short_url})
+
+# ROUTE 3 : La redirection (Quand on clique sur le lien court)
+@app.route('/s/<short_id>')
+def redirect_to_url(short_id):
+    long_url = url_db.get(short_id)
+    if long_url:
+        # On redirige vers l'URL longue stockée
+        return redirect(long_url)
+    return "<h1>Lien expiré ou invalide sur NKONVERT</h1>", 404
 # --- LOGIQUE 3 : ZIP TOOL (Compression) ---
 
 @app.route('/zip_folder', methods=['POST'])
@@ -625,6 +660,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
