@@ -5,43 +5,221 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Images en PDF | NKONVERT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
-        /* Style identique pour la cohérence */
-        .card { background: white; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
-        .drop-zone { border: 2px dashed var(--blue); padding: 40px; border-radius: 15px; margin-bottom: 20px; color: var(--blue); }
-        .btn-green { background: #2F855A; color: white; border: none; padding: 15px 30px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
+        :root {
+            --primary: #00d2ff;
+            --secondary: #3a7bd5;
+            --dark: #001A3A;
+            --success: #00f2fe;
+            --bg-gradient: linear-gradient(135deg, #001A3A 0%, #003366 100%);
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
+
+        body {
+            background: var(--bg-gradient);
+            min-height: 100vh;
+            color: white;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVIGATION MODERNE --- */
+        .navbar {
+            background: rgba(0, 26, 58, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+        }
+
+        .logo { font-weight: 800; font-size: 1.5rem; letter-spacing: -1px; color: white; text-decoration: none; }
+        .logo span { color: var(--primary); }
+
+        .nav-links { display: flex; gap: 30px; list-style: none; }
+        .nav-links a { 
+            color: rgba(255,255,255,0.8); 
+            text-decoration: none; 
+            font-weight: 600; 
+            transition: 0.3s;
+            font-size: 0.9rem;
+        }
+        .nav-links a:hover, .nav-links a.active { color: var(--primary); }
+
+        .hamburger { display: none; cursor: pointer; color: white; font-size: 1.5rem; }
+
+        /* --- CARTE PRINCIPALE (GLASSMORPHISM) --- */
+        .container { padding: 40px 20px; display: flex; justify-content: center; }
+
+        .card {
+            background: rgba(255, 255, 255, 0.05);
+            backdrop-filter: blur(15px);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            border-radius: 30px;
+            text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+            animation: fadeIn 0.8s ease-out;
+        }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        h1 { font-weight: 800; font-size: 2rem; margin-bottom: 10px; }
+        p { color: rgba(255,255,255,0.6); margin-bottom: 30px; font-size: 0.95rem; }
+
+        /* --- ZONE DE DÉPÔT --- */
+        .drop-zone {
+            border: 2px dashed rgba(255,255,255,0.2);
+            padding: 50px 20px;
+            border-radius: 20px;
+            margin-bottom: 25px;
+            cursor: pointer;
+            transition: 0.3s;
+            position: relative;
+        }
+        .drop-zone:hover {
+            border-color: var(--primary);
+            background: rgba(0, 210, 255, 0.05);
+            transform: scale(1.02);
+        }
+        .drop-zone i { color: var(--primary); margin-bottom: 15px; text-shadow: 0 0 15px rgba(0,210,255,0.5); }
+
+        /* --- BOUTON INNOVANT --- */
+        .btn-compile {
+            background: linear-gradient(90deg, var(--primary), var(--secondary));
+            color: white;
+            border: none;
+            padding: 18px;
+            border-radius: 15px;
+            width: 100%;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            cursor: pointer;
+            transition: 0.4s;
+            box-shadow: 0 10px 20px rgba(0,210,255,0.3);
+        }
+        .btn-compile:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 25px rgba(0,210,255,0.5);
+            filter: brightness(1.1);
+        }
+
+        #status { margin-top: 25px; font-weight: 600; }
+        .download-link {
+            display: inline-block;
+            background: #44ff9a;
+            color: #001A3A !important;
+            padding: 12px 25px;
+            border-radius: 50px;
+            text-decoration: none;
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
+        /* --- RESPONSIVE MOBILE --- */
+        @media (max-width: 768px) {
+            .nav-links {
+                display: none; /* Masqué par défaut sur mobile */
+                flex-direction: column;
+                position: absolute;
+                top: 100%;
+                left: 0;
+                width: 100%;
+                background: var(--dark);
+                padding: 20px;
+                text-align: center;
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+            }
+            .nav-links.active { display: flex; }
+            .hamburger { display: block; }
+            .card { padding: 30px 20px; }
+        }
     </style>
 </head>
 <body>
-    <nav class="main-nav" style="background:#001A3A; padding:1rem; display:flex; justify-content:center; gap:20px;">
-        <a href="/" style="color:white; text-decoration:none;">ACCUEIL</a>
-        <a href="/img_to_pdf" style="color: #00d2ff; text-decoration:none;">IMAGES -> PDF</a>
-    </nav>
-    <div class="card">
-        <h1>📸 Images vers PDF</h1>
-        <p>Sélectionnez plusieurs images pour en faire un seul document.</p>
-        <div class="drop-zone" onclick="document.getElementById('imgs').click()">
-            <i class="fa fa-images fa-3x"></i><br>Cliquez pour ajouter vos photos
-            <input type="file" id="imgs" multiple accept="image/*" hidden>
+
+    <nav class="navbar">
+        <a href="#" class="logo">N<span>KONVERT</span></a>
+        
+        <ul class="nav-links" id="navLinks">
+            <li><a href="/">ACCUEIL</a></li>
+            <li><a href="/img_to_pdf" class="active">IMAGES ➔ PDF</a></li>
+            <li><a href="/pdf_to_img">PDF ➔ IMAGES</a></li>
+        </ul>
+
+        <div class="hamburger" onclick="toggleMenu()">
+            <i class="fas fa-bars"></i>
         </div>
-        <button class="btn-green" onclick="compileImages()">GÉNÉRER LE PDF</button>
-        <div id="status" style="margin-top:20px;"></div>
+    </nav>
+
+    <div class="container">
+        <div class="card">
+            <h1>Images en PDF</h1>
+            <p>Fusionnez vos photos en un document professionnel en un clic.</p>
+            
+            <div class="drop-zone" onclick="document.getElementById('imgs').click()">
+                <i class="fa-solid fa-cloud-arrow-up fa-4x"></i><br>
+                <strong>Glissez ou cliquez ici</strong><br>
+                <span style="font-size: 0.8rem; opacity: 0.7;">PNG, JPG, WEBP acceptés</span>
+                <input type="file" id="imgs" multiple accept="image/*" hidden onchange="updateCount()">
+            </div>
+
+            <div id="file-count" style="margin-bottom: 15px; font-size: 0.9rem; color: var(--primary);"></div>
+
+            <button class="btn-compile" onclick="compileImages()">
+                Générer mon PDF
+            </button>
+
+            <div id="status"></div>
+        </div>
     </div>
 
     <script>
+        function toggleMenu() {
+            document.getElementById('navLinks').classList.toggle('active');
+        }
+
+        function updateCount() {
+            const count = document.getElementById('imgs').files.length;
+            document.getElementById('file-count').innerText = count > 0 ? `${count} image(s) sélectionnée(s)` : "";
+        }
+
         async function compileImages() {
             const files = document.getElementById('imgs').files;
-            if(files.length === 0) return alert("Ajoute des images !");
+            if(files.length === 0) return alert("Veuillez sélectionner au moins une image.");
             
+            const status = document.getElementById('status');
+            status.innerHTML = `<i class="fas fa-spinner fa-spin"></i> Traitement de vos fichiers...`;
+
             const fd = new FormData();
             for(let f of files) { fd.append('files', f); }
 
-            document.getElementById('status').innerText = "Compilation en cours...";
-            const res = await fetch('/images_to_pdf_action', { method: 'POST', body: fd });
-            const data = await res.json();
+            try {
+                const res = await fetch('/images_to_pdf_action', { method: 'POST', body: fd });
+                const data = await res.json();
 
-            if(data.success) {
-                document.getElementById('status').innerHTML = `<a href="${data.download_url}" style="color:green; font-weight:bold;">✅ Télécharger le PDF compilé</a>`;
+                if(data.success) {
+                    status.innerHTML = `<a href="${data.download_url}" class="download-link">
+                        <i class="fas fa-file-download"></i> Télécharger le PDF
+                    </a>`;
+                } else {
+                    status.innerText = "Erreur lors de la génération.";
+                }
+            } catch (e) {
+                status.innerText = "Erreur de connexion au serveur.";
             }
         }
     </script>
