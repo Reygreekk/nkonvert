@@ -3,277 +3,129 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TOOLTUBE | NKALAA</title>
+    <title>TOOLTUBE | NKONVERT</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
             --primary-blue: #00d2ff;
             --secondary-blue: #0045ff;
             --primary-red: #ff003c;
-            --dark-red: #8b0000;
             --bg-dark: #050b18;
-            --card-bg: #0f172a;
-            --nav-bg: #020617;
+            --card-bg: rgba(15, 23, 42, 0.8);
         }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; }
 
         body {
             background: var(--bg-dark);
             background-image: radial-gradient(circle at 20% 30%, rgba(0, 70, 255, 0.15) 0%, transparent 40%),
                               radial-gradient(circle at 80% 70%, rgba(255, 0, 60, 0.1) 0%, transparent 40%);
             color: white;
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            margin: 0;
             min-height: 100vh;
         }
 
-        /* Navigation Responsive */
+        /* Nav Responsive Style NKONVERT */
         .main-nav {
-            background: var(--nav-bg);
+            background: rgba(2, 6, 23, 0.9);
             padding: 1rem 5%;
             display: flex;
             justify-content: center;
-            flex-wrap: wrap;
-            gap: 10px;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.8);
-            border-bottom: 1px solid rgba(0, 210, 255, 0.3);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            gap: 15px;
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            position: sticky; top: 0; z-index: 1000;
         }
 
         .main-nav a {
             color: #94a3b8;
             text-decoration: none;
             font-weight: 600;
+            font-size: 0.8rem;
+            text-transform: uppercase;
             padding: 8px 15px;
             border-radius: 8px;
-            font-size: 13px;
             transition: 0.3s;
-            text-transform: uppercase;
         }
 
-        .main-nav a.active { 
-            background: linear-gradient(45deg, var(--secondary-blue), var(--primary-blue));
-            color: white;
-        }
+        .main-nav a.active { background: var(--primary-red); color: white; }
 
-        .container {
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 0 15px;
-            box-sizing: border-box;
-        }
+        .container { max-width: 600px; margin: 40px auto; padding: 0 20px; }
 
         .search-box {
             background: var(--card-bg);
-            padding: 30px;
-            border-radius: 24px;
-            border: 1px solid rgba(255, 0, 60, 0.2);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(20px);
+            padding: 35px;
+            border-radius: 30px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
             text-align: center;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
         }
 
-        h1 { 
-            background: linear-gradient(to right, var(--primary-red), var(--primary-blue));
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            font-size: clamp(1.8rem, 5vw, 2.5rem);
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-
-        .social-icons {
-            margin: 15px 0;
-            font-size: 20px;
-            display: flex;
-            justify-content: center;
-            gap: 15px;
-            opacity: 0.8;
-        }
+        h1 { font-weight: 800; font-size: 2.2rem; margin-bottom: 20px; letter-spacing: -1px; }
+        h1 span { color: var(--primary-red); }
 
         .input-group {
+            background: rgba(0,0,0,0.3);
+            border-radius: 50px;
             display: flex;
-            flex-direction: column;
-            background: rgba(0, 0, 0, 0.4);
-            padding: 8px;
-            border-radius: 16px;
-            border: 1px solid rgba(0, 210, 255, 0.4);
-            margin: 25px 0;
-            gap: 8px;
-        }
-
-        @media (min-width: 600px) {
-            .input-group {
-                flex-direction: row;
-                border-radius: 50px;
-                padding: 5px;
-            }
+            padding: 5px;
+            border: 1px solid rgba(0, 210, 255, 0.3);
+            margin-bottom: 25px;
         }
 
         input {
-            flex: 1;
-            background: transparent;
-            border: none;
-            padding: 12px 20px;
-            color: white;
-            outline: none;
-            font-size: 15px;
+            flex: 1; background: transparent; border: none; padding: 12px 20px;
+            color: white; outline: none; font-size: 0.9rem;
         }
 
         .btn-extract {
-            background: linear-gradient(45deg, var(--primary-red), var(--dark-red));
-            color: white;
-            border: none;
-            padding: 12px 25px;
-            border-radius: 50px;
-            cursor: pointer;
-            font-weight: bold;
-            text-transform: uppercase;
-            transition: 0.3s;
+            background: var(--primary-red);
+            color: white; border: none; padding: 12px 25px;
+            border-radius: 50px; font-weight: 800; cursor: pointer;
+            transition: 0.3s; text-transform: uppercase;
         }
 
-        .btn-extract:hover {
-            transform: scale(1.02);
-            filter: brightness(1.2);
+        .btn-extract:hover { transform: scale(1.05); filter: brightness(1.2); }
+
+        /* Preview Area */
+        #video-preview { display: none; margin-top: 30px; animation: fadeInUp 0.5s ease; }
+
+        @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
+
+        .thumb-wrapper {
+            border-radius: 20px; overflow: hidden; border: 2px solid var(--primary-blue);
+            margin-bottom: 15px; position: relative;
         }
 
-        /* Aperçu Vidéo Responsive */
-        #video-preview {
-            display: none;
-            margin-top: 30px;
-            animation: fadeIn 0.5s ease;
-        }
+        .thumb-wrapper img { width: 100%; display: block; }
 
-        .thumbnail-container {
-            position: relative;
-            width: 100%;
-            border-radius: 15px;
-            overflow: hidden;
-            border: 2px solid var(--primary-blue);
-            margin-bottom: 15px;
-        }
-
-        .thumbnail {
-            width: 100%;
-            display: block;
-            height: auto;
-            max-height: 250px;
-            object-fit: cover;
-        }
-
-        .video-title { 
-            font-size: 1rem;
-            font-weight: 600; 
-            margin-bottom: 20px;
-            color: #f1f5f9;
-            line-height: 1.4;
-        }
-
-        .platform-badge {
-            display: inline-block;
-            background: var(--primary-blue);
-            color: black;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: bold;
-            margin-bottom: 10px;
-            text-transform: uppercase;
-        }
-
-        .download-options {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 12px;
-            margin-top: 20px;
-        }
-
-        @media (min-width: 400px) {
-            .download-options { grid-template-columns: 1fr 1fr; }
-        }
+        .download-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-top: 20px; }
 
         .dl-btn {
-            padding: 14px;
-            border-radius: 12px;
-            text-decoration: none;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
-            transition: 0.3s;
-            font-size: 12px;
-            text-transform: uppercase;
+            padding: 15px; border-radius: 12px; text-decoration: none;
+            font-weight: 800; font-size: 0.8rem; display: flex;
+            align-items: center; justify-content: center; gap: 8px;
+            transition: 0.3s; color: white;
         }
 
-        .mp4 { background: var(--secondary-blue); color: white; border: 1px solid var(--primary-blue); }
-        .mp3 { background: var(--dark-red); color: white; border: 1px solid var(--primary-red); }
-        .dl-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
-        }
+        .btn-mp4 { background: #0045ff; border: 1px solid #00d2ff; }
+        .btn-mp3 { background: #8b0000; border: 1px solid #ff003c; }
 
         .loader {
-            display: none;
-            width: 35px;
-            height: 35px;
-            border: 4px solid rgba(0, 210, 255, 0.1);
+            display: none; width: 40px; height: 40px;
+            border: 4px solid rgba(255,255,255,0.1);
             border-top: 4px solid var(--primary-red);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
+            border-radius: 50%; animation: spin 1s linear infinite;
             margin: 20px auto;
         }
 
-        .info-box {
-            background: rgba(0, 70, 255, 0.1);
-            border: 1px solid rgba(0, 210, 255, 0.3);
-            border-radius: 10px;
-            padding: 15px;
-            margin-top: 20px;
-            font-size: 13px;
-            color: #94a3b8;
-        }
-
-        .info-box h4 {
-            color: var(--primary-blue);
-            margin-top: 0;
-            margin-bottom: 10px;
-        }
-
         @keyframes spin { 100% { transform: rotate(360deg); } }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        footer {
-            margin-top: 40px;
-            font-size: 11px;
-            color: #64748b;
-            text-align: center;
-            padding-bottom: 20px;
-        }
-
-        .video-meta {
-            display: flex;
-            justify-content: space-between;
-            font-size: 12px;
-            color: #94a3b8;
-            margin-top: 10px;
-        }
-
-        .meta-item {
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        /* Animation pour les boutons */
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
-        }
-
-        .extracting {
-            animation: pulse 1.5s infinite;
+        @media (max-width: 600px) {
+            .input-group { flex-direction: column; border-radius: 20px; }
+            .btn-extract { width: 100%; border-radius: 15px; }
+            .download-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -281,268 +133,92 @@
 
 <nav class="main-nav">
     <a href="/">NKONVERT</a>
-    <a href="/boost">BOOST</a>
-    <a href="/zip">ZIP TOOL</a>
+    <a href="/shorten_page">LIENS</a>
     <a href="/tooltube" class="active">TOOLTUBE</a>
 </nav>
 
 <div class="container">
     <div class="search-box">
-        <h1>TOOLTUBE</h1>
-        <div class="social-icons">
-            <i class="fab fa-youtube" style="color:#FF0000"></i>
-            <i class="fab fa-facebook" style="color:#1877F2"></i>
-            <i class="fab fa-instagram" style="color:#E4405F"></i>
-            <i class="fab fa-tiktok" style="color:#000000"></i>
-        </div>
-        <p style="color: #94a3b8; font-size: 13px; margin-bottom: 5px;">YouTube • Facebook • Instagram • TikTok</p>
-        <p style="color: #64748b; font-size: 12px;">Collez un lien pour télécharger la vidéo ou l'audio</p>
+        <h1>TOOL<span>TUBE</span></h1>
+        <p style="color: #94a3b8; font-size: 0.8rem; margin-bottom: 25px;">Téléchargez vos contenus YouTube, FB & Instagram</p>
         
         <div class="input-group">
-            <input type="text" id="ytUrl" placeholder="Lien YouTube, Facebook, Instagram ou TikTok...">
-            <button class="btn-extract" id="extractBtn" onclick="extractVideo()">
-                <span id="btnText">Analyser</span>
-            </button>
+            <input type="text" id="ytUrl" placeholder="Collez votre lien ici...">
+            <button class="btn-extract" id="extractBtn" onclick="extractVideo()">Analyser</button>
         </div>
 
         <div class="loader" id="loader"></div>
 
         <div id="video-preview">
-            <div id="platformBadge" class="platform-badge">YouTube</div>
-            
-            <div class="thumbnail-container">
-                <img src="" id="thumb" class="thumbnail" alt="Aperçu de la vidéo">
+            <div class="thumb-wrapper">
+                <img src="" id="thumb" alt="Aperçu">
             </div>
+            <h3 id="title" style="font-size: 1rem; margin-bottom: 20px;">Titre de la vidéo</h3>
             
-            <h3 class="video-title" id="title">Titre de la vidéo</h3>
-            
-            <div class="video-meta">
-                <div class="meta-item">
-                    <i class="fas fa-clock"></i>
-                    <span id="duration">--:--</span>
-                </div>
-                <div class="meta-item">
-                    <i class="fas fa-download"></i>
-                    <span id="size">Téléchargement direct</span>
-                </div>
-            </div>
-            
-            <div class="download-options">
-                <a href="#" id="dl-mp4" class="dl-btn mp4">
-                    <i class="fas fa-video"></i> 
-                    <span>Vidéo MP4</span>
+            <div class="download-grid">
+                <a href="#" id="dl-mp4" class="dl-btn btn-mp4" target="_blank">
+                    <i class="fas fa-video"></i> MP4 VIDÉO
                 </a>
-                <a href="#" id="dl-mp3" class="dl-btn mp3">
-                    <i class="fas fa-music"></i> 
-                    <span>Audio MP3</span>
+                <a href="#" id="dl-mp3" class="dl-btn btn-mp3" target="_blank">
+                    <i class="fas fa-music"></i> MP3 AUDIO
                 </a>
             </div>
-        </div>
-
-        <div class="info-box">
-            <h4><i class="fas fa-info-circle"></i> Comment utiliser</h4>
-            <ul style="padding-left: 20px; margin: 10px 0;">
-                <li>Collez n'importe quel lien YouTube, Facebook ou Instagram</li>
-                <li>Cliquez sur "Analyser" pour extraire la vidéo</li>
-                <li>Téléchargez en MP4 (vidéo) ou MP3 (audio seulement)</li>
-                <li>Le téléchargement est direct depuis la source</li>
-            </ul>
-            <p style="margin-top: 10px; font-size: 11px;">
-                <i class="fas fa-shield-alt"></i> Service sécurisé - Pas de stockage de vos vidéos
-            </p>
         </div>
     </div>
-    
-    <footer>
-        <p>Système NKALAA v2.0 • Propulsé par yt-dlp</p>
-        <p>Support: YouTube, Facebook, Instagram, TikTok</p>
-        <p>© 2024 NKONVERT - Service optimisé pour Render Starter</p>
-    </footer>
 </div>
 
 <script>
-// Fonction pour extraire la vidéo
-async function extractVideo() {
-    const urlInput = document.getElementById('ytUrl');
-    const btn = document.getElementById('extractBtn');
-    const btnText = document.getElementById('btnText');
-    const loader = document.getElementById('loader');
-    const preview = document.getElementById('video-preview');
-    const platformBadge = document.getElementById('platformBadge');
+    async function extractVideo() {
+        const urlInput = document.getElementById('ytUrl');
+        const btn = document.getElementById('extractBtn');
+        const loader = document.getElementById('loader');
+        const preview = document.getElementById('video-preview');
 
-    if(!urlInput.value.trim()) {
-        alert("Veuillez entrer une URL.");
-        return;
-    }
+        if(!urlInput.value.trim()) return alert("Lien vide !");
 
-    // Détecter la plateforme
-    const url = urlInput.value.toLowerCase();
-    let platform = "YouTube";
-    if(url.includes('facebook.com') || url.includes('fb.watch')) {
-        platform = "Facebook";
-    } else if(url.includes('instagram.com') || url.includes('instagr.am')) {
-        platform = "Instagram";
-    } else if(url.includes('tiktok.com')) {
-        platform = "TikTok";
-    } else if(url.includes('twitter.com') || url.includes('x.com')) {
-        platform = "Twitter/X";
-    }
+        // UI Reset
+        btn.disabled = true;
+        loader.style.display = 'block';
+        preview.style.display = 'none';
 
-    // Reset UI
-    btn.disabled = true;
-    btn.classList.add('extracting');
-    btnText.textContent = 'Analyse en cours...';
-    loader.style.display = 'block';
-    preview.style.display = 'none';
+        // Correspondance avec ta route Python: @app.route('/extract_yt', methods=['POST'])
+        const fd = new FormData();
+        fd.append('url', urlInput.value.trim());
 
-    try {
-        const response = await fetch('/extract_yt', {
-            method: 'POST',
-            headers: {'Content-Type': 'application/x-www-form-urlencoded'},
-            body: `url=${encodeURIComponent(urlInput.value.trim())}`
-        });
+        try {
+            const response = await fetch('/extract_yt', {
+                method: 'POST',
+                body: fd // Envoi en FormData comme attendu par Flask
+            });
 
-        const data = await response.json();
+            const data = await response.json();
 
-        if(data.success) {
-            // Mise à jour de l'interface
-            document.getElementById('thumb').src = data.thumbnail || getPlaceholderImage(data.platform);
-            document.getElementById('title').textContent = data.title;
-            platformBadge.textContent = data.platform;
-            platformBadge.style.display = 'block';
-            
-            // Mise à jour de la durée
-            const durationElement = document.getElementById('duration');
-            if(data.duration && data.duration > 0) {
-                durationElement.textContent = formatDuration(data.duration);
+            if(data.success) {
+                // Remplissage des données venant de yt-dlp
+                document.getElementById('thumb').src = data.thumbnail;
+                document.getElementById('title').textContent = data.title;
+                
+                // On attache les liens générés par le proxy de ton app.py
+                document.getElementById('dl-mp4').href = data.video_url;
+                document.getElementById('dl-mp3').href = data.audio_url;
+
+                preview.style.display = 'block';
             } else {
-                durationElement.textContent = '--:--';
+                alert("Erreur serveur : " + data.error);
             }
-            
-            // Mise à jour des liens de téléchargement
-            const mp4Btn = document.getElementById('dl-mp4');
-            const mp3Btn = document.getElementById('dl-mp3');
-            
-            if(data.video_url && data.video_url.trim() !== '') {
-                mp4Btn.href = data.video_url;
-                mp4Btn.style.display = 'flex';
-                mp4Btn.onclick = function(e) {
-                    e.preventDefault();
-                    window.open(this.href, '_blank');
-                };
-            } else {
-                mp4Btn.style.display = 'none';
-            }
-            
-            if(data.audio_url && data.audio_url.trim() !== '') {
-                mp3Btn.href = data.audio_url;
-                mp3Btn.style.display = 'flex';
-                mp3Btn.onclick = function(e) {
-                    e.preventDefault();
-                    window.open(this.href, '_blank');
-                };
-            } else {
-                mp3Btn.style.display = 'none';
-            }
-
-            // Afficher le résultat
-            preview.style.display = 'block';
-            
-            // Scroll doux vers le résultat
-            preview.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
-            
-        } else {
-            alert("Erreur " + platform + " : " + data.error);
+        } catch (err) {
+            alert("Impossible de joindre le serveur NKONVERT.");
+        } finally {
+            btn.disabled = false;
+            loader.style.display = 'none';
         }
-    } catch (err) {
-        console.error("Erreur détaillée:", err);
-        alert("Erreur de connexion. Vérifiez votre réseau et réessayez.");
-    } finally {
-        btn.disabled = false;
-        btn.classList.remove('extracting');
-        btnText.textContent = 'Analyser';
-        loader.style.display = 'none';
     }
-}
 
-// Formatte la durée en minutes:secondes
-function formatDuration(seconds) {
-    if (!seconds || seconds <= 0) return '--:--';
-    
-    const hours = Math.floor(seconds / 3600);
-    const minutes = Math.floor((seconds % 3600) / 60);
-    const secs = Math.floor(seconds % 60);
-    
-    if (hours > 0) {
-        return `${hours}:${minutes.toString().padStart(2, '0')}:${secs.toString().padStart(2, '0')}`;
-    } else {
-        return `${minutes}:${secs.toString().padStart(2, '0')}`;
-    }
-}
-
-// Image de placeholder selon la plateforme
-function getPlaceholderImage(platform) {
-    const colors = {
-        'YouTube': 'FF0000',
-        'Facebook': '1877F2',
-        'Instagram': 'E4405F',
-        'TikTok': '000000',
-        'Twitter': '1DA1F2'
-    };
-    
-    const color = colors[platform] || '00d2ff';
-    return `https://via.placeholder.com/600x338/${color}/ffffff?text=${encodeURIComponent(platform)}`;
-}
-
-// Détection automatique du presse-papier
-document.getElementById('ytUrl').addEventListener('focus', function() {
-    if (navigator.clipboard && navigator.clipboard.readText) {
-        navigator.clipboard.readText().then(text => {
-            if(text && (
-                text.includes('youtube') || 
-                text.includes('youtu.be') ||
-                text.includes('facebook') || 
-                text.includes('fb.watch') ||
-                text.includes('instagram') || 
-                text.includes('tiktok.com') ||
-                text.includes('twitter.com') ||
-                text.includes('x.com')
-            )) {
-                this.value = text;
-            }
-        }).catch(err => {
-            // Ignorer les erreurs de permission
-            console.log("Permission clipboard non accordée");
-        });
-    }
-});
-
-// Entrée clavier pour lancer l'extraction
-document.getElementById('ytUrl').addEventListener('keypress', function(e) {
-    if(e.key === 'Enter') {
-        extractVideo();
-    }
-});
-
-// Effet de placeholder animé
-document.getElementById('ytUrl').addEventListener('focus', function() {
-    this.style.border = 'none';
-    this.style.boxShadow = '0 0 0 2px rgba(0, 210, 255, 0.5)';
-});
-
-document.getElementById('ytUrl').addEventListener('blur', function() {
-    this.style.boxShadow = 'none';
-});
-
-// Afficher un message d'info au chargement
-window.addEventListener('DOMContentLoaded', () => {
-    console.log('TOOLTUBE - Prêt pour YouTube, Facebook, Instagram');
-    
-    // Auto-focus sur l'input
-    setTimeout(() => {
-        document.getElementById('ytUrl').focus();
-    }, 500);
-});
+    // Permet d'appuyer sur Entrée pour lancer l'analyse
+    document.getElementById('ytUrl').addEventListener('keypress', (e) => {
+        if(e.key === 'Enter') extractVideo();
+    });
 </script>
+
 </body>
 </html>
