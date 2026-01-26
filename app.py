@@ -63,6 +63,16 @@ def boost_page():
 def zip_page(): 
     return render_template('zip.html')
     
+    @app.route('/img_to_pdf')
+def img_to_pdf_page():
+    """Page de compilation d'images vers un seul PDF"""
+    return render_template('img_to_pdf.html')
+
+@app.route('/split_pdf')
+def split_pdf_page():
+    """Page de découpage d'un PDF en plusieurs pages"""
+    return render_template('decoupage.html')
+    
 @app.route('/tooltube')
 def youtube_page():
     return render_template('tooltube.html')
@@ -548,6 +558,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
