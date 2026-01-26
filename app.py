@@ -7,6 +7,7 @@ import base64
 import tempfile
 import yt_dlp
 import requests
+import fitz  # Pour le découpage (Split) des PDF
 from io import BytesIO
 from datetime import timedelta
 # Import obligatoire pour l'Oracle
@@ -63,14 +64,14 @@ def boost_page():
 def zip_page(): 
     return render_template('zip.html')
     
-    @app.route('/img_to_pdf')
+   @app.route('/img_to_pdf')
 def img_to_pdf_page():
-    """Page de compilation d'images vers un seul PDF"""
+    """Affiche la page de compilation d'images"""
     return render_template('img_to_pdf.html')
 
 @app.route('/split_pdf')
 def split_pdf_page():
-    """Page de découpage d'un PDF en plusieurs pages"""
+    """Affiche la page de découpage PDF"""
     return render_template('decoupage.html')
     
 @app.route('/tooltube')
@@ -514,6 +515,71 @@ def generate_boost():
         "compteur": compteur,
         "type": selected_branch
     })
+# --- LOGIQUE : DÉCOUPER PDF (Split) ---
+@app.route('/split_pdf_action', methods=['POST'])
+def split_pdf_action():
+    cleanup_old_files()
+    if 'file' not in request.files: 
+        return jsonify({"success": False, "error": "Aucun fichier"}), 400
+    
+    file = request.files['file']
+    unique_id = str(uuid.uuid4())[:8]
+    input_path = os.path.join(UPLOAD_FOLDER, f"{unique_id}.pdf")
+    file.save(input_path)
+
+    try:
+        # On ouvre le PDF avec PyMuPDF (fitz)
+        doc = fitz.open(input_path)
+        output_files = []
+
+        # On extrait chaque page une par une
+        for i in range(len(doc)):
+            new_doc = fitz.open()
+            new_doc.insert_pdf(doc, from_page=i, to_page=i)
+            page_name = f"page_{i+1}_{unique_id}.pdf"
+            new_doc.save(os.path.join(EXPORT_FOLDER, page_name))
+            output_files.append({
+                "name": f"Page {i+1}", 
+                "url": f"/download_file/{page_name}"
+            })
+            new_doc.close()
+        
+        doc.close()
+        return jsonify({"success": True, "files": output_files})
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
+# --- LOGIQUE : IMAGES VERS PDF (Compilation) ---
+@app.route('/images_to_pdf_action', methods=['POST'])
+def images_to_pdf_action():
+    cleanup_old_files()
+    files = request.files.getlist('files') # On récupère plusieurs fichiers
+    if not files: 
+        return jsonify({"success": False, "error": "Aucune image sélectionnée"}), 400
+
+    unique_id = str(uuid.uuid4())[:8]
+    output_filename = f"document_nkalaa_{unique_id}.pdf"
+    output_path = os.path.join(EXPORT_FOLDER, output_filename)
+
+    image_list = []
+    try:
+        for file in files:
+            img = Image.open(file.stream)
+            # Conversion en RGB (obligatoire pour le PDF si l'image est en RGBA/PNG)
+            if img.mode != 'RGB':
+                img = img.convert('RGB')
+            image_list.append(img)
+
+        if image_list:
+            # On prend la première image et on ajoute les autres à la suite
+            image_list[0].save(output_path, save_all=True, append_images=image_list[1:])
+            return jsonify({
+                "success": True, 
+                "download_url": f"/download_file/{output_filename}"
+            })
+    except Exception as e:
+        return jsonify({"success": False, "error": str(e)})
+
 
 # --- LOGIQUE 3 : ZIP TOOL (Compression) ---
 
@@ -558,6 +624,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
