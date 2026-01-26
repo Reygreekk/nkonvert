@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NKONVERT | Multi-Converter Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root { 
+            --red: #E63946; 
+            --dark: #00234E; 
+            --gray: #F8FAFC; 
+            --blue: #457B9D; 
+            --nav-bg: #001A3A;
+            --success: #2F855A;
+        }
+
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: var(--gray); margin: 0; color: #334155; }
+
+        /* --- NAVIGATION --- */
+        .main-nav {
+            background: var(--nav-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+        .main-nav a {
+            color: white;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.9rem;
+            transition: 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 15px;
+            border-radius: 8px;
+        }
+        .main-nav a:hover { background: rgba(230, 57, 70, 0.1); color: var(--red); }
+        .main-nav a.active { background: var(--red); color: white; }
+
+        /* --- HERO --- */
+        .hero { background: var(--dark); color: white; padding: 50px 20px; text-align: center; }
+        .hero h1 { margin: 0; font-size: 2.2rem; letter-spacing: -1px; }
+        .hero h1 span { color: var(--red); }
+        .hero p { opacity: 0.8; margin-top: 10px; }
+
+        /* --- CONVERTER CARD --- */
+        .container { max-width: 900px; margin: -40px auto 40px; padding: 0 15px; }
+        .converter-card { background: white; border-radius: 24px; padding: 30px; box-shadow: 0 20px 40px rgba(0,0,0,0.1); }
+
+        .upload-area { 
+            border: 3px dashed #E2E8F0; 
+            border-radius: 20px; 
+            padding: 40px 20px; 
+            cursor: pointer; 
+            background: #FBFCFE; 
+            transition: 0.3s; 
+            text-align: center;
+        }
+        .upload-area:hover { border-color: var(--red); background: #FFF5F5; }
+        .upload-area i { font-size: 3rem; color: var(--red); margin-bottom: 15px; }
+
+        /* --- FILE LIST --- */
+        #file-list-container { margin-top: 25px; }
+        .file-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            background: #F8FAFC;
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 10px;
+            border: 1px solid #E2E8F0;
+            animation: slideIn 0.3s ease;
+        }
+        @keyframes slideIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+
+        .file-info { display: flex; align-items: center; gap: 12px; flex: 1; overflow: hidden; }
+        .file-name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        
+        /* --- CONTROLS --- */
+        .controls { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 15px; 
+            margin-top: 25px; 
+            padding-top: 20px;
+            border-top: 1px solid #F1F5F9;
+        }
+        select, .btn-submit { width: 100%; padding: 15px; border-radius: 12px; font-weight: 700; border: 1px solid #E2E8F0; font-size: 1rem; outline: none; }
+        
+        .btn-submit { background: var(--red); color: white; border: none; cursor: pointer; transition: 0.3s; text-transform: uppercase; }
+        .btn-submit:hover { background: #c52d3a; transform: translateY(-2px); box-shadow: 0 5px 15px rgba(230, 57, 70, 0.3); }
+        .btn-submit:disabled { background: #CBD5E1; cursor: not-allowed; transform: none; box-shadow: none; }
+
+        .btn-download { 
+            background: var(--success); 
+            color: white; 
+            text-decoration: none; 
+            padding: 8px 18px; 
+            border-radius: 8px; 
+            font-size: 0.85rem; 
+            font-weight: bold;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .btn-clear {
+            background: transparent;
+            color: #64748b;
+            border: none;
+            cursor: pointer;
+            font-size: 0.8rem;
+            margin-top: 10px;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 600px) {
+            .controls { grid-template-columns: 1fr; }
+            .hero h1 { font-size: 1.8rem; }
+            .main-nav { gap: 5px; padding: 1rem 2%; }
+            .main-nav a { font-size: 0.75rem; padding: 8px; }
+        }
+    </style>
+</head>
+<body>
+
+<nav class="main-nav">
+    <a href="/" class="active"><i class="fa fa-sync"></i> NKONVERT</a>
+    <a href="/boost"><i class="fa fa-bolt"></i> Motivation</a>
+    <a href="/zip"><i class="fa fa-file-zipper"></i> ZIP Tool</a>
+    <a href="/tooltube"><i class="fa fa-play-circle"></i> Tooltube</a>
+</nav>
+
+<div class="hero">
+    <h1>NK<span>ONVERT</span> | Pro Multi-Converter</h1>
+    <p>Chargez jusqu'à 3 fichiers et convertissez-les simultanément.</p>
+</div>
+
+<div class="container">
+    <div class="converter-card">
+        <div class="upload-area" onclick="document.getElementById('fileInput').click()">
+            <i class="fa-solid fa-cloud-arrow-up"></i>
+            <p id="upload-text">Glissez ou cliquez pour ajouter vos fichiers (Max 3)</p>
+            <input type="file" id="fileInput" hidden multiple accept=".docx,.pdf,.jpg,.jpeg,.png,.html,.rtf,.txt">
+        </div>
+
+        <div id="file-list-container"></div>
+        <button id="clearBtn" class="btn-clear" style="display: none;" onclick="clearList()">Vider la liste</button>
+
+        <div class="controls">
+            <select id="targetFormat">
+                <optgroup label="📄 Vers PDF">
+                    <option value="pdf">Tout convertir en PDF</option>
+                </optgroup>
+                <optgroup label="📝 Extraire du PDF">
+                    <option value="docx">PDF vers Word (.docx)</option>
+                    <option value="png">PDF vers Image (.png)</option>
+                    <option value="jpg">PDF vers Image (.jpg)</option>
+                </optgroup>
+                <optgroup label="🎨 Design">
+                    <option value="svg">Image vers SVG (Vecteur)</option>
+                </optgroup>
+            </select>
+            <button type="button" class="btn-submit" id="startAllBtn" disabled>Convertir tout</button>
+        </div>
+    </div>
+</div>
+
+<script>
+    const fileInput = document.getElementById('fileInput');
+    const fileListContainer = document.getElementById('file-list-container');
+    const startAllBtn = document.getElementById('startAllBtn');
+    const targetFormat = document.getElementById('targetFormat');
+    const clearBtn = document.getElementById('clearBtn');
+
+    let filesQueue = [];
+
+    fileInput.addEventListener('change', () => {
+        const selectedFiles = Array.from(fileInput.files).slice(0, 3);
+        
+        selectedFiles.forEach(file => {
+            const fileId = Math.random().toString(36).substr(2, 9);
+            filesQueue.push({ id: fileId, file: file, status: 'ready' });
+            addFileToUI(file, fileId);
+        });
+
+        updateUIState();
+    });
+
+    function addFileToUI(file, id) {
+        const row = document.createElement('div');
+        row.className = 'file-row';
+        row.id = `row-${id}`;
+        row.innerHTML = `
+            <div class="file-info">
+                <i class="fa fa-file-alt" style="color: var(--blue);"></i>
+                <span class="file-name" title="${file.name}">${file.name}</span>
+            </div>
+            <div id="status-${id}" class="file-status">En attente...</div>
+        `;
+        fileListContainer.appendChild(row);
+    }
+
+    function updateUIState() {
+        startAllBtn.disabled = filesQueue.length === 0;
+        clearBtn.style.display = filesQueue.length > 0 ? 'inline-block' : 'none';
+    }
+
+    function clearList() {
+        filesQueue = [];
+        fileListContainer.innerHTML = '';
+        fileInput.value = '';
+        updateUIState();
+    }
+
+    startAllBtn.addEventListener('click', async () => {
+        startAllBtn.disabled = true;
+        
+        // On traite les fichiers l'un après l'autre pour ménager le Starter Plan (RAM)
+        for (const item of filesQueue) {
+            if (item.status === 'ready') {
+                await runSingleConversion(item);
+            }
+        }
+    });
+
+    async function runSingleConversion(item) {
+        const statusEl = document.getElementById(`status-${item.id}`);
+        const rowEl = document.getElementById(`row-${item.id}`);
+        
+        statusEl.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Traitement...';
+        
+        const formData = new FormData();
+        formData.append('file', item.file);
+        formData.append('target_format', targetFormat.value);
+
+        try {
+            const response = await fetch('/convert', {
+                method: 'POST',
+                body: formData
+            });
+            const data = await response.json();
+
+            if (data.success) {
+                item.status = 'done';
+                rowEl.style.borderColor = "var(--success)";
+                statusEl.innerHTML = `
+                    <a href="${data.download_url}" class="btn-download">
+                        <i class="fa fa-download"></i> Prêt
+                    </a>
+                `;
+            } else {
+                statusEl.innerHTML = `<span style="color: var(--red);">Erreur</span>`;
+            }
+        } catch (error) {
+            statusEl.innerHTML = `<span style="color: var(--red);">Déconnecté</span>`;
+        }
+    }
+</script>
+
+</body>
+</html>
