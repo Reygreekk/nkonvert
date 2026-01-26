@@ -66,12 +66,10 @@ def zip_page():
     
    @app.route('/img_to_pdf')
 def img_to_pdf_page():
-    """Affiche la page de compilation d'images"""
-    return render_template('img_to_pdf.html')
-
+    return render_template('imago.html')
+    
 @app.route('/split_pdf')
 def split_pdf_page():
-    """Affiche la page de découpage PDF"""
     return render_template('decoupage.html')
     
 @app.route('/tooltube')
@@ -624,6 +622,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
