@@ -6,13 +6,14 @@ import string
 import time
 import base64
 import tempfile
+import json
 import yt_dlp
 import requests
 import fitz  # Pour le découpage (Split) des PDF
 from io import BytesIO
 from datetime import timedelta
 # Import obligatoire pour l'Oracle
-from flask import Flask, render_template, request, send_from_directory, jsonify, session, redirect
+from flask import Flask, render_template, request, send_from_directory, jsonify, session, redirect, Response
 from werkzeug.utils import secure_filename
 from PIL import Image
 # --- BIBLIOTHÈQUES ---
@@ -32,8 +33,33 @@ app.config['PERMANENT_SESSION_LIFETIME'] = timedelta(hours=24)
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 EXPORT_FOLDER = os.path.join(BASE_DIR, 'exports')
+LINKS_FILE = os.path.join(BASE_DIR, 'links.json')
 for folder in [UPLOAD_FOLDER, EXPORT_FOLDER]:
     os.makedirs(folder, exist_ok=True)
+# --- LOGIQUE PERSISTANCE DES LIENS (JSON) ---
+
+def load_links():
+    """Charge les liens depuis le fichier JSON au démarrage"""
+    if os.path.exists(LINKS_FILE):
+        try:
+            with open(LINKS_FILE, "r") as f:
+                return json.load(f)
+        except:
+            return {}
+    return {}
+
+def save_link_to_disk(db):
+    """Sauvegarde le dictionnaire sur le disque"""
+    try:
+        with open(LINKS_FILE, "w") as f:
+            json.dump(db, f)
+    except Exception as e:
+        print(f"Erreur sauvegarde JSON: {e}")
+
+# Initialisation de la base de données de liens
+url_db = load_links()
+
+
 def cleanup_old_files():
     """Supprime les fichiers de plus de 10 minutes"""
     now = time.time()
@@ -45,7 +71,22 @@ def cleanup_old_files():
                     os.remove(path)
                 except:
                     pass
-url_db = {}
+                    
+def detect_platform(url):
+    url = url.lower()
+    if 'youtube.com' in url or 'youtu.be' in url: return 'youtube'
+    if 'facebook.com' in url or 'fb.watch' in url: return 'facebook'
+    if 'instagram.com' in url: return 'instagram'
+    if 'tiktok.com' in url: return 'tiktok'
+    return 'unknown'
+
+def get_ydl_opts(platform):
+    return {
+        'format': 'best',
+        'quiet': True,
+        'no_warnings': True,
+        'skip_download': True,
+    }
 # --- ROUTES NAVIGATION ---
 
 @app.route('/')
@@ -163,159 +204,36 @@ def convert():
 # --- LOGIQUE 2 : NYOUTUBE (NOUVEAU) ---
 @app.route('/extract_yt', methods=['POST'])
 def extract_yt():
-    """Extrait les infos vidéo de YouTube, Facebook, Instagram"""
     url = request.form.get('url')
-    
-    if not url:
-        return jsonify({"success": False, "error": "Lien vide"}), 400
-    
-    # Détecter la plateforme
     platform = detect_platform(url)
-    
     if platform == 'unknown':
-        return jsonify({"success": False, "error": "URL non supportée. Utilisez YouTube, Facebook ou Instagram."}), 400
-    
-    # Options selon la plateforme (MP4 par défaut)
-    ydl_opts = get_ydl_opts(platform, 'mp4')
+        return jsonify({"success": False, "error": "URL non supportée"}), 400
     
     try:
-        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        with yt_dlp.YoutubeDL(get_ydl_opts(platform)) as ydl:
             info = ydl.extract_info(url, download=False)
+            video_url = info.get('url') or info.get('formats')[0]['url']
             
-            if not info:
-                return jsonify({"success": False, "error": "Impossible de récupérer les infos de la vidéo"}), 500
+            video_encoded = base64.urlsafe_b64encode(video_url.encode()).decode()
             
-            # Récupérer les formats disponibles
-            formats = info.get('formats', [])
-            
-            # Chercher le meilleur format vidéo (MP4)
-            video_format = None
-            for f in formats:
-                if f.get('vcodec') != 'none' and f.get('ext') == 'mp4':
-                    video_format = f
-                    break
-            
-            if not video_format and formats:
-                video_format = formats[-1]  # Prendre le dernier format disponible
-            
-            # Chercher le meilleur format audio pour MP3
-            audio_format = None
-            for f in formats:
-                if f.get('acodec') != 'none' and f.get('vcodec') == 'none':
-                    audio_format = f
-                    break
-            
-            if not audio_format and formats:
-                # Chercher n'importe quel format avec audio
-                for f in formats:
-                    if f.get('acodec') != 'none':
-                        audio_format = f
-                        break
-            
-            # URLs des formats
-            video_url = video_format.get('url') if video_format else None
-            audio_url = audio_format.get('url') if audio_format else None
-            
-            if not video_url and not audio_url:
-                return jsonify({"success": False, "error": "Aucun lien de téléchargement disponible"}), 500
-            
-            # Préparer les URLs encodées pour le streaming
-            video_encoded = base64.urlsafe_b64encode(video_url.encode()).decode() if video_url else ''
-            audio_encoded = base64.urlsafe_b64encode(audio_url.encode()).decode() if audio_url else ''
-            
-            # Nom du fichier sécurisé
-            safe_title = secure_filename(info.get('title', f'video_{platform}')[:50])
-            
-            # Réponse avec les URLs de streaming
             return jsonify({
                 "success": True,
-                "title": info.get('title', f'Vidéo {platform}'),
+                "title": info.get('title', 'Vidéo'),
                 "thumbnail": info.get('thumbnail', ''),
                 "duration": info.get('duration', 0),
                 "platform": platform.capitalize(),
-                "video_url": f"/proxy_download?url={video_encoded}&title={safe_title}&type=mp4" if video_url else '',
-                "audio_url": f"/proxy_download?url={audio_encoded}&title={safe_title}&type=mp3" if audio_url else ''
+                "video_url": f"/proxy_download?url={video_encoded}&title=video&type=mp4",
+                "audio_url": f"/proxy_download?url={video_encoded}&title=audio&type=mp3"
             })
-            
-    except yt_dlp.utils.DownloadError as e:
-        error_msg = str(e)
-        if 'Private' in error_msg or 'private' in error_msg:
-            return jsonify({"success": False, "error": "Vidéo privée ou restreinte"}), 400
-        elif 'unavailable' in error_msg.lower():
-            return jsonify({"success": False, "error": "Vidéo non disponible"}), 400
-        elif 'login' in error_msg.lower() or 'account' in error_msg.lower():
-            return jsonify({"success": False, "error": f"Connexion requise pour {platform}"}), 400
-        else:
-            return jsonify({"success": False, "error": f"Erreur {platform}: {error_msg[:80]}"}), 500
     except Exception as e:
-        return jsonify({"success": False, "error": f"Erreur: {str(e)[:80]}"}), 500
+        return jsonify({"success": False, "error": str(e)}), 500
 
-# --- PROXY DE TÉLÉCHARGEMENT (streaming direct) ---
 @app.route('/proxy_download')
 def proxy_download():
-    """Stream directement depuis la source vers l'utilisateur"""
     encoded_url = request.args.get('url')
-    title = request.args.get('title', 'video')
-    file_type = request.args.get('type', 'mp4')
-    
-    if not encoded_url:
-        return "URL manquante", 400
-    
-    try:
-        # Décoder l'URL
-        video_url = base64.urlsafe_b64decode(encoded_url).decode()
-        
-        # Headers pour contourner les restrictions
-        headers = {
-            'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-            'Accept': '*/*',
-            'Accept-Language': 'fr-FR,fr;q=0.9,en-US;q=0.8,en;q=0.7',
-            'Accept-Encoding': 'identity',
-            'Range': request.headers.get('Range', 'bytes=0-'),
-            'Referer': 'https://www.youtube.com/',
-            'Origin': 'https://www.youtube.com',
-        }
-        
-        # Faire la requête avec timeout court
-        response = requests.get(video_url, headers=headers, stream=True, timeout=30)
-        response.raise_for_status()
-        
-        # Déterminer le content-type
-        content_type = response.headers.get('Content-Type', 
-                      'video/mp4' if file_type == 'mp4' else 'audio/mpeg')
-        
-        # Préparer les headers de réponse
-        response_headers = {
-            'Content-Type': content_type,
-            'Content-Disposition': f'attachment; filename="{title}.{file_type}"',
-            'Cache-Control': 'no-cache',
-        }
-        
-        # Si le serveur supporte les ranges
-        if 'Content-Range' in response.headers:
-            response_headers['Content-Range'] = response.headers['Content-Range']
-            response_headers['Accept-Ranges'] = 'bytes'
-        
-        # Stream avec chunks optimisés pour 512MB RAM
-        def generate_stream():
-            chunk_size = 256 * 1024  # 256KB chunks (très léger)
-            for chunk in response.iter_content(chunk_size=chunk_size):
-                if chunk:
-                    yield chunk
-        
-        return Response(
-            generate_stream(),
-            headers=response_headers,
-            status=response.status_code,
-            content_type=content_type
-        )
-        
-    except requests.exceptions.Timeout:
-        return "Timeout lors du téléchargement", 408
-    except requests.exceptions.RequestException as e:
-        return f"Erreur réseau: {str(e)[:80]}", 500
-    except Exception as e:
-        return f"Erreur: {str(e)[:80]}", 500
+    video_url = base64.urlsafe_b64decode(encoded_url).decode()
+    res = requests.get(video_url, stream=True)
+    return Response(res.iter_content(chunk_size=1024), content_type=res.headers['Content-Type'])
 # --- LOGIQUE 2 : BOOST SPIRIT (Oracle) ---
 @app.route('/generate_ajax', methods=['POST'])
 def generate_boost():
@@ -593,28 +511,24 @@ def shorten():
     if not long_url:
         return jsonify({"success": False, "error": "URL vide"}), 400
 
-    # Nettoyage de l'URL
     if not long_url.startswith(('http://', 'https://')):
         long_url = 'https://' + long_url
 
-    # Génération d'un ID court (5 caractères : ex: aB3xZ)
+    # Génération ID court
     chars = string.ascii_letters + string.digits
     short_id = ''.join(random.choice(chars) for _ in range(5))
     
-    # Stockage
+    # Enregistrement
     url_db[short_id] = long_url
+    save_link_to_disk(url_db)
     
-    # Construction du lien final NKONVERT
     short_url = f"{request.host_url}s/{short_id}"
-    
     return jsonify({"success": True, "short_url": short_url})
 
-# ROUTE 3 : La redirection (Quand on clique sur le lien court)
 @app.route('/s/<short_id>')
 def redirect_to_url(short_id):
     long_url = url_db.get(short_id)
     if long_url:
-        # On redirige vers l'URL longue stockée
         return redirect(long_url)
     return "<h1>Lien expiré ou invalide sur NKONVERT</h1>", 404
 # --- LOGIQUE 3 : ZIP TOOL (Compression) ---
@@ -660,6 +574,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
