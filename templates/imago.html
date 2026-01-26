@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Images en PDF | NKONVERT</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Style identique pour la cohérence */
+        .card { background: white; max-width: 600px; margin: 50px auto; padding: 30px; border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+        .drop-zone { border: 2px dashed var(--blue); padding: 40px; border-radius: 15px; margin-bottom: 20px; color: var(--blue); }
+        .btn-green { background: #2F855A; color: white; border: none; padding: 15px 30px; border-radius: 10px; width: 100%; font-weight: bold; cursor: pointer; }
+    </style>
+</head>
+<body>
+    <nav class="main-nav" style="background:#001A3A; padding:1rem; display:flex; justify-content:center; gap:20px;">
+        <a href="/" style="color:white; text-decoration:none;">ACCUEIL</a>
+        <a href="/img_to_pdf" style="color: #00d2ff; text-decoration:none;">IMAGES -> PDF</a>
+    </nav>
+    <div class="card">
+        <h1>📸 Images vers PDF</h1>
+        <p>Sélectionnez plusieurs images pour en faire un seul document.</p>
+        <div class="drop-zone" onclick="document.getElementById('imgs').click()">
+            <i class="fa fa-images fa-3x"></i><br>Cliquez pour ajouter vos photos
+            <input type="file" id="imgs" multiple accept="image/*" hidden>
+        </div>
+        <button class="btn-green" onclick="compileImages()">GÉNÉRER LE PDF</button>
+        <div id="status" style="margin-top:20px;"></div>
+    </div>
+
+    <script>
+        async function compileImages() {
+            const files = document.getElementById('imgs').files;
+            if(files.length === 0) return alert("Ajoute des images !");
+            
+            const fd = new FormData();
+            for(let f of files) { fd.append('files', f); }
+
+            document.getElementById('status').innerText = "Compilation en cours...";
+            const res = await fetch('/images_to_pdf_action', { method: 'POST', body: fd });
+            const data = await res.json();
+
+            if(data.success) {
+                document.getElementById('status').innerHTML = `<a href="${data.download_url}" style="color:green; font-weight:bold;">✅ Télécharger le PDF compilé</a>`;
+            }
+        }
+    </script>
+</body>
+</html>
