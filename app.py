@@ -49,10 +49,6 @@ def cleanup_old_files():
 def index(): 
     return render_template('index.html')
     
-    @app.route('/convert')
-def convert(): 
-    return render_template('convert.html')
-
 @app.route('/boost')
 def boost_page(): 
     return render_template('motivation.html')
@@ -546,6 +542,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
