@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur Gynéco - NKonvert</title>
+    <style>
+        :root {
+            --primary: #e91e63;
+            --primary-dark: #c2185b;
+            --secondary: #2c3e50;
+            --bg: #f8f9fa;
+            --card-bg: #ffffff;
+            --text: #334155;
+            --shadow: 0 10px 25px rgba(0,0,0,0.08);
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 15px;
+        }
+
+        .container {
+            background: var(--card-bg);
+            width: 100%;
+            max-width: 450px;
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: var(--shadow);
+            animation: slideIn 0.5s ease-out;
+        }
+
+        @keyframes slideIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h2 {
+            text-align: center;
+            color: var(--secondary);
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            font-weight: 800;
+            border-bottom: 3px solid var(--primary);
+            display: inline-block;
+            width: 100%;
+            padding-bottom: 10px;
+        }
+
+        .input-group {
+            margin-bottom: 1.2rem;
+        }
+
+        label {
+            display: block;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-bottom: 6px;
+            color: var(--secondary);
+        }
+
+        input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.2s;
+            background: #fff;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+            outline: none;
+        }
+
+        .divider {
+            text-align: center;
+            margin: 1rem 0;
+            color: #94a3b8;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .divider::before, .divider::after {
+            content: "";
+            flex: 1;
+            height: 1px;
+            background: #e2e8f0;
+            margin: 0 10px;
+        }
+
+        .result-card {
+            margin-top: 1.5rem;
+            padding: 1.5rem;
+            background: #fff0f5;
+            border-radius: 15px;
+            border: 1px solid #fce4ec;
+            display: none; /* Caché par défaut */
+        }
+
+        .res-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .res-box {
+            background: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
+        }
+
+        .res-value {
+            display: block;
+            font-size: 1.2rem;
+            font-weight: 800;
+            color: var(--primary);
+        }
+
+        .res-label {
+            font-size: 0.75rem;
+            color: #64748b;
+            text-transform: uppercase;
+        }
+
+        .hu-main {
+            background: var(--primary);
+            color: white;
+            padding: 15px;
+            border-radius: 12px;
+            text-align: center;
+        }
+
+        .hu-main .val {
+            font-size: 2.2rem;
+            font-weight: 900;
+            display: block;
+        }
+
+        .dpa-box {
+            grid-column: span 2;
+            border-top: 1px dashed #f8bbd0;
+            padding-top: 10px;
+            margin-top: 5px;
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+
+        @media (max-width: 480px) {
+            .container { padding: 1.5rem; }
+            h2 { font-size: 1.25rem; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Obstétrie & HU</h2>
+
+    <div class="input-group">
+        <label>Date des Dernières Règles (DDR)</label>
+        <input type="date" id="ddr" onchange="calculerTout()">
+    </div>
+
+    <div class="divider">ou</div>
+
+    <div class="input-group">
+        <label>Semaines d'Aménorrhée (SA)</label>
+        <input type="number" id="sa" placeholder="Entrez le nombre de SA" oninput="calculerParSA()">
+    </div>
+
+    <div id="affichage" class="result-card">
+        <div class="res-grid">
+            <div class="res-box">
+                <span class="res-label">Âge (SA)</span>
+                <span id="outSA" class="res-value">--</span>
+            </div>
+            <div class="res-box">
+                <span class="res-label">Mois</span>
+                <span id="outMois" class="res-value">--</span>
+            </div>
+            <div class="dpa-box">
+                <strong>DPA :</strong> <span id="outDPA">--</span>
+            </div>
+        </div>
+
+        <div class="hu-main">
+            <span class="res-label" style="color: rgba(255,255,255,0.8)">Hauteur Utérine Estimée</span>
+            <span class="val"><span id="outHU">--</span><small style="font-size: 1rem; margin-left: 5px;">cm</small></span>
+        </div>
+    </div>
+</div>
+
+<script>
+    function getDonneesFournie(sa) {
+        let mois = Math.floor(sa / 4);
+        let hu = 0;
+        if (mois >= 4 && mois <= 7) hu = (mois - 1) * 4;
+        else if (mois === 8) hu = 30;
+        else if (mois >= 9) hu = 33;
+        return { hu, mois };
+    }
+
+    function calculerDPA(ddrDate) {
+        let dpa = new Date(ddrDate);
+        dpa.setMonth(dpa.getMonth() + 9);
+        dpa.setDate(dpa.getDate() + 7);
+        return dpa.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    }
+
+    function mettreAJourUI(sa, dpaStr = null) {
+        const zone = document.getElementById('affichage');
+        if (!sa || sa <= 0) { zone.style.display = 'none'; return; }
+
+        const data = getDonneesFournie(sa);
+        document.getElementById('outSA').innerText = sa;
+        document.getElementById('outMois').innerText = data.mois;
+        document.getElementById('outHU').innerText = data.hu > 0 ? data.hu : "--";
+        document.getElementById('outDPA').innerText = dpaStr || "Non spécifiée";
+        
+        zone.style.display = 'block';
+    }
+
+    function calculerTout() {
+        const ddrValue = document.getElementById('ddr').value;
+        if (!ddrValue) return;
+        const ddr = new Date(ddrValue);
+        const diffDays = Math.floor((new Date() - ddr) / 86400000);
+        const sa = Math.floor(diffDays / 7);
+        document.getElementById('sa').value = sa;
+        mettreAJourUI(sa, calculerDPA(ddr));
+    }
+
+    function calculerParSA() {
+        const sa = parseInt(document.getElementById('sa').value);
+        document.getElementById('ddr').value = "";
+        mettreAJourUI(sa);
+    }
+</script>
+
+</body>
+</html>
