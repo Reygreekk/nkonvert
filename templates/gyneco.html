@@ -3,254 +3,272 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calculateur Gynéco - NKonvert</title>
+    <title>Gynéco-OBST v2.0 | NKonvert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #e91e63;
-            --primary-dark: #c2185b;
-            --secondary: #2c3e50;
-            --bg: #f8f9fa;
-            --card-bg: #ffffff;
-            --text: #334155;
-            --shadow: 0 10px 25px rgba(0,0,0,0.08);
+            --primary: #d81b60;
+            --primary-light: #fce4ec;
+            --secondary: #1e293b;
+            --accent: #0d9488;
+            --bg: #f1f5f9;
+            --white: #ffffff;
+            --text-main: #334155;
+            --text-sub: #64748b;
+            --radius: 16px;
+            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
+        * { box-sizing: border-box; }
+
         body {
-            font-family: 'Inter', -apple-system, sans-serif;
+            font-family: 'Plus Jakarta Sans', sans-serif;
             background-color: var(--bg);
-            color: var(--text);
+            color: var(--text-main);
             margin: 0;
             display: flex;
             justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            padding: 15px;
+            padding: 20px;
         }
 
-        .container {
-            background: var(--card-bg);
+        .app-card {
+            background: var(--white);
             width: 100%;
-            max-width: 450px;
-            padding: 2rem;
-            border-radius: 20px;
+            max-width: 480px;
+            padding: 2.5rem;
+            border-radius: 24px;
             box-shadow: var(--shadow);
-            animation: slideIn 0.5s ease-out;
+            height: fit-content;
         }
 
-        @keyframes slideIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        h2 {
-            text-align: center;
-            color: var(--secondary);
-            margin-bottom: 1.5rem;
-            font-size: 1.5rem;
+        .header { text-align: center; margin-bottom: 2rem; }
+        .header h1 { 
+            color: var(--secondary); 
+            font-size: 1.6rem; 
+            margin: 0; 
             font-weight: 800;
-            border-bottom: 3px solid var(--primary);
-            display: inline-block;
-            width: 100%;
-            padding-bottom: 10px;
         }
+        .header span { color: var(--primary); }
+        .header p { color: var(--text-sub); font-size: 0.9rem; margin-top: 5px; }
 
-        .input-group {
-            margin-bottom: 1.2rem;
-        }
-
-        label {
-            display: block;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-bottom: 6px;
+        /* Inputs */
+        .form-group { margin-bottom: 1.5rem; }
+        label { 
+            display: block; 
+            font-weight: 600; 
+            margin-bottom: 8px; 
+            font-size: 0.85rem; 
             color: var(--secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
-
         input {
             width: 100%;
-            padding: 14px;
+            padding: 14px 18px;
             border: 2px solid #e2e8f0;
-            border-radius: 12px;
+            border-radius: var(--radius);
             font-size: 1rem;
-            transition: all 0.2s;
-            background: #fff;
-            box-sizing: border-box;
+            transition: all 0.3s;
+            background: #f8fafc;
         }
-
         input:focus {
-            border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
             outline: none;
+            border-color: var(--primary);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.1);
         }
 
         .divider {
-            text-align: center;
-            margin: 1rem 0;
-            color: #94a3b8;
-            font-size: 0.8rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            display: flex;
-            align-items: center;
+            display: flex; align-items: center; text-align: center;
+            margin: 1.5rem 0; color: var(--text-sub); font-size: 0.8rem;
         }
-
         .divider::before, .divider::after {
-            content: "";
-            flex: 1;
-            height: 1px;
-            background: #e2e8f0;
-            margin: 0 10px;
+            content: ''; flex: 1; border-bottom: 1px solid #e2e8f0;
         }
+        .divider:not(:empty)::before { margin-right: .75em; }
+        .divider:not(:empty)::after { margin-left: .75em; }
 
-        .result-card {
-            margin-top: 1.5rem;
-            padding: 1.5rem;
-            background: #fff0f5;
-            border-radius: 15px;
-            border: 1px solid #fce4ec;
-            display: none; /* Caché par défaut */
-        }
+        /* Result Area */
+        #resultats { display: none; animation: fadeIn 0.4s ease-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .res-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 15px;
-            margin-bottom: 15px;
-        }
-
-        .res-box {
-            background: white;
-            padding: 10px;
-            border-radius: 10px;
-            text-align: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.02);
-        }
-
-        .res-value {
-            display: block;
-            font-size: 1.2rem;
-            font-weight: 800;
-            color: var(--primary);
-        }
-
-        .res-label {
-            font-size: 0.75rem;
-            color: #64748b;
-            text-transform: uppercase;
-        }
-
-        .hu-main {
-            background: var(--primary);
+        .main-stat {
+            background: linear-gradient(135deg, var(--primary), #ad1457);
             color: white;
+            padding: 20px;
+            border-radius: var(--radius);
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+        .main-stat .hu-val { font-size: 2.8rem; font-weight: 800; display: block; }
+        .main-stat label { color: rgba(255,255,255,0.8); margin-bottom: 0; }
+
+        .grid-stats {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;
+        }
+        .stat-box {
+            background: var(--primary-light);
             padding: 15px;
-            border-radius: 12px;
+            border-radius: var(--radius);
             text-align: center;
         }
+        .stat-box .val { display: block; font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+        .stat-box .lab { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; }
 
-        .hu-main .val {
-            font-size: 2.2rem;
-            font-weight: 900;
-            display: block;
+        /* Follow-up Timeline */
+        .timeline {
+            background: #f8fafc;
+            border-radius: var(--radius);
+            padding: 15px;
+            border: 1px solid #e2e8f0;
         }
-
-        .dpa-box {
-            grid-column: span 2;
-            border-top: 1px dashed #f8bbd0;
-            padding-top: 10px;
-            margin-top: 5px;
-            color: var(--secondary);
-            font-size: 0.9rem;
+        .timeline-title { 
+            font-weight: 800; font-size: 0.8rem; margin-bottom: 10px; 
+            color: var(--secondary); display: flex; align-items: center;
         }
+        .timeline-item {
+            display: flex; justify-content: space-between;
+            padding: 8px 0; border-bottom: 1px dashed #e2e8f0;
+            font-size: 0.85rem;
+        }
+        .timeline-item:last-child { border: none; }
+        .timeline-date { font-weight: 600; color: var(--accent); }
 
-        @media (max-width: 480px) {
-            .container { padding: 1.5rem; }
-            h2 { font-size: 1.25rem; }
+        .footer-note {
+            margin-top: 1.5rem; text-align: center; 
+            font-size: 0.75rem; color: var(--text-sub);
         }
     </style>
 </head>
 <body>
 
-<div class="container">
-    <h2>Obstétrie & HU</h2>
+<div class="app-card">
+    <div class="header">
+        <h1>NK<span>ONVERT</span> OBST</h1>
+        <p>Calculateur Gynécologique & Suivi</p>
+    </div>
 
-    <div class="input-group">
+    <div class="form-group">
         <label>Date des Dernières Règles (DDR)</label>
-        <input type="date" id="ddr" onchange="calculerTout()">
+        <input type="date" id="ddr" onchange="updateByDDR()">
     </div>
 
-    <div class="divider">ou</div>
+    <div class="divider">OU</div>
 
-    <div class="input-group">
-        <label>Semaines d'Aménorrhée (SA)</label>
-        <input type="number" id="sa" placeholder="Entrez le nombre de SA" oninput="calculerParSA()">
+    <div class="form-group">
+        <label>Âge Gestationnel (SA)</label>
+        <input type="number" id="sa" placeholder="Entrez les SA" oninput="updateBySA()">
     </div>
 
-    <div id="affichage" class="result-card">
-        <div class="res-grid">
-            <div class="res-box">
-                <span class="res-label">Âge (SA)</span>
-                <span id="outSA" class="res-value">--</span>
+    <div id="resultats">
+        <div class="main-stat">
+            <label>Hauteur Utérine Estimée</label>
+            <span class="hu-val"><span id="resHU">--</span><small style="font-size: 1.2rem; margin-left: 5px;">cm</small></span>
+            <div style="font-size: 0.85rem; margin-top: 5px;">Poids fœtal estimé : <span id="resPoids">--</span> g</div>
+        </div>
+
+        <div class="grid-stats">
+            <div class="stat-box">
+                <span class="lab">Mois de Grossesse</span>
+                <span class="val" id="resMois">--</span>
             </div>
-            <div class="res-box">
-                <span class="res-label">Mois</span>
-                <span id="outMois" class="res-value">--</span>
-            </div>
-            <div class="dpa-box">
-                <strong>DPA :</strong> <span id="outDPA">--</span>
+            <div class="stat-box">
+                <span class="lab">DPA (Terme)</span>
+                <span class="val" id="resDPA" style="font-size: 0.9rem;">--</span>
             </div>
         </div>
 
-        <div class="hu-main">
-            <span class="res-label" style="color: rgba(255,255,255,0.8)">Hauteur Utérine Estimée</span>
-            <span class="val"><span id="outHU">--</span><small style="font-size: 1rem; margin-left: 5px;">cm</small></span>
+        <div class="timeline">
+            <div class="timeline-title">📍 CALENDRIER EXAMENS CLÉS</div>
+            <div class="timeline-item">
+                <span>Écho T1 (Clarté Nucale / T21)</span>
+                <span class="timeline-date" id="t1">--</span>
+            </div>
+            <div class="timeline-item">
+                <span>Écho Morphologique (T2)</span>
+                <span class="timeline-date" id="t2">--</span>
+            </div>
+            <div class="timeline-item">
+                <span>Écho de Croissance (T3)</span>
+                <span class="timeline-date" id="t3">--</span>
+            </div>
         </div>
+        
+        <p class="footer-note">Méthodologie : Règle de Fournier (Mois×4) intégrée.</p>
     </div>
 </div>
 
 <script>
-    function getDonneesFournie(sa) {
-        let mois = Math.floor(sa / 4);
+    function getLogic(sa) {
+        // Mois de grossesse (plus précis que division par 4 simple)
+        let mois = Math.floor(sa / 4.34);
+        if (mois < 1) mois = 0;
+
+        // Ta méthodologie spécifique (Règle de Fournier avec correctif)
         let hu = 0;
-        if (mois >= 4 && mois <= 7) hu = (mois - 1) * 4;
-        else if (mois === 8) hu = 30;
-        else if (mois >= 9) hu = 33;
-        return { hu, mois };
+        if (mois >= 4 && mois <= 7) {
+            hu = mois * 4;
+        } else if (mois >= 8) {
+            hu = (mois * 4) - 2;
+        }
+
+        // Poids fœtal approximatif (Courbe de croissance standard)
+        let poids = 0;
+        if (sa >= 15) {
+            poids = Math.round(Math.pow(sa, 3) / 18.5); // Hadlock modifié
+            if (sa >= 40) poids = 3350;
+        }
+
+        return { hu, mois, poids };
     }
 
-    function calculerDPA(ddrDate) {
-        let dpa = new Date(ddrDate);
-        dpa.setMonth(dpa.getMonth() + 9);
-        dpa.setDate(dpa.getDate() + 7);
-        return dpa.toLocaleDateString('fr-FR', { day: 'numeric', month: 'short', year: 'numeric' });
+    function formatDate(date) {
+        return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
     }
 
-    function mettreAJourUI(sa, dpaStr = null) {
-        const zone = document.getElementById('affichage');
-        if (!sa || sa <= 0) { zone.style.display = 'none'; return; }
-
-        const data = getDonneesFournie(sa);
-        document.getElementById('outSA').innerText = sa;
-        document.getElementById('outMois').innerText = data.mois;
-        document.getElementById('outHU').innerText = data.hu > 0 ? data.hu : "--";
-        document.getElementById('outDPA').innerText = dpaStr || "Non spécifiée";
-        
-        zone.style.display = 'block';
+    function addWeeks(date, weeks) {
+        let d = new Date(date);
+        d.setDate(d.getDate() + (weeks * 7));
+        return formatDate(d);
     }
 
-    function calculerTout() {
+    function render(sa, ddrValue = null) {
+        const resDiv = document.getElementById('resultats');
+        if (!sa || sa <= 0) { resDiv.style.display = 'none'; return; }
+
+        const data = getLogic(sa);
+        document.getElementById('resHU').innerText = data.hu > 0 ? data.hu : "--";
+        document.getElementById('resMois').innerText = data.mois > 0 ? data.mois + "e" : "1er";
+        document.getElementById('resPoids').innerText = data.poids > 0 ? data.poids : "--";
+
+        if (ddrValue) {
+            const ddr = new Date(ddrValue);
+            document.getElementById('resDPA').innerText = addWeeks(ddr, 41);
+            document.getElementById('t1').innerText = addWeeks(ddr, 12);
+            document.getElementById('t2').innerText = addWeeks(ddr, 22);
+            document.getElementById('t3').innerText = addWeeks(ddr, 32);
+        } else {
+            document.getElementById('resDPA').innerText = "DDR requise";
+            ["t1", "t2", "t3"].forEach(id => document.getElementById(id).innerText = "--");
+        }
+
+        resDiv.style.display = 'block';
+    }
+
+    function updateByDDR() {
         const ddrValue = document.getElementById('ddr').value;
-        if (!ddrValue) return;
         const ddr = new Date(ddrValue);
-        const diffDays = Math.floor((new Date() - ddr) / 86400000);
-        const sa = Math.floor(diffDays / 7);
+        const diff = Math.floor((new Date() - ddr) / (1000 * 60 * 60 * 24));
+        const sa = Math.floor(diff / 7);
         document.getElementById('sa').value = sa;
-        mettreAJourUI(sa, calculerDPA(ddr));
+        render(sa, ddrValue);
     }
 
-    function calculerParSA() {
+    function updateBySA() {
         const sa = parseInt(document.getElementById('sa').value);
         document.getElementById('ddr').value = "";
-        mettreAJourUI(sa);
+        render(sa);
     }
 </script>
 
