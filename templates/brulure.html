@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Urgence Brûlures | NKonvert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #d32f2f;
+            --secondary: #1e293b;
+            --bg: #f1f5f9;
+            --selected: #ff5252;
+            --text-on-dark: #ffffff;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
+        
+        .container { background: white; width: 100%; max-width: 600px; padding: 2rem; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+
+        h2 { text-align: center; color: var(--secondary); margin-bottom: 5px; }
+        .subtitle { text-align: center; color: #64748b; font-size: 0.8rem; margin-bottom: 20px; }
+
+        .body-map {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 20px;
+            background: #f8fafc;
+            border-radius: 20px;
+            padding: 10px;
+        }
+
+        svg { width: 280px; height: auto; cursor: pointer; }
+        .zone { fill: #e2e8f0; stroke: #94a3b8; stroke-width: 1; transition: 0.3s; }
+        .zone:hover { fill: #cbd5e1; }
+        .zone.active { fill: var(--selected); stroke: #b71c1c; }
+
+        /* Style pour les textes de pourcentage sur le SVG */
+        .pct-label { 
+            font-size: 12px; 
+            font-weight: 800; 
+            fill: #64748b; 
+            pointer-events: none; 
+            text-anchor: middle;
+            transition: 0.3s;
+        }
+        .active-label { fill: white; }
+
+        .score-card {
+            background: var(--secondary);
+            color: white;
+            padding: 20px;
+            border-radius: 16px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .total-box span { font-size: 2.5rem; font-weight: 800; display: block; }
+
+        .extra-questions { margin-top: 20px; border-top: 1px solid #e2e8f0; padding-top: 20px; }
+        .q-group { margin-bottom: 15px; }
+        label { display: block; font-weight: 700; font-size: 0.85rem; margin-bottom: 8px; }
+        select { width: 100%; padding: 12px; border-radius: 12px; border: 2px solid #e2e8f0; font-family: inherit; }
+
+        .diagnosis-box {
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            background: #fdf2f8;
+            border-left: 5px solid var(--primary);
+            display: none;
+            line-height: 1.5;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h2>Évaluation des Brûlures</h2>
+    <p class="subtitle">Schéma de Wallace : Cliquez sur les zones pour calculer la surface</p>
+
+    <div class="body-map">
+        <svg viewBox="0 0 200 400">
+            <g onclick="toggleZone(this, 9)">
+                <circle cx="100" cy="40" r="30" class="zone"/>
+                <text x="100" y="45" class="pct-label">9%</text>
+            </g>
+            
+            <g onclick="toggleZone(this, 18)">
+                <rect x="60" y="80" width="80" height="60" class="zone"/>
+                <text x="100" y="115" class="pct-label">18%</text>
+            </g>
+
+            <g onclick="toggleZone(this, 18)">
+                <rect x="60" y="145" width="80" height="60" class="zone"/>
+                <text x="100" y="180" class="pct-label">18%</text>
+            </g>
+
+            <g onclick="toggleZone(this, 9)">
+                <rect x="20" y="80" width="30" height="120" class="zone"/>
+                <text x="35" y="145" class="pct-label" transform="rotate(-90 35 145)">9%</text>
+            </g>
+
+            <g onclick="toggleZone(this, 9)">
+                <rect x="150" y="80" width="30" height="120" class="zone"/>
+                <text x="165" y="145" class="pct-label" transform="rotate(90 165 145)">9%</text>
+            </g>
+
+            <g onclick="toggleZone(this, 18)">
+                <rect x="60" y="215" width="35" height="150" class="zone"/>
+                <text x="77" y="295" class="pct-label" transform="rotate(-90 77 295)">18%</text>
+            </g>
+
+            <g onclick="toggleZone(this, 18)">
+                <rect x="105" y="215" width="35" height="150" class="zone"/>
+                <text x="122" y="295" class="pct-label" transform="rotate(90 122 295)">18%</text>
+            </g>
+
+            <g onclick="toggleZone(this, 1)">
+                <rect x="95" y="210" width="10" height="10" class="zone"/>
+                <text x="100" y="205" class="pct-label" style="font-size: 8px;">1%</text>
+            </g>
+        </svg>
+    </div>
+
+    <div class="score-card">
+        <div class="total-box">
+            <span id="scb-total">0%</span>
+            <small>Surface Corporelle (SCB)</small>
+        </div>
+        <div style="text-align: right;">
+            <div id="gravite-label" style="font-weight: 800; color: #fecdd3; letter-spacing: 1px;">MINEURE</div>
+        </div>
+    </div>
+
+    <div class="extra-questions">
+        <div class="q-group">
+            <label>Aspect et Profondeur</label>
+            <select id="degre" onchange="analyser()">
+                <option value="1">1er degré : Érythème (ex: Coup de soleil)</option>
+                <option value="2s">2ème degré Superficiel : Phlyctènes, derme rouge</option>
+                <option value="2p">2ème degré Profond : Phlyctènes, derme blanc, peu sensible</option>
+                <option value="3">3ème degré : Peau cartonnée, insensible</option>
+            </select>
+        </div>
+
+        <div class="q-group">
+            <label>Profil du patient</label>
+            <select id="age" onchange="analyser()">
+                <option value="adulte">Adulte standard</option>
+                <option value="enfant">Enfant, Senior ou Comorbidités</option>
+            </select>
+        </div>
+    </div>
+
+    <div id="diagnosis" class="diagnosis-box">
+        <strong>SYNTHÈSE CLINIQUE :</strong><br>
+        <span id="diag-text"></span>
+    </div>
+</div>
+
+<script>
+    let currentSCB = 0;
+
+    function toggleZone(group, val) {
+        const zone = group.querySelector('.zone');
+        const label = group.querySelector('.pct-label');
+        
+        if (zone.classList.contains('active')) {
+            zone.classList.remove('active');
+            label.classList.remove('active-label');
+            currentSCB -= val;
+        } else {
+            zone.classList.add('active');
+            label.classList.add('active-label');
+            currentSCB += val;
+        }
+        
+        document.getElementById('scb-total').innerText = currentSCB + "%";
+        analyser();
+    }
+
+    function analyser() {
+        const degre = document.getElementById('degre').value;
+        const age = document.getElementById('age').value;
+        const diagBox = document.getElementById('diagnosis');
+        const diagText = document.getElementById('diag-text');
+        const graviteLabel = document.getElementById('gravite-label');
+
+        let message = "";
+        
+        // Critères de gravité basés sur l'âge et la surface
+        const seuilUrgence = (age === "enfant") ? 10 : 15;
+
+        if (currentSCB >= seuilUrgence || degre === "3" || (degre === "2p" && currentSCB > 5)) {
+            message = "🚨 <b>URGENCE VITALE :</b> Hospitalisation immédiate requise. Risque de choc et d'infection sévère. Prévoyez un remplissage vasculaire (Loi de Parkland).";
+            graviteLabel.innerText = "CRITIQUE";
+            graviteLabel.style.color = "#ff4d4d";
+        } else if (degre === "2s" && currentSCB > 2) {
+            message = "⚠️ <b>HOSPITALISATION CONSEILLÉE :</b> Surveillance des pansements et de l'équilibre hydro-électrolytique.";
+            graviteLabel.innerText = "MODÉRÉE";
+            graviteLabel.style.color = "#fbbf24";
+        } else {
+            message = "✅ <b>SOINS AMBULATOIRES :</b> Nettoyage à l'antiseptique, pansement gras (tulle) et surveillance de la cicatrisation.";
+            graviteLabel.innerText = "LÉGÈRE";
+            graviteLabel.style.color = "#6ee7b7";
+        }
+
+        diagText.innerHTML = message;
+        diagBox.style.display = currentSCB > 0 ? "block" : "none";
+    }
+</script>
+
+</body>
+</html>
