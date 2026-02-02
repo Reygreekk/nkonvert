@@ -4,18 +4,19 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="icon" type="image/png" href="favicon.png">
-    <title>NKONVERT | Votre Suite d'Outils Numériques</title>
+    <title>NKONVERT | Votre Suite d'Outils Numériques by Nkalaa</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         :root {
             --primary-blue: #00d2ff;
             --secondary-blue: #0045ff;
             --primary-red: #ff003c;
-            --dark-red: #8b0000;
             --bg-dark: #050b18;
             --card-bg: rgba(15, 23, 42, 0.7);
             --nav-bg: #020617;
         }
+
+        * { box-sizing: border-box; }
 
         body {
             background: var(--bg-dark);
@@ -36,11 +37,8 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.5);
             border-bottom: 1px solid rgba(0, 210, 255, 0.2);
-            position: sticky;
-            top: 0;
-            z-index: 1000;
+            position: sticky; top: 0; z-index: 1000;
         }
 
         .logo {
@@ -53,120 +51,90 @@
         }
 
         /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 60px 20px;
-        }
+        .hero { text-align: center; padding: 40px 20px; }
+        .hero h1 { font-size: clamp(1.8rem, 6vw, 3rem); margin-bottom: 10px; font-weight: 900; }
+        .hero p { color: #94a3b8; font-size: 1rem; max-width: 500px; margin: 0 auto 30px; }
 
-        .hero h1 {
-            font-size: clamp(2rem, 8vw, 3.5rem);
-            margin-bottom: 10px;
-            font-weight: 900;
-        }
-
-        .hero p {
-            color: #94a3b8;
-            font-size: 1.1rem;
-            max-width: 600px;
-            margin: 0 auto 40px;
-        }
-
-        /* Grille d'outils (Le "Carré" Convertio) */
+        /* GRILLE RESPONSIVE 2-2 MOBILE */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(2, 1fr); /* Force 2 colonnes sur mobile */
+            gap: 15px;
             max-width: 1200px;
             margin: 0 auto;
-            padding: 0 20px 60px;
+            padding: 0 15px 50px;
+        }
+
+        /* Passage à 3 ou 4 colonnes sur tablette/PC */
+        @media (min-width: 768px) {
+            .tools-grid {
+                grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+                gap: 25px;
+            }
         }
 
         .tool-card {
             background: var(--card-bg);
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            padding: 30px;
+            border-radius: 20px;
+            padding: 20px 10px;
             text-align: center;
-            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.3s ease;
             text-decoration: none;
             color: white;
-            position: relative;
-            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
         }
 
         .tool-card:hover {
-            transform: translateY(-10px);
-            border-color: var(--primary-blue);
-            box-shadow: 0 15px 30px rgba(0, 210, 255, 0.2);
+            transform: translateY(-8px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
         }
 
-        /* Couleurs spécifiques par outil */
-        .tool-card.pdf:hover { border-color: #ff4d4d; }
-        .tool-card.zip:hover { border-color: #ffae00; }
-        .tool-card.tube:hover { border-color: var(--primary-blue); }
-        .tool-card.boost:hover { border-color: #a29bfe; }
-
         .icon-box {
-            width: 70px;
-            height: 70px;
+            width: 50px;
+            height: 50px;
             background: rgba(255, 255, 255, 0.05);
-            border-radius: 18px;
+            border-radius: 15px;
             display: flex;
             align-items: center;
             justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 30px;
+            margin: 0 auto 15px;
+            font-size: 24px;
             transition: 0.3s;
         }
 
-        .tool-card:hover .icon-box {
-            background: linear-gradient(45deg, var(--secondary-blue), var(--primary-blue));
-            transform: rotate(10deg);
-        }
+        .tool-card h3 { margin: 0 0 8px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tool-card p { font-size: 0.75rem; color: #94a3b8; line-height: 1.3; margin: 0; }
 
-        .tool-card.pdf .icon-box i { color: #ff4d4d; }
-        .tool-card.zip .icon-box i { color: #ffae00; }
-        .tool-card.tube .icon-box i { color: var(--primary-blue); }
-        .tool-card.boost .icon-box i { color: #a29bfe; }
+        /* Couleurs au survol (Styles personnalisés) */
+        .tool-card.pdf:hover { border-color: #ff4d4d; }
+        .tool-card.pdf:hover .icon-box i { color: #ff4d4d; }
 
-        .tool-card:hover .icon-box i { color: white; }
+        .tool-card.tube:hover { border-color: var(--primary-blue); }
+        .tool-card.tube:hover .icon-box i { color: var(--primary-blue); }
 
-        .tool-card h3 {
-            margin: 0 0 10px;
-            font-size: 1.4rem;
-        }
+        .tool-card.boost:hover { border-color: #a29bfe; }
+        .tool-card.boost:hover .icon-box i { color: #a29bfe; }
 
-        .tool-card p {
-            font-size: 0.9rem;
-            color: #94a3b8;
-            line-height: 1.5;
-        }
+        .tool-card.zip:hover { border-color: #ffae00; }
+        .tool-card.zip:hover .icon-box i { color: #ffae00; }
 
-        /* Badge "Nouveau" */
-        .badge {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: var(--primary-red);
-            font-size: 10px;
-            padding: 3px 10px;
-            border-radius: 20px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
+        .tool-card.short:hover { border-color: #8e44ad; }
+        .tool-card.short:hover .icon-box i { color: #8e44ad; }
+
+        .tool-card.sante:hover { border-color: #2ecc71; }
+        .tool-card.sante:hover .icon-box i { color: #2ecc71; }
 
         footer {
             margin-top: auto;
             text-align: center;
-            padding: 30px;
+            padding: 20px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 13px;
+            font-size: 11px;
             color: #64748b;
-        }
-
-        @media (max-width: 600px) {
-            .tools-grid { grid-template-columns: 1fr; }
         }
     </style>
 </head>
@@ -174,72 +142,80 @@
 
 <nav class="main-nav">
     <a href="/" class="logo">NKONVERT</a>
-    <div style="font-size: 12px; color: var(--primary-blue); font-weight: bold;">V2.0 STABLE</div>
+    <div style="font-size: 10px; color: var(--primary-blue); font-weight: bold;">V2.0 STABLE</div>
 </nav>
 
 <div class="hero">
-    <h1>Tout-en-un. <span style="color: var(--primary-blue);">Simple.</span></h1>
-    <p>Convertissez, compressez et extrayez vos médias en quelques secondes. Sans limites, sans frais.</p>
+    <h1>Simple. <span style="color: var(--primary-blue);">Rapide.</span></h1>
+    <p>La suite d'outils numériques pour tout transformer en un clic.</p>
 </div>
 
 <div class="tools-grid">
     <a href="/convert_page" class="tool-card pdf">
-        <div class="icon-box"><i class="fas fa-file-pdf"></i></div>
-        <h3>Convertir PDF</h3>
-        <p>Transformez vos PDF en Word, Images ou HTML instantanément.</p>
-    </a>
-    
-    <a href="/boost" class="tool-card boost">
-        <div class="icon-box"><i class="fas fa-bolt"></i></div>
-        <h3>Boost Spirit</h3>
-        <p>Besoin d'énergie ? L'Oracle NKALAA a un message pour vous.</p>
-    </a>
-    <a href="/zip" class="tool-card zip">
-        <div class="icon-box"><i class="fas fa-file-zipper"></i></div>
-        <h3>Compression ZIP</h3>
-        <p>Regroupez et compressez vos dossiers pour un partage facile.</p>
+        <div class="icon-box"><i class="fas fa-sync-alt"></i></div>
+        <h3>Convertir</h3>
+        <p>PDF vers Word, Image, HTML.</p>
     </a>
 
+    a href="/qr-generator" class="tool-card zip">
+    <div class="icon-box">
+        <i class="fas fa-qrcode"></i>
+    </div>
+    <div class="badge">Nouveau</div>
+    <h3>Code QR</h3>
+    <p>Générez des codes QR personnalisés pour vos liens, contacts ou Wi-Fi.</p>
+</a>
     
+    <a href="/sante" class="tool-card sante">
+        <div class="icon-box"><i class="fas fa-heartbeat"></i></div>
+        <h3>Santé</h3>
+        <p>IMC, Gynéco et SA.</p>
+    </a>
+
+    <a href="/shorten_page" class="tool-card short">
+        <div class="icon-box"><i class="fas fa-link"></i></div>
+        <h3>Lien Court</h3>
+        <p>URLs courtes et pro.</p>
+    </a>
+
+    <a href="/boost" class="tool-card boost">
+        <div class="icon-box"><i class="fas fa-bolt"></i></div>
+        <h3>Boost</h3>
+        <p>L'Oracle NKALAA vous parle.</p>
+    </a>
+
+    <a href="/zip" class="tool-card zip">
+        <div class="icon-box"><i class="fas fa-file-archive"></i></div>
+        <h3>Zip</h3>
+        <p>Compressez vos dossiers.</p>
+    </a>
 
     <a href="/img_to_pdf" class="tool-card pdf">
         <div class="icon-box"><i class="fas fa-images"></i></div>
-        <h3>Images en PDF</h3>
-        <p>Compilez plusieurs photos (JPG/PNG) dans un seul document PDF.</p>
+        <h3>Img to PDF</h3>
+        <p>compilez vos photos en fichier PDF.</p>
     </a>
 
     <a href="/split_pdf" class="tool-card pdf">
-        <div class="icon-box"><i class="fas fa-scissors"></i></div>
-        <h3>Découper PDF</h3>
-        <p>Divisez un gros PDF en plusieurs petits fichiers séparés.</p>
+        <div class="icon-box"><i class="fas fa-cut"></i></div>
+        <h3>Split PDF</h3>
+        <p>Découper vos documents.</p>
     </a>
-<a href="/shorten_page" class="tool-card">
-    <div class="icon-box purple">
-        <i class="fas fa-link"></i>
-    </div>
-    <h3>Lien Court</h3>
-    <p>Réduisez vos URLs longues en liens NKONVERT pro et rapides.</p>
-</a>
     
-<a href="/calculateur-obstetrical" class="tool-card">
-    <div class="icon-box pink">
-        <i class="fas fa-stethoscope"></i>
+    <a href="https://nkalaa.com" target="_blank" class="tool-card boost">
+    <div class="icon-box">
+        <i class="fas fa-shop"></i>
     </div>
-    <h3>Calculateur Gynéco</h3>
-    <p>Calculez la SA, la HU (Règle de Fournié) et la DPA en un clic pour vos stages.</p>
+    <div class="badge" style="background: var(--primary-blue);">PROJET</div>
+    <h3>NKALAA Annonces</h3>
+    <p>Votre plateforme de vente gratuite et de petites annonces. Achetez et vendez en un clic.</p>
 </a>
-    
 </div>
 
 <footer>
-    &copy; 2026 NKONVERT par NKALAA. Tous droits réservés. <br>
-    Hébergé de manière sécurisée sur Render.
-    toujours prendre une minute pour wanda.
+    &copy; 2026 NKONVERT par NKALAA <br>
+    Toujours prendre une minute pour wanda.
 </footer>
 
-
-
-
-
-
-
+</body>
+</html>
