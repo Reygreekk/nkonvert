@@ -1,0 +1,256 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="favicon.png">
+    <title>NKONVERT | Espace Santé Pro</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary-teal: #00f2fe;
+            --secondary-teal: #4facfe;
+            --emergency-red: #ff3838;
+            --bg-dark: #020817;
+            --card-bg: rgba(30, 41, 59, 0.5);
+            --nav-bg: #010409;
+        }
+
+        body {
+            background: var(--bg-dark);
+            background-image: 
+                radial-gradient(circle at 10% 20%, rgba(0, 242, 254, 0.12) 0%, transparent 40%),
+                radial-gradient(circle at 90% 80%, rgba(79, 172, 254, 0.08) 0%, transparent 40%);
+            color: white;
+            font-family: 'Inter', system-ui, -apple-system, sans-serif;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* --- NAVIGATION --- */
+        .main-nav {
+            background: var(--nav-bg);
+            padding: 1rem 5%;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid rgba(0, 242, 254, 0.2);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .logo {
+            font-size: 1.4rem;
+            font-weight: 900;
+            background: linear-gradient(to right, var(--primary-teal), var(--secondary-teal));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-decoration: none;
+        }
+
+        /* --- HERO --- */
+        .hero {
+            text-align: center;
+            padding: 50px 20px;
+        }
+
+        .hero h1 {
+            font-size: clamp(1.8rem, 6vw, 3rem);
+            margin-bottom: 12px;
+            font-weight: 800;
+        }
+
+        .hero p {
+            color: #94a3b8;
+            font-size: 1rem;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* --- GRID DES OUTILS --- */
+        .tools-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 30px 20px 60px;
+        }
+
+        .tool-card {
+            background: var(--card-bg);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(255, 255, 255, 0.08);
+            border-radius: 24px;
+            padding: 25px;
+            text-decoration: none;
+            color: white;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+
+        .tool-card:hover {
+            transform: translateY(-5px);
+            border-color: var(--primary-teal);
+            box-shadow: 0 15px 30px rgba(0, 242, 254, 0.1);
+        }
+
+        .icon-box {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: var(--primary-teal);
+        }
+
+        .tool-card:hover .icon-box {
+            background: var(--primary-teal);
+            color: var(--bg-dark);
+        }
+
+        .tool-card h3 {
+            margin: 0 0 8px;
+            font-size: 1.2rem;
+        }
+
+        .tool-card p {
+            font-size: 0.9rem;
+            color: #94a3b8;
+            line-height: 1.5;
+            margin: 0;
+        }
+
+        .status-badge {
+            font-size: 9px;
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--primary-teal);
+            padding: 4px 10px;
+            border-radius: 50px;
+            font-weight: 800;
+            text-transform: uppercase;
+            width: fit-content;
+            margin-bottom: 12px;
+        }
+
+        /* --- RESPONSIVE SMARTPHONE (2 PAR LIGNE) --- */
+        @media (max-width: 600px) {
+            .hero { padding: 30px 15px; }
+            
+            .tools-grid {
+                grid-template-columns: repeat(2, 1fr); /* Affichage 2x2 */
+                gap: 12px;
+                padding: 10px;
+            }
+
+            .tool-card {
+                padding: 15px;
+                border-radius: 18px;
+                text-align: center;
+                align-items: center;
+            }
+
+            .icon-box {
+                width: 42px;
+                height: 42px;
+                font-size: 18px;
+                margin-bottom: 10px;
+                border-radius: 12px;
+            }
+
+            .tool-card h3 {
+                font-size: 0.85rem;
+                letter-spacing: -0.3px;
+            }
+
+            .tool-card p {
+                font-size: 0.7rem;
+                line-height: 1.3;
+                /* Limite à 3 lignes pour éviter les décalages */
+                display: -webkit-box;
+                -webkit-line-clamp: 3;
+                -webkit-box-orient: vertical;
+                overflow: hidden;
+            }
+
+            .status-badge {
+                font-size: 7px;
+                padding: 2px 6px;
+                margin-bottom: 8px;
+            }
+        }
+
+        footer {
+            margin-top: auto;
+            text-align: center;
+            padding: 30px;
+            color: #475569;
+            font-size: 11px;
+            border-top: 1px solid rgba(255,255,255,0.05);
+        }
+    </style>
+</head>
+<body>
+
+<nav class="main-nav">
+    <a href="/" class="logo">NK<span>ONVERT</span> SANTE</a>
+    <a href="/" style="color: #94a3b8; text-decoration: none; font-size: 11px; border: 1px solid #334155; padding: 4px 12px; border-radius: 50px;">Index</a>
+</nav>
+
+<div class="hero">
+    <h1>Espace <span style="color: var(--primary-teal);">Santé</span></h1>
+    <p>Outils d'aide clinique optimisés pour le terrain hospitalier.</p>
+</div>
+
+<div class="tools-grid">
+    <a href="/calculateur-obstetrical" class="tool-card">
+        <div class="status-badge" style="color:#f472b6; background:rgba(244,114,182,0.1)">Stage</div>
+        <div class="icon-box" style="color:#f472b6;"><i class="fas fa-stethoscope"></i></div>
+        <h3>Obstétrique</h3>
+        <p>calculateur-obstetrical, HU (Fournié), DPA et calendrier de suivi.</p>
+    </a>
+
+    <a href="/calculateur-brulures" class="tool-card">
+        <div class="status-badge" style="color:var(--emergency-red); background:rgba(255,56,56,0.1)">Urgent</div>
+        <div class="icon-box" style="color:var(--emergency-red);"><i class="fas fa-fire"></i></div>
+        <h3>Brûlures</h3>
+        <p>Surface SCB (Wallace) et profondeur.</p>
+    </a>
+
+    <a href="#" class="tool-card">
+        <div class="status-badge">Score</div>
+        <div class="icon-box"><i class="fas fa-brain"></i></div>
+        <h3>Glasgow</h3>
+        <p>Évaluation de l'état de conscience (YVM).</p>
+    </a>
+
+    <a href="#" class="tool-card">
+        <div class="status-badge">Calcul</div>
+        <div class="icon-box"><i class="fas fa-weight"></i></div>
+        <h3>IMC / SC</h3>
+        <p>Indice de masse et surface corporelle.</p>
+    </a>
+
+    <a href="/boost" class="tool-card">
+        <div class="status-badge">Mental</div>
+        <div class="icon-box" style="color:#a29bfe;"><i class="fas fa-magic"></i></div>
+        <h3>Oracle</h3>
+        <p>Un message de force pour ta garde.</p>
+    </a>
+</div>
+
+<footer>
+    &copy; 2026 NKONVERT SANTE. Ne remplace pas l'avis d'un médecin.
+</footer>
+
+</body>
+</html>
