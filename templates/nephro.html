@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Néphro-Check | NKALAA 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #4f46e5; /* Indigo Médical */
+            --accent: #06b6d4; /* Cyan */
+            --bg: #f8fafc;
+            --white: #ffffff;
+            --text: #1e293b;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Header --- */
+        header {
+            padding: 30px 20px;
+            text-align: center;
+            background: var(--white);
+            box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        header h1 {
+            margin: 0;
+            font-size: 1.6rem;
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            letter-spacing: -1px;
+        }
+
+        header p {
+            color: #64748b;
+            font-size: 0.85rem;
+            margin-top: 5px;
+            font-weight: 500;
+        }
+
+        /* --- Container --- */
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .nephro-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 450px;
+            border-radius: 24px;
+            padding: 30px;
+            box-shadow: 0 20px 25px -5px rgba(0,0,0,0.1), 0 10px 10px -5px rgba(0,0,0,0.04);
+            animation: fadeIn 0.6s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* --- Inputs --- */
+        .input-group {
+            margin-bottom: 20px;
+        }
+
+        label {
+            display: block;
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: #475569;
+            text-transform: uppercase;
+            margin-bottom: 8px;
+            letter-spacing: 0.5px;
+        }
+
+        select, input {
+            width: 100%;
+            padding: 14px;
+            border: 2px solid #f1f5f9;
+            border-radius: 12px;
+            font-size: 1rem;
+            background: #f8fafc;
+            color: var(--text);
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        select:focus, input:focus {
+            border-color: var(--primary);
+            background: #fff;
+            outline: none;
+            box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.1);
+        }
+
+        .grid-inputs {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 15px;
+        }
+
+        /* --- Result Display --- */
+        .result-zone {
+            margin-top: 30px;
+            padding: 25px;
+            border-radius: 20px;
+            text-align: center;
+            background: #f1f5f9;
+            display: none;
+            transition: all 0.5s ease;
+        }
+
+        .dfg-value {
+            font-size: 3rem;
+            font-weight: 900;
+            color: var(--primary);
+            line-height: 1;
+        }
+
+        .dfg-unit {
+            font-size: 1rem;
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .stade-badge {
+            margin-top: 15px;
+            padding: 10px;
+            border-radius: 10px;
+            font-size: 0.9rem;
+            font-weight: 700;
+            display: inline-block;
+        }
+
+        /* --- Footer --- */
+        footer {
+            background: #1e293b;
+            color: #94a3b8;
+            text-align: center;
+            padding: 20px;
+            font-size: 0.8rem;
+            font-weight: 500;
+        }
+
+        footer span {
+            color: var(--accent);
+            font-weight: 700;
+        }
+
+        footer i {
+            color: #ef4444;
+            margin: 0 4px;
+        }
+
+        /* Responsive Mobile */
+        @media (max-width: 480px) {
+            .nephro-card { padding: 20px; }
+            header { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Néphro-DFG Expert</h1>
+    <p>Calcul de la Clairance (Cockcroft-Gault)</p>
+</header>
+
+<div class="container">
+    <div class="nephro-card">
+        <div class="input-group">
+            <label><i class="fas fa-venus-mars"></i> Sexe du patient</label>
+            <select id="sexe" onchange="calculer()">
+                <option value="1">Homme</option>
+                <option value="0.85">Femme</option>
+            </select>
+        </div>
+
+        <div class="grid-inputs">
+            <div class="input-group">
+                <label><i class="fas fa-birthday-cake"></i> Âge</label>
+                <input type="number" id="age" placeholder="Ans" oninput="calculer()">
+            </div>
+            <div class="input-group">
+                <label><i class="fas fa-weight"></i> Poids</label>
+                <input type="number" id="poids" placeholder="kg" oninput="calculer()">
+            </div>
+        </div>
+
+        <div class="input-group" style="margin-bottom: 0;">
+            <label><i class="fas fa-vial"></i> Créatininémie (µmol/L)</label>
+            <input type="number" id="creat" placeholder="Ex: 110" oninput="calculer()">
+        </div>
+
+        <div id="resultZone" class="result-zone">
+            <div class="dfg-value" id="outDFG">--</div>
+            <div class="dfg-unit">ml/min</div>
+            <div id="stadeBadge" class="stade-badge"></div>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 | Developed with <i class="fas fa-heart"></i> by <span>NKALAA</span>
+</footer>
+
+<script>
+    function calculer() {
+        const age = parseFloat(document.getElementById('age').value);
+        const poids = parseFloat(document.getElementById('poids').value);
+        const creat = parseFloat(document.getElementById('creat').value);
+        const sexeMult = parseFloat(document.getElementById('sexe').value);
+        const resZone = document.getElementById('resultZone');
+
+        if (age > 0 && poids > 0 && creat > 0) {
+            // Formule : (140 - âge) * poids / (0.814 * créat)
+            // * 0.85 si femme
+            let dfg = ((140 - age) * poids) / (0.814 * creat);
+            dfg = dfg * sexeMult;
+
+            const finalDFG = dfg.toFixed(1);
+            document.getElementById('outDFG').innerText = finalDFG;
+
+            // Détermination du stade IRC
+            const badge = document.getElementById('stadeBadge');
+            let info = "";
+            let color = "";
+            let bg = "";
+
+            if (dfg >= 90) {
+                info = "Stade 1 : Fonction normale";
+                color = "#065f46"; bg = "#d1fae5";
+            } else if (dfg >= 60) {
+                info = "Stade 2 : IRC légère";
+                color = "#92400e"; bg = "#fef3c7";
+            } else if (dfg >= 30) {
+                info = "Stade 3 : IRC modérée";
+                color = "#9a3412"; bg = "#ffedd5";
+            } else if (dfg >= 15) {
+                info = "Stade 4 : IRC sévère";
+                color = "#991b1b"; bg = "#fee2e2";
+            } else {
+                info = "Stade 5 : Défaillance terminale";
+                color = "#ffffff"; bg = "#7f1d1d";
+            }
+
+            badge.innerText = info;
+            badge.style.color = color;
+            badge.style.backgroundColor = bg;
+
+            resZone.style.display = 'block';
+        } else {
+            resZone.style.display = 'none';
+        }
+    }
+</script>
+
+</body>
+</html>
