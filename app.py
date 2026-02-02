@@ -117,6 +117,10 @@ def split_pdf_page():
     # Attention : Vérifie que ton fichier s'appelle bien decoupage.html ou split_pdf.html
     return render_template('decoupage.html')
     
+@app.route('/qr-generator')
+def generator_page():
+    return render_template('generator.html')
+    
 @app.route('/calculateur-obstetrical')
 def gyneco_tool():
     return render_template('gyneco.html')
@@ -582,6 +586,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
