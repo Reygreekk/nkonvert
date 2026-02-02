@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Generator | NKALAA 2026</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <style>
+        :root {
+            --primary: #e91e63;
+            --secondary: #2c3e50;
+            --bg: #f0f2f5;
+            --white: #ffffff;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background-color: var(--bg);
+            margin: 0;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        /* --- Contenu Principal --- */
+        .container {
+            flex: 1;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .qr-card {
+            background: var(--white);
+            width: 100%;
+            max-width: 400px;
+            padding: 30px;
+            border-radius: 24px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.08);
+            text-align: center;
+            animation: slideUp 0.5s ease;
+        }
+
+        @keyframes slideUp {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        h1 {
+            color: var(--secondary);
+            font-size: 1.5rem;
+            margin-bottom: 8px;
+        }
+
+        p { color: #64748b; font-size: 0.9rem; margin-bottom: 25px; }
+
+        /* --- Input Stylisé --- */
+        .input-box {
+            position: relative;
+            margin-bottom: 25px;
+        }
+
+        input {
+            width: 100%;
+            padding: 15px 15px 15px 45px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(233, 30, 99, 0.1);
+            outline: none;
+        }
+
+        .input-box i {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        /* --- Zone QR Code --- */
+        #qrcode {
+            background: #fff;
+            padding: 15px;
+            display: inline-block;
+            border: 1px solid #f1f5f9;
+            border-radius: 16px;
+            margin-bottom: 20px;
+        }
+
+        #qrcode canvas, #qrcode img {
+            max-width: 200px;
+            height: auto;
+        }
+
+        .btn-download {
+            display: none;
+            background: var(--secondary);
+            color: white;
+            text-decoration: none;
+            padding: 12px 25px;
+            border-radius: 10px;
+            font-weight: 600;
+            transition: 0.3s;
+        }
+
+        .btn-download:hover { background: var(--primary); }
+
+        /* --- Footer 2026 --- */
+        footer {
+            background: var(--secondary);
+            color: #94a3b8;
+            text-align: center;
+            padding: 15px 0;
+            font-size: 0.8rem;
+            letter-spacing: 1px;
+        }
+
+        footer span {
+            color: var(--primary);
+            font-weight: bold;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .qr-card { padding: 20px; }
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="qr-card">
+        <h1>Générateur de QR</h1>
+        <p>Entrez votre URL pour générer le code</p>
+
+        <div class="input-box">
+            <i class="fas fa-link"></i>
+            <input type="text" id="qr-text" placeholder="https://nkonvert.link/..." oninput="generateQR()">
+        </div>
+
+        <div id="qrcode"></div>
+
+        <div>
+            <a id="download-btn" class="btn-download" download="qr-nkalaa.png">
+                <i class="fas fa-download"></i> Télécharger
+            </a>
+        </div>
+    </div>
+</div>
+
+<footer>
+    &copy; 2026 — Designed by <span>NKALAA</span>
+</footer>
+
+<script>
+    // Initialisation du générateur
+    const qrcodeContainer = document.getElementById("qrcode");
+    const downloadBtn = document.getElementById("download-btn");
+    
+    const qrGenerator = new QRCode(qrcodeContainer, {
+        width: 200,
+        height: 200,
+        colorDark : "#2c3e50",
+        colorLight : "#ffffff",
+        correctLevel : QRCode.CorrectLevel.H
+    });
+
+    function generateQR() {
+        const text = document.getElementById("qr-text").value;
+        
+        if (text.trim() !== "") {
+            qrGenerator.makeCode(text);
+            downloadBtn.style.display = "inline-block";
+            
+            // Mise à jour du lien de téléchargement (léger délai pour le rendu canvas)
+            setTimeout(() => {
+                const canvas = qrcodeContainer.querySelector('canvas');
+                if (canvas) {
+                    downloadBtn.href = canvas.toDataURL("image/png");
+                }
+            }, 100);
+        } else {
+            downloadBtn.style.display = "none";
+            // On peut mettre un QR vide ou un logo ici
+        }
+    }
+</script>
+
+</body>
+</html>
