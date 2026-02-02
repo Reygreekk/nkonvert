@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Calculateur IMC Pro | NKonvert</title>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --bg: #020817;
+            --card: #1e293b;
+            --primary: #00f2fe;
+            --accent: #4facfe;
+            --success: #2ecc71;
+            --warning: #f1c40f;
+            --danger: #e74c3c;
+        }
+
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); color: white; display: flex; flex-direction: column; align-items: center; padding: 20px; margin: 0; }
+        
+        .imc-card {
+            background: var(--card);
+            width: 100%;
+            max-width: 500px;
+            padding: 2rem;
+            border-radius: 30px;
+            box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.1);
+            margin-bottom: 25px;
+        }
+
+        h2 { text-align: center; margin-top: 0; background: linear-gradient(to right, #00f2fe, #4facfe); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+
+        .input-group { margin-bottom: 20px; }
+        label { display: block; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; text-transform: uppercase; color: #94a3b8; }
+        
+        input[type="range"] { width: 100%; cursor: pointer; accent-color: var(--primary); }
+        .val-display { text-align: right; font-weight: 800; color: var(--primary); font-size: 1.2rem; }
+
+        .gauge-container {
+            position: relative;
+            height: 40px;
+            background: linear-gradient(to right, #3498db 0%, #2ecc71 25%, #f1c40f 45%, #e67e22 65%, #e74c3c 100%);
+            border-radius: 12px;
+            margin: 25px 0;
+        }
+
+        #cursor {
+            position: absolute;
+            top: -5px; left: 50%;
+            width: 8px; height: 50px;
+            background: white;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.5);
+            transition: left 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+
+        .result-zone { text-align: center; padding: 20px; border-radius: 20px; background: rgba(0,0,0,0.2); }
+        #imc-val { font-size: 3.5rem; font-weight: 900; display: block; }
+        #imc-status { font-weight: 700; text-transform: uppercase; letter-spacing: 1px; }
+
+        /* Section Conseils */
+        .tips-container {
+            width: 100%;
+            max-width: 500px;
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 15px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .tip-card {
+            background: rgba(30, 41, 59, 0.6);
+            padding: 20px;
+            border-radius: 20px;
+            border-left: 5px solid var(--primary);
+        }
+
+        .tip-card h3 { margin: 0 0 10px; font-size: 1rem; color: var(--primary); display: flex; align-items: center; gap: 10px; }
+        .tip-card p { font-size: 0.9rem; color: #cbd5e1; line-height: 1.5; margin: 0; }
+        
+        ul { padding-left: 20px; margin: 10px 0 0; color: #cbd5e1; font-size: 0.85rem; }
+        li { margin-bottom: 5px; }
+
+        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+    </style>
+</head>
+<body>
+
+<div class="imc-card">
+    <h2>Espace Forme NKonvert</h2>
+    
+    <div class="input-group">
+        <label>Taille (cm) : <span class="val-display" id="label-taille">170</span></label>
+        <input type="range" id="taille" min="100" max="220" value="170" oninput="calculer()">
+    </div>
+
+    <div class="input-group">
+        <label>Poids (kg) : <span class="val-display" id="label-poids">70</span></label>
+        <input type="range" id="poids" min="30" max="150" value="70" oninput="calculer()">
+    </div>
+
+    <div class="gauge-container">
+        <div id="cursor"></div>
+    </div>
+
+    <div class="result-zone">
+        <span id="imc-val">24.2</span>
+        <div id="imc-status">Poids Normal</div>
+    </div>
+</div>
+
+<div class="tips-container" id="tips">
+    </div>
+
+<script>
+    const advices = {
+        under: {
+            title: "Objectif : Renforcement & Masse",
+            food: ["Augmentez les protéines (œufs, poulet, lentilles)", "Glucides complexes (riz complet, avoine)", "Bonnes graisses (avocats, noix)"],
+            sport: ["Musculation douce", "Yoga postural", "Natation"]
+        },
+        normal: {
+            title: "Objectif : Maintien & Tonus",
+            food: ["Assiette équilibrée : 1/2 légumes, 1/4 protéines, 1/4 glucides", "Hydratation (2L d'eau)", "Fruits de saison"],
+            sport: ["Running ou marche rapide (30min/jour)", "Squats (3 séries de 15)", "Gainage (3 x 45s)"]
+        },
+        over: {
+            title: "Objectif : Brûler & Affiner",
+            food: ["Réduire les sucres rapides et sodas", "Priorité aux fibres (légumes verts)", "Dîner léger (soupes, poissons blancs)"],
+            sport: ["HIIT (Cardio haute intensité)", "Burpees (10 par jour pour commencer)", "Vélo ou marche inclinée"]
+        }
+    };
+
+    function calculer() {
+        const taille = document.getElementById('taille').value;
+        const poids = document.getElementById('poids').value;
+        
+        document.getElementById('label-taille').innerText = taille;
+        document.getElementById('label-poids').innerText = poids;
+
+        const imc = (poids / ((taille/100) * (taille/100))).toFixed(1);
+        document.getElementById('imc-val').innerText = imc;
+
+        let percent = ((imc - 15) / (40 - 15)) * 100;
+        percent = Math.max(0, Math.min(100, percent));
+        document.getElementById('cursor').style.left = `calc(${percent}% - 4px)`;
+
+        const status = document.getElementById('imc-status');
+        const tipsContainer = document.getElementById('tips');
+        let category = "";
+
+        if(imc < 18.5) { 
+            status.innerText = "Insuffisance pondérale"; status.style.color = "#3498db"; 
+            category = "under";
+        } else if(imc < 25) { 
+            status.innerText = "Poids Normal"; status.style.color = "#2ecc71"; 
+            category = "normal";
+        } else if(imc < 30) { 
+            status.innerText = "Surpoids"; status.style.color = "#f1c40f"; 
+            category = "over";
+        } else { 
+            status.innerText = "Obésité"; status.style.color = "#e74c3c"; 
+            category = "over";
+        }
+
+        updateTips(category);
+    }
+
+    function updateTips(cat) {
+        const data = advices[cat];
+        document.getElementById('tips').innerHTML = `
+            <div class="tip-card">
+                <h3><i class="fas fa-utensils"></i> Nutrition : ${data.title}</h3>
+                <ul>${data.food.map(f => `<li>${f}</li>`).join('')}</ul>
+            </div>
+            <div class="tip-card" style="border-left-color: var(--accent)">
+                <h3><i class="fas fa-dumbbell"></i> Exercices Recommandés</h3>
+                <ul>${data.sport.map(s => `<li>${s}</li>`).join('')}</ul>
+            </div>
+        `;
+    }
+
+    window.onload = calculer;
+</script>
+
+</body>
+</html>
