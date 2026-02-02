@@ -55,17 +55,16 @@
         .hero h1 { font-size: clamp(1.8rem, 6vw, 3rem); margin-bottom: 10px; font-weight: 900; }
         .hero p { color: #94a3b8; font-size: 1rem; max-width: 500px; margin: 0 auto 30px; }
 
-        /* GRILLE RESPONSIVE 2-2 MOBILE */
+        /* GRILLE RESPONSIVE */
         .tools-grid {
             display: grid;
-            grid-template-columns: repeat(2, 1fr); /* Force 2 colonnes sur mobile */
+            grid-template-columns: repeat(2, 1fr); /* 2 colonnes sur mobile */
             gap: 15px;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 15px 50px;
         }
 
-        /* Passage à 3 ou 4 colonnes sur tablette/PC */
         @media (min-width: 768px) {
             .tools-grid {
                 grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -78,19 +77,21 @@
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 20px;
-            padding: 20px 10px;
+            padding: 25px 15px;
             text-align: center;
             transition: all 0.3s ease;
             text-decoration: none;
             color: white;
             display: flex;
             flex-direction: column;
-            justify-content: center;
+            position: relative;
+            overflow: hidden;
         }
 
         .tool-card:hover {
             transform: translateY(-8px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.4);
+            background: rgba(15, 23, 42, 0.9);
         }
 
         .icon-box {
@@ -106,27 +107,41 @@
             transition: 0.3s;
         }
 
-        .tool-card h3 { margin: 0 0 8px; font-size: 0.95rem; text-transform: uppercase; letter-spacing: 0.5px; }
+        .tool-card:hover .icon-box {
+            transform: scale(1.1);
+        }
+
+        .tool-card h3 { margin: 0 0 8px; font-size: 0.9rem; text-transform: uppercase; letter-spacing: 0.5px; font-weight: 800; }
         .tool-card p { font-size: 0.75rem; color: #94a3b8; line-height: 1.3; margin: 0; }
 
-        /* Couleurs au survol (Styles personnalisés) */
+        /* Badge */
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background: var(--primary-red);
+            font-size: 8px;
+            padding: 2px 8px;
+            border-radius: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Couleurs au survol */
         .tool-card.pdf:hover { border-color: #ff4d4d; }
         .tool-card.pdf:hover .icon-box i { color: #ff4d4d; }
 
-        .tool-card.tube:hover { border-color: var(--primary-blue); }
-        .tool-card.tube:hover .icon-box i { color: var(--primary-blue); }
+        .tool-card.sante:hover { border-color: #2ecc71; }
+        .tool-card.sante:hover .icon-box i { color: #2ecc71; }
+
+        .tool-card.short:hover { border-color: #8e44ad; }
+        .tool-card.short:hover .icon-box i { color: #8e44ad; }
 
         .tool-card.boost:hover { border-color: #a29bfe; }
         .tool-card.boost:hover .icon-box i { color: #a29bfe; }
 
         .tool-card.zip:hover { border-color: #ffae00; }
         .tool-card.zip:hover .icon-box i { color: #ffae00; }
-
-        .tool-card.short:hover { border-color: #8e44ad; }
-        .tool-card.short:hover .icon-box i { color: #8e44ad; }
-
-        .tool-card.sante:hover { border-color: #2ecc71; }
-        .tool-card.sante:hover .icon-box i { color: #2ecc71; }
 
         footer {
             margin-top: auto;
@@ -157,25 +172,23 @@
         <p>PDF vers Word, Image, HTML.</p>
     </a>
 
-    a href="/qr-generator" class="tool-card zip">
-    <div class="icon-box">
-        <i class="fas fa-qrcode"></i>
-    </div>
-    <div class="badge">Nouveau</div>
-    <h3>Code QR</h3>
-    <p>Générez des codes QR personnalisés pour vos liens, contacts ou Wi-Fi.</p>
-</a>
+    <a href="/qr-generator" class="tool-card zip">
+        <div class="badge">Nouveau</div>
+        <div class="icon-box"><i class="fas fa-qrcode"></i></div>
+        <h3>Code QR</h3>
+        <p>Générez vos codes QR personnalisés.</p>
+    </a>
     
     <a href="/sante" class="tool-card sante">
         <div class="icon-box"><i class="fas fa-heartbeat"></i></div>
         <h3>Santé</h3>
-        <p>IMC, Gynéco et SA.</p>
+        <p>IMC, Gynéco et Brûlures.</p>
     </a>
 
     <a href="/shorten_page" class="tool-card short">
         <div class="icon-box"><i class="fas fa-link"></i></div>
         <h3>Lien Court</h3>
-        <p>URLs courtes et pro.</p>
+        <p>URLs courtes et professionnelles.</p>
     </a>
 
     <a href="/boost" class="tool-card boost">
@@ -193,29 +206,28 @@
     <a href="/img_to_pdf" class="tool-card pdf">
         <div class="icon-box"><i class="fas fa-images"></i></div>
         <h3>Img to PDF</h3>
-        <p>compilez vos photos en fichier PDF.</p>
+        <p>Compilez vos photos en PDF.</p>
     </a>
 
     <a href="/split_pdf" class="tool-card pdf">
         <div class="icon-box"><i class="fas fa-cut"></i></div>
         <h3>Split PDF</h3>
-        <p>Découper vos documents.</p>
+        <p>Découpez vos documents.</p>
     </a>
     
     <a href="https://nkalaa.com" target="_blank" class="tool-card boost">
-    <div class="icon-box">
-        <i class="fas fa-shop"></i>
-    </div>
-    <div class="badge" style="background: var(--primary-blue);">PROJET</div>
-    <h3>NKALAA Annonces</h3>
-    <p>Votre plateforme de vente gratuite et de petites annonces. Achetez et vendez en un clic.</p>
-</a>
+        <div class="badge" style="background: var(--primary-blue);">PROJET</div>
+        <div class="icon-box"><i class="fas fa-shop"></i></div>
+        <h3>Annonces</h3>
+        <p>Vendez sur NKALAA.com votre site de petites annonces</p>
+    </a>
 </div>
 
 <footer>
     &copy; 2026 NKONVERT par NKALAA <br>
-    Toujours prendre une minute pour wanda.
+    Hébergé sur Render | Toujours prendre une minute pour wanda.
 </footer>
 
 </body>
 </html>
+
