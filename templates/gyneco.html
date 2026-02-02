@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gynéco-OBST v2.0 | NKonvert</title>
+    <title>Gynéco-OBST v2.2 | NKonvert</title>
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;800&display=swap" rel="stylesheet">
     <style>
         :root {
@@ -11,134 +11,43 @@
             --primary-light: #fce4ec;
             --secondary: #1e293b;
             --accent: #0d9488;
+            --info: #3b82f6;
             --bg: #f1f5f9;
             --white: #ffffff;
             --text-main: #334155;
-            --text-sub: #64748b;
             --radius: 16px;
-            --shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
         }
 
-        * { box-sizing: border-box; }
-
-        body {
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            background-color: var(--bg);
-            color: var(--text-main);
-            margin: 0;
-            display: flex;
-            justify-content: center;
-            min-height: 100vh;
-            padding: 20px;
-        }
-
-        .app-card {
-            background: var(--white);
-            width: 100%;
-            max-width: 480px;
-            padding: 2.5rem;
-            border-radius: 24px;
-            box-shadow: var(--shadow);
-            height: fit-content;
-        }
-
-        .header { text-align: center; margin-bottom: 2rem; }
-        .header h1 { 
-            color: var(--secondary); 
-            font-size: 1.6rem; 
-            margin: 0; 
-            font-weight: 800;
-        }
+        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
+        .app-card { background: var(--white); width: 100%; max-width: 480px; padding: 2rem; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        
+        .header { text-align: center; margin-bottom: 1.5rem; }
+        .header h1 { color: var(--secondary); font-size: 1.6rem; margin: 0; font-weight: 800; }
         .header span { color: var(--primary); }
-        .header p { color: var(--text-sub); font-size: 0.9rem; margin-top: 5px; }
 
-        /* Inputs */
-        .form-group { margin-bottom: 1.5rem; }
-        label { 
-            display: block; 
-            font-weight: 600; 
-            margin-bottom: 8px; 
-            font-size: 0.85rem; 
-            color: var(--secondary);
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
-        input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid #e2e8f0;
-            border-radius: var(--radius);
-            font-size: 1rem;
-            transition: all 0.3s;
-            background: #f8fafc;
-        }
-        input:focus {
-            outline: none;
-            border-color: var(--primary);
-            background: white;
-            box-shadow: 0 0 0 4px rgba(216, 27, 96, 0.1);
-        }
+        .form-group { margin-bottom: 1rem; }
+        label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 0.75rem; color: var(--secondary); text-transform: uppercase; }
+        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; background: #f8fafc; box-sizing: border-box; }
+        input:focus { outline: none; border-color: var(--primary); background: white; }
 
-        .divider {
-            display: flex; align-items: center; text-align: center;
-            margin: 1.5rem 0; color: var(--text-sub); font-size: 0.8rem;
-        }
-        .divider::before, .divider::after {
-            content: ''; flex: 1; border-bottom: 1px solid #e2e8f0;
-        }
-        .divider:not(:empty)::before { margin-right: .75em; }
-        .divider:not(:empty)::after { margin-left: .75em; }
+        .divider { display: flex; align-items: center; margin: 1rem 0; color: #94a3b8; font-size: 0.7rem; font-weight: 800; }
+        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e2e8f0; margin: 0 10px; }
 
-        /* Result Area */
-        #resultats { display: none; animation: fadeIn 0.4s ease-out; }
+        #resultats { display: none; animation: fadeIn 0.4s ease-out; margin-top: 20px; }
         @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-        .main-stat {
-            background: linear-gradient(135deg, var(--primary), #ad1457);
-            color: white;
-            padding: 20px;
-            border-radius: var(--radius);
-            text-align: center;
-            margin-bottom: 1rem;
-        }
-        .main-stat .hu-val { font-size: 2.8rem; font-weight: 800; display: block; }
-        .main-stat label { color: rgba(255,255,255,0.8); margin-bottom: 0; }
+        .main-stat { background: linear-gradient(135deg, var(--primary), #ad1457); color: white; padding: 20px; border-radius: var(--radius); text-align: center; margin-bottom: 1rem; }
+        .hu-val { font-size: 2.5rem; font-weight: 800; display: block; }
 
-        .grid-stats {
-            display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem;
-        }
-        .stat-box {
-            background: var(--primary-light);
-            padding: 15px;
-            border-radius: var(--radius);
-            text-align: center;
-        }
-        .stat-box .val { display: block; font-weight: 800; color: var(--primary); font-size: 1.2rem; }
-        .stat-box .lab { font-size: 0.7rem; color: var(--primary); text-transform: uppercase; }
+        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
+        .stat-box { background: var(--primary-light); padding: 12px; border-radius: var(--radius); text-align: center; }
+        .stat-box .val { display: block; font-weight: 800; color: var(--primary); font-size: 1.1rem; }
+        .stat-box .lab { font-size: 0.65rem; color: var(--primary); text-transform: uppercase; font-weight: 700; }
 
-        /* Follow-up Timeline */
-        .timeline {
-            background: #f8fafc;
-            border-radius: var(--radius);
-            padding: 15px;
-            border: 1px solid #e2e8f0;
-        }
-        .timeline-title { 
-            font-weight: 800; font-size: 0.8rem; margin-bottom: 10px; 
-            color: var(--secondary); display: flex; align-items: center;
-        }
-        .timeline-item {
-            display: flex; justify-content: space-between;
-            padding: 8px 0; border-bottom: 1px dashed #e2e8f0;
-            font-size: 0.85rem;
-        }
+        .timeline { background: #f8fafc; border-radius: var(--radius); padding: 15px; border: 1px solid #e2e8f0; }
+        .timeline-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.8rem; }
         .timeline-item:last-child { border: none; }
-        .timeline-date { font-weight: 600; color: var(--accent); }
-
-        .footer-note {
-            margin-top: 1.5rem; text-align: center; 
-            font-size: 0.75rem; color: var(--text-sub);
-        }
+        .timeline-date { font-weight: 700; color: var(--accent); }
     </style>
 </head>
 <body>
@@ -146,85 +55,69 @@
 <div class="app-card">
     <div class="header">
         <h1>NK<span>ONVERT</span> OBST</h1>
-        <p>Calculateur Gynécologique & Suivi</p>
+        <p style="font-size:0.8rem; color:#64748b;">Aide à la décision clinique</p>
     </div>
 
     <div class="form-group">
         <label>Date des Dernières Règles (DDR)</label>
-        <input type="date" id="ddr" onchange="updateByDDR()">
+        <input type="date" id="ddr" onchange="calculerDepuisDDR()">
     </div>
 
     <div class="divider">OU</div>
 
     <div class="form-group">
-        <label>Âge Gestationnel (SA)</label>
-        <input type="number" id="sa" placeholder="Entrez les SA" oninput="updateBySA()">
+        <label>Écho de datation (faite à 7 SA)</label>
+        <input type="date" id="echoDate" onchange="calculerDepuisEcho()">
+    </div>
+
+    <div class="divider">OU</div>
+
+    <div class="form-group">
+        <label>Âge Gestationnel Actuel (SA)</label>
+        <input type="number" id="sa" placeholder="Saisir SA manuellement" oninput="calculerDepuisSA()">
     </div>
 
     <div id="resultats">
         <div class="main-stat">
-            <label>Hauteur Utérine Estimée</label>
-            <span class="hu-val"><span id="resHU">--</span><small style="font-size: 1.2rem; margin-left: 5px;">cm</small></span>
-            <div style="font-size: 0.85rem; margin-top: 5px;">Poids fœtal estimé : <span id="resPoids">--</span> g</div>
+            <label style="font-size: 0.7rem; text-transform: uppercase; opacity: 0.9;">Hauteur Utérine Estimée</label>
+            <span class="hu-val"><span id="resHU">--</span><small style="font-size: 1rem; margin-left: 5px;">cm</small></span>
+            <div style="font-size: 0.8rem; margin-top: 5px;">Poids fœtal approx. : <span id="resPoids">--</span> g</div>
         </div>
 
         <div class="grid-stats">
             <div class="stat-box">
-                <span class="lab">Mois de Grossesse</span>
+                <span class="lab">Mois révolus</span>
                 <span class="val" id="resMois">--</span>
             </div>
             <div class="stat-box">
                 <span class="lab">DPA (Terme)</span>
-                <span class="val" id="resDPA" style="font-size: 0.9rem;">--</span>
+                <span class="val" id="resDPA" style="font-size: 0.8rem;">--</span>
             </div>
         </div>
 
         <div class="timeline">
-            <div class="timeline-title">📍 CALENDRIER EXAMENS CLÉS</div>
-            <div class="timeline-item">
-                <span>Écho T1 (Clarté Nucale / T21)</span>
-                <span class="timeline-date" id="t1">--</span>
-            </div>
-            <div class="timeline-item">
-                <span>Écho Morphologique (T2)</span>
-                <span class="timeline-date" id="t2">--</span>
-            </div>
-            <div class="timeline-item">
-                <span>Écho de Croissance (T3)</span>
-                <span class="timeline-date" id="t3">--</span>
-            </div>
+            <div class="timeline-item"><span>Conception (Lue ou Est.) :</span> <span class="timeline-date" id="conception" style="color:var(--info)">--</span></div>
+            <div class="timeline-item"><span>Écho Datation (Idéale) :</span> <span class="timeline-date" id="echoFix">--</span></div>
+            <div class="timeline-item"><span>Écho T1 (Clarté nucale) :</span> <span class="timeline-date" id="t1">--</span></div>
+            <div class="timeline-item"><span>Écho Morpho T2 :</span> <span class="timeline-date" id="t2">--</span></div>
+            <div class="timeline-item"><span>Écho Croissance T3 :</span> <span class="timeline-date" id="t3">--</span></div>
         </div>
-        
-        <p class="footer-note">Méthodologie : Règle de Fournier (Mois×4) intégrée.</p>
     </div>
 </div>
 
 <script>
     function getLogic(sa) {
-        // Mois de grossesse (plus précis que division par 4 simple)
         let mois = Math.floor(sa / 4.34);
-        if (mois < 1) mois = 0;
-
-        // Ta méthodologie spécifique (Règle de Fournier avec correctif)
         let hu = 0;
-        if (mois >= 4 && mois <= 7) {
-            hu = mois * 4;
-        } else if (mois >= 8) {
-            hu = (mois * 4) - 2;
-        }
-
-        // Poids fœtal approximatif (Courbe de croissance standard)
-        let poids = 0;
-        if (sa >= 15) {
-            poids = Math.round(Math.pow(sa, 3) / 18.5); // Hadlock modifié
-            if (sa >= 40) poids = 3350;
-        }
-
+        if (mois >= 4 && mois <= 7) hu = mois * 4;
+        else if (mois >= 8) hu = (mois * 4) - 2;
+        let poids = sa >= 15 ? Math.round(Math.pow(sa, 3) / 18.5) : 0;
+        if (sa >= 40) poids = 3350;
         return { hu, mois, poids };
     }
 
     function formatDate(date) {
-        return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short' });
+        return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
     }
 
     function addWeeks(date, weeks) {
@@ -233,42 +126,55 @@
         return formatDate(d);
     }
 
-    function render(sa, ddrValue = null) {
+    function render(sa, ddrInput) {
         const resDiv = document.getElementById('resultats');
         if (!sa || sa <= 0) { resDiv.style.display = 'none'; return; }
 
         const data = getLogic(sa);
-        document.getElementById('resHU').innerText = data.hu > 0 ? data.hu : "--";
-        document.getElementById('resMois').innerText = data.mois > 0 ? data.mois + "e" : "1er";
-        document.getElementById('resPoids').innerText = data.poids > 0 ? data.poids : "--";
+        document.getElementById('resHU').innerText = data.hu || "--";
+        document.getElementById('resMois').innerText = data.mois + "e";
+        document.getElementById('resPoids').innerText = data.poids || "--";
 
-        if (ddrValue) {
-            const ddr = new Date(ddrValue);
+        if (ddrInput) {
+            const ddr = new Date(ddrInput);
+            document.getElementById('conception').innerText = addWeeks(ddr, 2);
+            document.getElementById('echoFix').innerText = addWeeks(ddr, 7);
             document.getElementById('resDPA').innerText = addWeeks(ddr, 41);
             document.getElementById('t1').innerText = addWeeks(ddr, 12);
             document.getElementById('t2').innerText = addWeeks(ddr, 22);
             document.getElementById('t3').innerText = addWeeks(ddr, 32);
-        } else {
-            document.getElementById('resDPA').innerText = "DDR requise";
-            ["t1", "t2", "t3"].forEach(id => document.getElementById(id).innerText = "--");
         }
-
         resDiv.style.display = 'block';
     }
 
-    function updateByDDR() {
-        const ddrValue = document.getElementById('ddr').value;
-        const ddr = new Date(ddrValue);
-        const diff = Math.floor((new Date() - ddr) / (1000 * 60 * 60 * 24));
-        const sa = Math.floor(diff / 7);
+    function calculerDepuisDDR() {
+        const ddrVal = document.getElementById('ddr').value;
+        const ddr = new Date(ddrVal);
+        const sa = Math.floor((new Date() - ddr) / (1000 * 60 * 60 * 24 * 7));
         document.getElementById('sa').value = sa;
-        render(sa, ddrValue);
+        document.getElementById('echoDate').value = ""; // Reset echo car DDR prime ici
+        render(sa, ddrVal);
     }
 
-    function updateBySA() {
+    function calculerDepuisEcho() {
+        const echoVal = document.getElementById('echoDate').value;
+        const echo = new Date(echoVal);
+        // Si l'écho a été faite à 7 SA, la DDR théorique était 7 semaines avant
+        const ddrTheorique = new Date(echo);
+        ddrTheorique.setDate(ddrTheorique.getDate() - (7 * 7));
+        
+        const sa = Math.floor((new Date() - ddrTheorique) / (1000 * 60 * 60 * 24 * 7));
+        document.getElementById('sa').value = sa;
+        document.getElementById('ddr').value = ddrTheorique.toISOString().split('T')[0];
+        render(sa, ddrTheorique);
+    }
+
+    function calculerDepuisSA() {
         const sa = parseInt(document.getElementById('sa').value);
+        // Si on entre juste les SA, on ne peut pas deviner les dates précises sans DDR
+        render(sa, null);
         document.getElementById('ddr').value = "";
-        render(sa);
+        document.getElementById('echoDate').value = "";
     }
 </script>
 
