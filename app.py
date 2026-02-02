@@ -107,6 +107,18 @@ def boost_page():
 def zip_page(): 
     return render_template('zip.html')
     
+@app.route('/masse')
+def masse_page(): 
+    return render_template('masse.html')
+    
+@app.route('/glasgow')
+def glasgow_page(): 
+    return render_template('glasgow.html')
+   
+@app.route('/nephro')
+def nephro_page(): 
+    return render_template('nephro.html')
+    
 @app.route('/img_to_pdf')
 def img_to_pdf_page():
     # Attention : Vérifie que ton fichier s'appelle bien imago.html ou img_to_pdf.html
@@ -590,6 +602,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
