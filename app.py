@@ -125,6 +125,10 @@ def generator_page():
 def gyneco_tool():
     return render_template('gyneco.html')
     
+@app.route('/brulure-testor')
+def brulure_page():
+    return render_template('brulure.html')
+    
 @app.route('/sante')
 def sante_page():
     return render_template('sante.html')    
@@ -586,6 +590,7 @@ def download_file(filename):
 if __name__ == '__main__':
     port = int(os.environ.get("PORT", 5000))
     app.run(host='0.0.0.0', port=port)
+
 
 
 
