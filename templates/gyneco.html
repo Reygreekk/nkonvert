@@ -12,42 +12,249 @@
             --secondary: #1e293b;
             --accent: #0d9488;
             --info: #3b82f6;
+            --warning: #f59e0b;
             --bg: #f1f5f9;
             --white: #ffffff;
             --text-main: #334155;
             --radius: 16px;
         }
 
-        body { font-family: 'Plus Jakarta Sans', sans-serif; background: var(--bg); display: flex; justify-content: center; padding: 20px; }
-        .app-card { background: var(--white); width: 100%; max-width: 480px; padding: 2rem; border-radius: 24px; box-shadow: 0 10px 30px rgba(0,0,0,0.05); }
+        body { 
+            font-family: 'Plus Jakarta Sans', sans-serif; 
+            background: var(--bg); 
+            display: flex; 
+            justify-content: center; 
+            padding: 20px; 
+            min-height: 100vh;
+            margin: 0;
+        }
+        .app-card { 
+            background: var(--white); 
+            width: 100%; 
+            max-width: 480px; 
+            padding: 2rem; 
+            border-radius: 24px; 
+            box-shadow: 0 10px 30px rgba(0,0,0,0.05);
+            height: fit-content;
+            margin: auto;
+        }
         
         .header { text-align: center; margin-bottom: 1.5rem; }
         .header h1 { color: var(--secondary); font-size: 1.6rem; margin: 0; font-weight: 800; }
         .header span { color: var(--primary); }
 
         .form-group { margin-bottom: 1rem; }
-        label { display: block; font-weight: 700; margin-bottom: 5px; font-size: 0.75rem; color: var(--secondary); text-transform: uppercase; }
-        input { width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 12px; font-size: 0.9rem; background: #f8fafc; box-sizing: border-box; }
+        label { 
+            display: block; 
+            font-weight: 700; 
+            margin-bottom: 5px; 
+            font-size: 0.75rem; 
+            color: var(--secondary); 
+            text-transform: uppercase; 
+        }
+        input { 
+            width: 100%; 
+            padding: 12px; 
+            border: 2px solid #e2e8f0; 
+            border-radius: 12px; 
+            font-size: 0.9rem; 
+            background: #f8fafc; 
+            box-sizing: border-box; 
+        }
         input:focus { outline: none; border-color: var(--primary); background: white; }
+        input.error { border-color: #ef4444; }
 
-        .divider { display: flex; align-items: center; margin: 1rem 0; color: #94a3b8; font-size: 0.7rem; font-weight: 800; }
-        .divider::before, .divider::after { content: ''; flex: 1; border-bottom: 1px solid #e2e8f0; margin: 0 10px; }
+        .divider { 
+            display: flex; 
+            align-items: center; 
+            margin: 1rem 0; 
+            color: #94a3b8; 
+            font-size: 0.7rem; 
+            font-weight: 800; 
+        }
+        .divider::before, .divider::after { 
+            content: ''; 
+            flex: 1; 
+            border-bottom: 1px solid #e2e8f0; 
+            margin: 0 10px; 
+        }
 
-        #resultats { display: none; animation: fadeIn 0.4s ease-out; margin-top: 20px; }
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
+        #resultats { 
+            display: none; 
+            animation: fadeIn 0.4s ease-out; 
+            margin-top: 20px; 
+        }
+        @keyframes fadeIn { 
+            from { opacity: 0; transform: translateY(10px); } 
+            to { opacity: 1; transform: translateY(0); } 
+        }
 
-        .main-stat { background: linear-gradient(135deg, var(--primary), #ad1457); color: white; padding: 20px; border-radius: var(--radius); text-align: center; margin-bottom: 1rem; }
+        .main-stat { 
+            background: linear-gradient(135deg, var(--primary), #ad1457); 
+            color: white; 
+            padding: 20px; 
+            border-radius: var(--radius); 
+            text-align: center; 
+            margin-bottom: 1rem; 
+        }
         .hu-val { font-size: 2.5rem; font-weight: 800; display: block; }
 
-        .grid-stats { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 1rem; }
-        .stat-box { background: var(--primary-light); padding: 12px; border-radius: var(--radius); text-align: center; }
-        .stat-box .val { display: block; font-weight: 800; color: var(--primary); font-size: 1.1rem; }
-        .stat-box .lab { font-size: 0.65rem; color: var(--primary); text-transform: uppercase; font-weight: 700; }
+        .grid-stats { 
+            display: grid; 
+            grid-template-columns: 1fr 1fr; 
+            gap: 10px; 
+            margin-bottom: 1rem; 
+        }
+        .stat-box { 
+            background: var(--primary-light); 
+            padding: 12px; 
+            border-radius: var(--radius); 
+            text-align: center; 
+        }
+        .stat-box .val { 
+            display: block; 
+            font-weight: 800; 
+            color: var(--primary); 
+            font-size: 1.1rem; 
+        }
+        .stat-box .lab { 
+            font-size: 0.65rem; 
+            color: var(--primary); 
+            text-transform: uppercase; 
+            font-weight: 700; 
+        }
 
-        .timeline { background: #f8fafc; border-radius: var(--radius); padding: 15px; border: 1px solid #e2e8f0; }
-        .timeline-item { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px dashed #e2e8f0; font-size: 0.8rem; }
+        .timeline { 
+            background: #f8fafc; 
+            border-radius: var(--radius); 
+            padding: 15px; 
+            border: 1px solid #e2e8f0;
+            margin-bottom: 1rem;
+        }
+        .timeline-item { 
+            display: flex; 
+            justify-content: space-between; 
+            padding: 8px 0; 
+            border-bottom: 1px dashed #e2e8f0; 
+            font-size: 0.8rem; 
+        }
         .timeline-item:last-child { border: none; }
         .timeline-date { font-weight: 700; color: var(--accent); }
+        
+        .info-text {
+            font-size: 0.75rem;
+            color: #64748b;
+            margin-top: 4px;
+            font-style: italic;
+        }
+        
+        .error-message {
+            color: #ef4444;
+            font-size: 0.75rem;
+            margin-top: 4px;
+            display: none;
+        }
+        
+        .mois-indicator {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 15px;
+            padding: 10px;
+            background: #f8fafc;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mois-text {
+            font-weight: 600;
+            color: var(--secondary);
+        }
+        
+        .mois-value {
+            background: var(--primary);
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 0.9rem;
+        }
+        
+        /* Section Conseils */
+        .conseils-section {
+            background: linear-gradient(135deg, #e0f2fe, #f0f9ff);
+            border-radius: var(--radius);
+            padding: 20px;
+            margin-top: 1.5rem;
+            border-left: 4px solid var(--info);
+            display: none;
+        }
+        
+        .conseils-title {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            color: var(--secondary);
+            font-weight: 800;
+            font-size: 1rem;
+        }
+        
+        .conseils-title svg {
+            margin-right: 10px;
+            color: var(--info);
+        }
+        
+        .conseil-item {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            font-size: 0.85rem;
+            line-height: 1.4;
+        }
+        
+        .conseil-item svg {
+            color: var(--accent);
+            margin-right: 10px;
+            min-width: 20px;
+            margin-top: 2px;
+        }
+        
+        .conseil-category {
+            font-weight: 700;
+            color: var(--primary);
+            margin: 15px 0 8px 0;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+        }
+        
+        .conseil-category:first-child {
+            margin-top: 0;
+        }
+        
+        .warning-item {
+            background: #fef3c7;
+            padding: 10px;
+            border-radius: 8px;
+            border-left: 3px solid var(--warning);
+            margin: 10px 0;
+            font-size: 0.8rem;
+        }
+        
+        .warning-item strong {
+            color: var(--warning);
+        }
+        
+        .trimester-indicator {
+            display: inline-block;
+            background: var(--accent);
+            color: white;
+            padding: 2px 8px;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 700;
+            margin-left: 8px;
+        }
     </style>
 </head>
 <body>
@@ -61,6 +268,8 @@
     <div class="form-group">
         <label>Date des Dernières Règles (DDR)</label>
         <input type="date" id="ddr" onchange="calculerDepuisDDR()">
+        <div class="info-text">Format: JJ/MM/AAAA</div>
+        <div class="error-message" id="ddr-error"></div>
     </div>
 
     <div class="divider">OU</div>
@@ -68,13 +277,17 @@
     <div class="form-group">
         <label>Écho de datation (faite à 7 SA)</label>
         <input type="date" id="echoDate" onchange="calculerDepuisEcho()">
+        <div class="info-text">Date de l'échographie de datation</div>
+        <div class="error-message" id="echo-error"></div>
     </div>
 
     <div class="divider">OU</div>
 
     <div class="form-group">
         <label>Âge Gestationnel Actuel (SA)</label>
-        <input type="number" id="sa" placeholder="Saisir SA manuellement" oninput="calculerDepuisSA()">
+        <input type="number" id="sa" placeholder="Saisir SA manuellement" min="1" max="44" step="0.1" oninput="calculerDepuisSA()">
+        <div class="info-text">Semaines d'aménorrhée (ex: 12.5 pour 12SA+3)</div>
+        <div class="error-message" id="sa-error"></div>
     </div>
 
     <div id="resultats">
@@ -82,6 +295,11 @@
             <label style="font-size: 0.7rem; text-transform: uppercase; opacity: 0.9;">Hauteur Utérine Estimée</label>
             <span class="hu-val"><span id="resHU">--</span><small style="font-size: 1rem; margin-left: 5px;">cm</small></span>
             <div style="font-size: 0.8rem; margin-top: 5px;">Poids fœtal approx. : <span id="resPoids">--</span> g</div>
+        </div>
+
+        <div class="mois-indicator">
+            <span class="mois-text">Mois de grossesse :</span>
+            <span class="mois-value" id="resMoisComplet">--</span>
         </div>
 
         <div class="grid-stats">
@@ -102,80 +320,437 @@
             <div class="timeline-item"><span>Écho Morpho T2 :</span> <span class="timeline-date" id="t2">--</span></div>
             <div class="timeline-item"><span>Écho Croissance T3 :</span> <span class="timeline-date" id="t3">--</span></div>
         </div>
+        
+        <!-- Section Conseils -->
+        <div id="conseilsSection" class="conseils-section">
+            <div class="conseils-title">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                Conseils Hygiène & Santé
+                <span id="trimestreIndic" class="trimester-indicator"></span>
+            </div>
+            <div id="conseilsContent"></div>
+        </div>
     </div>
 </div>
 
 <script>
+    // Données des conseils par trimestre
+    const conseilsParTrimestre = {
+        "1": {
+            trimestre: "1er Trimestre",
+            conseils: [
+                {
+                    categorie: "Alimentation",
+                    items: [
+                        "Prise d'acide folique (400 µg/jour) pour prévenir les malformations",
+                        "Éviter les aliments à risque de toxoplasmose (viande crue, fruits/légumes non lavés)",
+                        "Arrêt de l'alcool et réduction de la caféine (<200mg/jour)",
+                        "Bien cuire la viande et éviter les fromages au lait cru"
+                    ]
+                },
+                {
+                    categorie: "Hygiène de vie",
+                    items: [
+                        "Repos suffisant (8h de sommeil minimum)",
+                        "Éviter les produits chimiques et peintures",
+                        "Consulter en cas de saignements ou douleurs abdominales",
+                        "Poursuivre une activité physique modérée (marche, natation)"
+                    ]
+                },
+                {
+                    categorie: "Médical",
+                    items: [
+                        "Première consultation prénatale avant 12 SA",
+                        "Déclaration de grossesse avant 14 SA",
+                        "Prise de sang complète (groupe sanguin, sérologies)",
+                        "Échographie de datation vers 7 SA"
+                    ]
+                }
+            ],
+            avertissements: [
+                "Signes d'alerte : saignements vaginaux, douleurs abdominales intenses, vomissements incoercibles"
+            ]
+        },
+        "2": {
+            trimestre: "2ème Trimestre",
+            conseils: [
+                {
+                    categorie: "Alimentation",
+                    items: [
+                        "Augmentation des besoins en fer et calcium",
+                        "Consommation de protéines de qualité (viande, œufs, légumineuses)",
+                        "Hydratation suffisante (1.5-2L d'eau/jour)",
+                        "Fruits et légumes pour les fibres (prévention constipation)"
+                    ]
+                },
+                {
+                    categorie: "Hygiène de vie",
+                    items: [
+                        "Activité physique régulière (30 min/jour)",
+                        "Surveillance de la prise de poids (300-400g/semaine)",
+                        "Soins dentaires (risque accru de gingivite)",
+                        "Préparation à l'allaitement si souhaité"
+                    ]
+                },
+                {
+                    categorie: "Médical",
+                    items: [
+                        "Échographie morphologique vers 22 SA",
+                        "Dépistage du diabète gestationnel entre 24-28 SA",
+                        "Surveillance de la tension artérielle",
+                        "Préparation à la vaccination coqueluche (à partir de 25 SA)"
+                    ]
+                }
+            ],
+            avertissements: [
+                "Signes d'alerte : contractions régulières, pertes de liquide, diminution des mouvements fœtaux après 24 SA"
+            ]
+        },
+        "3": {
+            trimestre: "3ème Trimestre",
+            conseils: [
+                {
+                    categorie: "Alimentation",
+                    items: [
+                        "Fractionner les repas (petits repas fréquents)",
+                        "Limiter le sel pour prévenir l'œdème",
+                        "Continuer supplémentation en fer si prescrite",
+                        "Aliments riches en oméga-3 (poissons gras, noix)"
+                    ]
+                },
+                {
+                    categorie: "Hygiène de vie",
+                    items: [
+                        "Repos en position latérale gauche",
+                        "Surveillance quotidienne des mouvements fœtaux",
+                        "Préparation valise maternité et chambre bébé",
+                        "Exercices de respiration et relaxation"
+                    ]
+                },
+                {
+                    categorie: "Médical",
+                    items: [
+                        "Échographie de croissance vers 32 SA",
+                        "Monitoring si nécessaire (RCIU, diabète...)",
+                        "Vaccination coqueluche si pas encore faite",
+                        "Visite anesthésiste pour projet péridurale"
+                    ]
+                },
+                {
+                    categorie: "Préparation à l'accouchement",
+                    items: [
+                        "Cours de préparation à la naissance",
+                        "Reconnaître les signes du travail",
+                        "Plan de naissance avec l'équipe médicale",
+                        "Contact rapide avec la maternité en cas de doute"
+                    ]
+                }
+            ],
+            avertissements: [
+                "Urgence absolue : rupture de la poche des eaux, saignements rouges vifs, absence de mouvements fœtaux >12h"
+            ]
+        }
+    };
+
+    // Fonction pour réinitialiser les erreurs
+    function resetErrors() {
+        document.querySelectorAll('.error-message').forEach(el => {
+            el.style.display = 'none';
+            el.textContent = '';
+        });
+        document.querySelectorAll('input').forEach(input => {
+            input.classList.remove('error');
+        });
+    }
+
+    // Fonction pour afficher une erreur
+    function showError(elementId, message) {
+        const errorEl = document.getElementById(elementId + '-error');
+        if (errorEl) {
+            errorEl.textContent = message;
+            errorEl.style.display = 'block';
+            document.getElementById(elementId).classList.add('error');
+        }
+    }
+
+    // Formules obstétricales standardisées
     function getLogic(sa) {
-        let mois = Math.floor(sa / 4.34);
+        // Calcul des mois : SA divisé par 4 (1 mois = 4 semaines)
+        let moisDecimal = sa / 4;
+        let moisRevolus = Math.floor(moisDecimal);
+        
+        // Calcul de la Hauteur Utérine selon la formule classique
         let hu = 0;
-        if (mois >= 4 && mois <= 7) hu = mois * 4;
-        else if (mois >= 8) hu = (mois * 4) - 2;
-        let poids = sa >= 15 ? Math.round(Math.pow(sa, 3) / 18.5) : 0;
-        if (sa >= 40) poids = 3350;
-        return { hu, mois, poids };
+        if (moisRevolus >= 4) {
+            hu = moisRevolus * 4;
+            if (moisRevolus >= 8) {
+                hu = (moisRevolus * 4) - 2;
+            }
+        }
+        
+        // Calcul du poids fœtal approximatif
+        let poids = 0;
+        if (sa >= 15) {
+            poids = Math.round(Math.pow(sa, 3) / 18.5); // Formule obstétricale classique
+        }
+        
+        // Ajustements pour les termes avancés
+        if (sa >= 40) {
+            poids = 3350 + Math.round((sa - 40) * 150);
+        }
+        
+        // Limites raisonnables
+        if (poids > 5000) poids = 5000;
+        if (hu > 40) hu = 40;
+        
+        // Calcul des SA+j pour affichage détaillé
+        let saEntieres = Math.floor(sa);
+        let jours = Math.round((sa - saEntieres) * 7);
+        
+        // Détermination du trimestre
+        let trimestre = 1;
+        if (sa >= 14) trimestre = 2;
+        if (sa >= 28) trimestre = 3;
+        
+        return { 
+            hu: hu > 0 ? hu : 0, 
+            moisRevolus: moisRevolus,
+            moisDecimal: moisDecimal.toFixed(1),
+            poids: poids > 0 ? poids : 0,
+            saEntieres: saEntieres,
+            jours: jours,
+            trimestre: trimestre
+        };
     }
 
     function formatDate(date) {
-        return date.toLocaleDateString('fr-FR', { day: '2-digit', month: 'short', year: 'numeric' });
+        if (!date || isNaN(date.getTime())) return "--";
+        return date.toLocaleDateString('fr-FR', { 
+            day: '2-digit', 
+            month: 'short', 
+            year: 'numeric' 
+        }).replace(/ /g, ' ');
+    }
+
+    function addDays(date, days) {
+        if (!date || isNaN(date.getTime())) return null;
+        let d = new Date(date);
+        d.setDate(d.getDate() + days);
+        return d;
     }
 
     function addWeeks(date, weeks) {
-        let d = new Date(date);
-        d.setDate(d.getDate() + (weeks * 7));
-        return formatDate(d);
+        return addDays(date, weeks * 7);
+    }
+
+    function genererConseils(trimestre) {
+        const conseilsData = conseilsParTrimestre[trimestre];
+        if (!conseilsData) return "";
+        
+        let html = '';
+        
+        // Indicateur de trimestre
+        document.getElementById('trimestreIndic').textContent = conseilsData.trimestre;
+        
+        // Générer les conseils par catégorie
+        conseilsData.conseils.forEach(categorie => {
+            html += `<div class="conseil-category">${categorie.categorie}</div>`;
+            categorie.items.forEach(item => {
+                html += `
+                    <div class="conseil-item">
+                        <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <polyline points="20 6 9 17 4 12"></polyline>
+                        </svg>
+                        <span>${item}</span>
+                    </div>
+                `;
+            });
+        });
+        
+        // Ajouter les avertissements
+        if (conseilsData.avertissements && conseilsData.avertissements.length > 0) {
+            html += '<div class="conseil-category">⚠️ Signes d\'alerte</div>';
+            conseilsData.avertissements.forEach(avertissement => {
+                html += `<div class="warning-item"><strong>Attention :</strong> ${avertissement}</div>`;
+            });
+        }
+        
+        return html;
     }
 
     function render(sa, ddrInput) {
         const resDiv = document.getElementById('resultats');
-        if (!sa || sa <= 0) { resDiv.style.display = 'none'; return; }
+        const conseilsDiv = document.getElementById('conseilsSection');
+        const conseilsContent = document.getElementById('conseilsContent');
+        
+        // Validation
+        if (!sa || sa <= 0 || sa > 44) {
+            resDiv.style.display = 'none';
+            if (sa > 44) {
+                showError('sa', 'SA trop élevé (max 44 SA)');
+            }
+            return;
+        }
 
         const data = getLogic(sa);
-        document.getElementById('resHU').innerText = data.hu || "--";
-        document.getElementById('resMois').innerText = data.mois + "e";
-        document.getElementById('resPoids').innerText = data.poids || "--";
+        
+        // Mise à jour des valeurs
+        document.getElementById('resHU').innerText = data.hu > 0 ? data.hu : "--";
+        document.getElementById('resMois').innerText = data.moisRevolus > 0 ? data.moisRevolus + "e" : "--";
+        document.getElementById('resMoisComplet').innerText = data.moisDecimal + " mois";
+        document.getElementById('resPoids').innerText = data.poids > 0 ? data.poids.toLocaleString('fr-FR') : "--";
 
+        // Calcul des dates si DDR fournie
         if (ddrInput) {
             const ddr = new Date(ddrInput);
-            document.getElementById('conception').innerText = addWeeks(ddr, 2);
-            document.getElementById('echoFix').innerText = addWeeks(ddr, 7);
-            document.getElementById('resDPA').innerText = addWeeks(ddr, 41);
-            document.getElementById('t1').innerText = addWeeks(ddr, 12);
-            document.getElementById('t2').innerText = addWeeks(ddr, 22);
-            document.getElementById('t3').innerText = addWeeks(ddr, 32);
+            if (!isNaN(ddr.getTime())) {
+                document.getElementById('conception').innerText = formatDate(addWeeks(ddr, 2));
+                document.getElementById('echoFix').innerText = formatDate(addWeeks(ddr, 7));
+                document.getElementById('resDPA').innerText = formatDate(addWeeks(ddr, 41));
+                document.getElementById('t1').innerText = formatDate(addWeeks(ddr, 12));
+                document.getElementById('t2').innerText = formatDate(addWeeks(ddr, 22));
+                document.getElementById('t3').innerText = formatDate(addWeeks(ddr, 32));
+            } else {
+                // Si date invalide, afficher "--"
+                ['conception', 'echoFix', 'resDPA', 't1', 't2', 't3'].forEach(id => {
+                    document.getElementById(id).innerText = "--";
+                });
+            }
+        } else {
+            // Sans DDR, on ne peut pas calculer les dates
+            ['conception', 'echoFix', 'resDPA', 't1', 't2', 't3'].forEach(id => {
+                document.getElementById(id).innerText = "--";
+            });
         }
+        
+        // Générer et afficher les conseils
+        if (data.trimestre && sa >= 4) { // On affiche les conseils à partir de 4 SA
+            conseilsContent.innerHTML = genererConseils(data.trimestre.toString());
+            conseilsDiv.style.display = 'block';
+        } else {
+            conseilsDiv.style.display = 'none';
+        }
+        
         resDiv.style.display = 'block';
     }
 
     function calculerDepuisDDR() {
+        resetErrors();
+        
         const ddrVal = document.getElementById('ddr').value;
+        if (!ddrVal) {
+            document.getElementById('resultats').style.display = 'none';
+            return;
+        }
+
         const ddr = new Date(ddrVal);
-        const sa = Math.floor((new Date() - ddr) / (1000 * 60 * 60 * 24 * 7));
+        const today = new Date();
+        
+        // Validation: DDR ne peut pas être dans le futur
+        if (ddr > today) {
+            showError('ddr', 'La DDR ne peut pas être dans le futur');
+            document.getElementById('resultats').style.display = 'none';
+            return;
+        }
+        
+        // Validation: DDR ne peut pas être trop ancienne (>44 semaines)
+        const diffMs = today - ddr;
+        const diffWeeks = diffMs / (1000 * 60 * 60 * 24 * 7);
+        
+        if (diffWeeks > 44) {
+            showError('ddr', 'DDR trop ancienne (max 44 SA)');
+            document.getElementById('resultats').style.display = 'none';
+            return;
+        }
+
+        // Calcul SA = (aujourd'hui - DDR) / 7 jours
+        const sa = Math.floor(diffWeeks * 10) / 10; // Garder une décimale
+        
         document.getElementById('sa').value = sa;
-        document.getElementById('echoDate').value = ""; // Reset echo car DDR prime ici
+        document.getElementById('echoDate').value = "";
+        
         render(sa, ddrVal);
     }
 
     function calculerDepuisEcho() {
-        const echoVal = document.getElementById('echoDate').value;
-        const echo = new Date(echoVal);
-        // Si l'écho a été faite à 7 SA, la DDR théorique était 7 semaines avant
-        const ddrTheorique = new Date(echo);
-        ddrTheorique.setDate(ddrTheorique.getDate() - (7 * 7));
+        resetErrors();
         
-        const sa = Math.floor((new Date() - ddrTheorique) / (1000 * 60 * 60 * 24 * 7));
+        const echoVal = document.getElementById('echoDate').value;
+        if (!echoVal) {
+            document.getElementById('resultats').style.display = 'none';
+            return;
+        }
+
+        const echo = new Date(echoVal);
+        const today = new Date();
+        
+        // Validation
+        if (echo > today) {
+            showError('echo', 'La date d\'échographie ne peut pas être dans le futur');
+            return;
+        }
+
+        // Si l'écho a été faite à 7 SA, la DDR théorique était 7 semaines avant
+        const ddrTheorique = addDays(echo, -7 * 7);
+        
+        // Calcul du SA actuel
+        const diffMs = today - ddrTheorique;
+        const sa = Math.floor((diffMs / (1000 * 60 * 60 * 24 * 7)) * 10) / 10;
+        
+        if (sa < 1 || sa > 44) {
+            showError('echo', 'Calcul invalide (vérifier la date)');
+            return;
+        }
+
         document.getElementById('sa').value = sa;
         document.getElementById('ddr').value = ddrTheorique.toISOString().split('T')[0];
+        
         render(sa, ddrTheorique);
     }
 
     function calculerDepuisSA() {
-        const sa = parseInt(document.getElementById('sa').value);
-        // Si on entre juste les SA, on ne peut pas deviner les dates précises sans DDR
-        render(sa, null);
+        resetErrors();
+        
+        const saInput = document.getElementById('sa').value;
+        if (!saInput || saInput.trim() === '') {
+            document.getElementById('resultats').style.display = 'none';
+            return;
+        }
+        
+        const sa = parseFloat(saInput.replace(',', '.'));
+        
+        // Validation
+        if (isNaN(sa) || sa < 1 || sa > 44) {
+            if (sa > 44) {
+                showError('sa', 'SA trop élevé (max 44 SA)');
+            } else if (sa < 1) {
+                showError('sa', 'SA trop faible (min 1 SA)');
+            } else {
+                showError('sa', 'Valeur invalide');
+            }
+            document.getElementById('resultats').style.display = 'none';
+            return;
+        }
+
+        // Si on entre juste les SA, on calcule la DDR théorique (à partir d'aujourd'hui)
+        const today = new Date();
+        const ddrTheorique = addDays(today, -sa * 7);
+        
         document.getElementById('ddr').value = "";
         document.getElementById('echoDate').value = "";
+        
+        // On peut estimer la DDR comme étant SA semaines avant aujourd'hui
+        render(sa, ddrTheorique);
     }
+
+    // Initialisation : limiter la date max à aujourd'hui
+    document.addEventListener('DOMContentLoaded', function() {
+        const today = new Date().toISOString().split('T')[0];
+        document.getElementById('ddr').max = today;
+        document.getElementById('echoDate').max = today;
+    });
 </script>
 
 </body>
