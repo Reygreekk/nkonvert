@@ -1,0 +1,659 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TEKO — Votre super app tout-en-un</title>
+  <meta name="description" content="TEKO — Cahier des charges fonctionnel et vitrine: mobilité, livraison, déménagement, restaurants et ambulances. Rôles, inscriptions, abonnements, évaluations, notifications et architecture.">
+  <style>
+    /* ------------------ RESET & BASE ------------------ */
+    *, *::before, *::after { box-sizing: border-box; }
+    :root{
+      --bg-1:#05050a;
+      --bg-2:#090914;
+      --text:#e7e7ef;
+      --muted:#9aa0ac;
+      --primary:#8b5cf6;   /* violet */
+      --secondary:#00d1ff; /* cyan */
+      --card:#0f0f1a;
+      --border:#1b1b2b;
+      --good:#00d884;
+      --warn:#ffb020;
+      --bad:#ff5b6e;
+      --shadow: 0 0 18px rgba(139,92,246,.2), 0 0 32px rgba(0,209,255,.1);
+    }
+    html,body{ height:100%; }
+    body{
+      margin:0;
+      font-family: Inter, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji","Segoe UI Emoji","Segoe UI Symbol", sans-serif;
+      background: radial-gradient(1200px 600px at 10% -10%, rgba(139,92,246,.25), transparent 60%),
+                  radial-gradient(800px 400px at 110% 10%, rgba(0,209,255,.17), transparent 60%),
+                  linear-gradient(180deg, var(--bg-1), var(--bg-2));
+      color:var(--text);
+      line-height:1.65;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+    }
+    a{ color:var(--secondary); text-decoration:none; }
+    h1,h2,h3{ letter-spacing:.6px; }
+    h2{ margin:0 0 14px; font-weight:800; }
+    p{ margin:0 0 12px; color:#cfd3dc; }
+    small, .muted{ color:var(--muted); }
+    .container{ width:min(1200px, 92%); margin:0 auto; }
+
+    /* ------------------ HEADER ------------------ */
+    header{
+      position:sticky; top:0; z-index:50;
+      backdrop-filter: blur(10px);
+      background: linear-gradient(180deg, rgba(10,10,22,.85), rgba(10,10,22,.55));
+      border-bottom:1px solid var(--border);
+    }
+    .nav{
+      display:flex; align-items:center; justify-content:space-between;
+      padding:12px 0;
+    }
+    .brand{ display:flex; align-items:center; gap:12px; }
+    .logo{
+      width:36px; height:36px; border-radius:10px;
+      background: radial-gradient(180px 180px at 70% 30%, rgba(139,92,246,.95), rgba(0,209,255,.9) 55%, transparent 60%);
+      box-shadow: 0 0 18px rgba(139,92,246,.45), 0 0 28px rgba(0,209,255,.3), inset 0 0 18px rgba(255,255,255,.08);
+    }
+    .brand h1{ margin:0; font-size:1.2rem; font-weight:800; letter-spacing:.8px; }
+    .brand span{ display:block; font-size:.85rem; color:var(--muted); }
+
+    .menu{ display:flex; flex-wrap:wrap; gap:14px; }
+    .menu a{
+      color:#dfe3f0; font-weight:600; padding:8px 12px; border-radius:10px;
+      border:1px solid transparent; transition:all .25s ease;
+    }
+    .menu a:hover{ border-color:var(--border); background:#0d0d17; box-shadow: var(--shadow); }
+
+    /* ------------------ HERO ------------------ */
+    .hero{
+      padding:60px 0 40px;
+      border-bottom:1px solid var(--border);
+      background: linear-gradient(180deg, rgba(139,92,246,.08), transparent 40%);
+    }
+    .hero-wrap{ display:grid; gap:22px; align-items:center; grid-template-columns: 1.2fr .8fr; }
+    .headline{ font-size:2.2rem; font-weight:900; line-height:1.2; margin:0; }
+    .subtitle{ font-size:1.1rem; color:#c7cbda; }
+    .badge{
+      display:inline-flex; gap:10px; align-items:center; font-weight:700; letter-spacing:.4px;
+      background:linear-gradient(90deg, rgba(139,92,246,.22), rgba(0,209,255,.22));
+      border:1px solid var(--border); color:#eaf7ff; border-radius:999px; padding:8px 14px;
+      box-shadow: var(--shadow);
+    }
+    .hero-card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border:1px solid var(--border); border-radius:16px; padding:18px;
+      box-shadow: var(--shadow);
+    }
+    .hero-list{ display:grid; gap:12px; }
+    .hero-list li{ list-style:none; display:flex; gap:10px; align-items:flex-start; }
+    .dot{ width:9px; height:9px; border-radius:999px; margin-top:7px;
+      background: radial-gradient(circle at 30% 30%, #fff, #8b5cf6 40%, #00d1ff 80%); box-shadow: 0 0 10px #8b5cf6; }
+
+    /* ------------------ SECTIONS ------------------ */
+    section{ padding:56px 0; }
+    .section-title{ display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:18px; }
+    .section-title h2{ font-size:1.3rem; }
+    .pill{ font-size:.75rem; color:#d7d9e5; padding:6px 10px; border:1px solid var(--border); border-radius:999px; }
+    .grid{ display:grid; gap:18px; }
+    .grid-3{ grid-template-columns: repeat(3, 1fr); }
+    .grid-2{ grid-template-columns: repeat(2, 1fr); }
+    @media (max-width: 980px){
+      .hero-wrap{ grid-template-columns:1fr; }
+      .grid-3{ grid-template-columns: 1fr; }
+      .grid-2{ grid-template-columns: 1fr; }
+      .menu{ display:none; }
+    }
+
+    .card{
+      background:linear-gradient(180deg, rgba(255,255,255,.02), rgba(255,255,255,.0));
+      border:1px solid var(--border); border-radius:16px; padding:18px;
+      box-shadow: var(--shadow);
+      transition: transform .25s ease, box-shadow .25s ease;
+    }
+    .card:hover{ transform: translateY(-3px); box-shadow: 0 0 22px rgba(0,209,255,.16); }
+    .card h3{ margin:0 0 6px; font-size:1.05rem; }
+
+    .tag{ display:inline-flex; align-items:center; gap:6px; padding:4px 8px; border-radius:999px; border:1px solid var(--border); font-size:.8rem; color:#d9def2; }
+    .row{ display:flex; gap:10px; flex-wrap:wrap; }
+
+    /* ------------------ TABS (Rôles détaillés) ------------------ */
+    .tabs{ display:flex; gap:10px; flex-wrap:wrap; margin:8px 0 16px; }
+    .tab-btn{
+      background:#0d0d17; color:#dfe3f0; border:1px solid var(--border); border-radius:12px; padding:8px 12px; cursor:pointer; font-weight:700;
+      transition: all .2s ease;
+    }
+    .tab-btn:hover{ box-shadow: var(--shadow); }
+    .tab-btn.active{
+      background: linear-gradient(90deg, rgba(139,92,246,.22), rgba(0,209,255,.22));
+      border-color:#2a2a45;
+    }
+    .tab-panel{ display:none; }
+    .tab-panel.active{ display:block; }
+
+    .two-col{ display:grid; grid-template-columns: 1fr 1fr; gap:16px; }
+    .list{ margin:0; padding-left:16px; }
+    .list li{ margin-bottom:6px; }
+
+    /* ------------------ TABLES ------------------ */
+    .table{
+      width:100%; border-collapse: collapse; font-size:.95rem; overflow:hidden; border-radius:14px;
+      border:1px solid var(--border);
+    }
+    .table th, .table td{ padding:12px 14px; border-bottom:1px solid var(--border); vertical-align: top; }
+    .table th{ text-align:left; background:#0d0d19; color:#e9ebff; }
+    .table tr:hover td{ background:#0c0c16; }
+
+    /* ------------------ ACCORDIONS ------------------ */
+    details{ background:#0c0c16; border:1px solid var(--border); border-radius:14px; padding:8px 12px; }
+    details summary{ cursor:pointer; font-weight:700; color:#e2e6f4; outline:none; }
+    details[open]{ box-shadow: var(--shadow); }
+    details p, details ul{ margin-top:8px; }
+
+    /* ------------------ FOOTER ------------------ */
+    footer{
+      border-top:1px solid var(--border);
+      padding:30px 0 60px; color:#a7afc1; text-align:center;
+    }
+
+    /* ------------------ SCROLL ANIM ------------------ */
+    .reveal{ opacity:0; transform: translateY(16px); transition: all .6s ease; }
+    .reveal.visible{ opacity:1; transform: none; }
+  </style>
+</head>
+<body>
+  <!-- ================== HEADER ================== -->
+  <header>
+    <div class="container nav">
+      <div class="brand">
+        <div class="logo" aria-hidden="true"></div>
+        <div>
+          <h1>TEKO</h1>
+          <span>Votre super app tout-en-un</span>
+        </div>
+      </div>
+      <nav class="menu">
+        <a href="#about">À propos</a>
+        <a href="#roles">Rôles & Inscriptions</a>
+        <a href="#features">Fonctionnalités</a>
+        <a href="#pricing">Abonnements</a>
+        <a href="#ratings">Évaluations</a>
+        <a href="#tech">Architecture</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- ================== HERO ================== -->
+  <section class="hero">
+    <div class="container hero-wrap">
+      <div>
+        <span class="badge">Mobilité • Livraison • Déménagement • Restauration • Ambulance</span>
+        <h2 class="headline" style="margin-top:14px">La plateforme universelle qui relie les citoyens aux services essentiels — en un clic.</h2>
+        <p class="subtitle">TEKO connecte <strong>clients</strong> et <strong>prestataires</strong> (chauffeurs, livreurs, déménageurs, restaurants, ambulances) avec des règles claires : abonnements, évaluations, notifications et historique de recettes.</p>
+      </div>
+      <div class="hero-card">
+        <ul class="hero-list">
+          <li><span class="dot"></span><div><strong>Inscription par rôle</strong> : KYC et validation admin adaptés à chaque catégorie.</div></li>
+          <li><span class="dot"></span><div><strong>Abonnements automatiques</strong> : chauffeurs/livreurs % hebdo, déménageurs montant mensuel.</div></li>
+          <li><span class="dot"></span><div><strong>Qualité de service</strong> : étoiles, avis, badges “Top Service”, et alertes.</div></li>
+          <li><span class="dot"></span><div><strong>Notifications en temps réel</strong> : demandes, rappels d’échéance, suspensions, réactivations.</div></li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== ABOUT ================== -->
+  <section id="about">
+    <div class="container">
+      <div class="section-title">
+        <h2>1) À propos & objectifs</h2>
+        <span class="pill">Vision & cadre</span>
+      </div>
+      <div class="grid grid-2 reveal">
+        <div class="card">
+          <h3>Objectif</h3>
+          <p>Créer une super-app unifiée de services urbains (mobilité, livraison, déménagement, restauration, ambulance) avec une monétisation simple et transparente via des abonnements indexés sur la performance et des règles automatiques.</p>
+        </div>
+        <div class="card">
+          <h3>Principes clés</h3>
+          <ul class="list">
+            <li>Expérience simple pour le client (demander / suivre / évaluer).</li>
+            <li>Opportunités équitables pour les prestataires (abonnements, visibilité, historique de recettes).</li>
+            <li>Qualité monitorée (étoiles, commentaires, badges, alertes).</li>
+            <li>Sécurité (KYC, SOS, traçabilité, suspensions automatiques).</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== ROLES & SIGNUP ================== -->
+  <section id="roles">
+    <div class="container">
+      <div class="section-title">
+        <h2>2) Rôles & processus d’inscription</h2>
+        <span class="pill">Documents requis • Étapes • Validation</span>
+      </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" data-tab="client">Client</button>
+        <button class="tab-btn" data-tab="driver">Chauffeur / Taxi</button>
+        <button class="tab-btn" data-tab="courier">Livreur</button>
+        <button class="tab-btn" data-tab="mover">Déménageur</button>
+        <button class="tab-btn" data-tab="ambulance">Ambulance</button>
+        <button class="tab-btn" data-tab="restaurant">Restaurant</button>
+        <button class="tab-btn" data-tab="admin">Admin</button>
+      </div>
+
+      <!-- CLIENT -->
+      <div class="tab-panel active" id="client">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Documents / Conditions</h3>
+            <ul class="list">
+              <li>Téléphone valide (OTP) ou e-mail.</li>
+              <li>Accepter CGU & politique de confidentialité.</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Étapes d’inscription</h3>
+            <ol class="list">
+              <li>Entrer téléphone → recevoir OTP.</li>
+              <li>Valider OTP → créer profil (nom, photo facultative).</li>
+              <li>Activer géolocalisation → prêt à commander.</li>
+            </ol>
+          </div>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Fonctionnalités Client</summary>
+          <ul class="list">
+            <li>Commander : course, livraison, déménagement, ambulance, restaurant.</li>
+            <li>Suivi en temps réel, historique, facture (si disponible), évaluation & commentaires.</li>
+            <li>Notifications : prise en charge, arrivée, fin, rappel d’évaluation.</li>
+            <li>SOS (courses/ambulances), partage de trajet à un proche.</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- DRIVER -->
+      <div class="tab-panel" id="driver">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Documents requis</h3>
+            <ul class="list">
+              <li>Carte d’identité / passeport</li>
+              <li>Permis de conduire valide</li>
+              <li>Carte grise & assurance du véhicule</li>
+              <li>Photo du véhicule</li>
+              <li>Casier judiciaire (option selon pays)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Étapes d’inscription</h3>
+            <ol class="list">
+              <li>Création compte (OTP) & choix type : Éco / Confort / Moto-taxi / Covoiturage</li>
+              <li>Upload documents → Vérification KYC</li>
+              <li>Validation admin → Activation</li>
+              <li>Accès tableau de bord (recettes journalières & hebdo)</li>
+            </ol>
+          </div>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Règles & Fonctionnalités Chauffeur</summary>
+          <ul class="list">
+            <li>Abonnement = <strong>10%</strong> des recettes hebdomadaires. Échéance à la fin de semaine + <strong>3 jours</strong> de grâce avant suspension.</li>
+            <li>Suspension automatique si impayé après J+3 ; réactivation immédiate après paiement.</li>
+            <li>Notifications : nouvelles demandes, rappels de paiement, suspension / réactivation.</li>
+            <li>Évaluations : note moyenne affichée, badges “Top Service” si &ge; 4,5.</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- COURIER -->
+      <div class="tab-panel" id="courier">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Documents requis</h3>
+            <ul class="list">
+              <li>Carte d’identité</li>
+              <li>Justificatif du moyen (vélo/moto/voiture), assurance si applicable</li>
+              <li>Photo de profil & photo du véhicule</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Étapes d’inscription</h3>
+            <ol class="list">
+              <li>Création compte (OTP), sélection “Livreur”</li>
+              <li>Upload documents → Vérification</li>
+              <li>Validation admin → Activation</li>
+              <li>Accès missions, navigation, historique & recettes</li>
+            </ol>
+          </div>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Règles & Fonctionnalités Livreur</summary>
+          <ul class="list">
+            <li>Abonnement = pourcentage des recettes hebdo (paramétrable, ex. 10%).</li>
+            <li>Calcul automatique en fin de semaine + 3 jours de grâce ; suspension si impayé.</li>
+            <li>Fonctions : scan colis, preuve de livraison (photo/signature), chat client.</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- MOVER -->
+      <div class="tab-panel" id="mover">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Documents requis</h3>
+            <ul class="list">
+              <li>Carte d’identité / Registre de commerce (si société)</li>
+              <li>Assurance transport (si applicable)</li>
+              <li>Photos flotte : <strong>Moto-cargo</strong> et/ou <strong>Camion</strong></li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Étapes d’inscription</h3>
+            <ol class="list">
+              <li>Création compte (OTP), sélection “Déménageur” et type de flotte</li>
+              <li>Upload documents → Vérification</li>
+              <li>Validation admin → Abonnement</li>
+              <li>Activation & réception des demandes par zone</li>
+            </ol>
+          </div>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Règles & Fonctionnalités Déménageur</summary>
+          <ul class="list">
+            <li>Abonnement mensuel fixe : <strong>15 000 F</strong> (paramétrable). 5 jours de grâce (recommandé) avant suspension.</li>
+            <li>Devis par volume/étages/accès, planning, équipe, photos avant/après (optionnel).</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- AMBULANCE -->
+      <div class="tab-panel" id="ambulance">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Documents requis</h3>
+            <ul class="list">
+              <li>Autorisation sanitaire / affiliation</li>
+              <li>Assurance véhicule & personnel</li>
+              <li>Équipement : oxygène, monitoring (déclaratif)</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Étapes d’inscription</h3>
+            <ol class="list">
+              <li>Création compte (OTP), sélection “Ambulance”</li>
+              <li>Upload documents → Contrôle renforcé</li>
+              <li>Validation admin → Activation & priorisation</li>
+            </ol>
+          </div>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Règles & Fonctionnalités Ambulance</summary>
+          <ul class="list">
+            <li>Modes : <strong>Urgent</strong> (SOS) et <strong>Programmé</strong> (transfert, dialyse...).</li>
+            <li>Priorité de dispatch, suivi live, journal d’événements, partage proche.</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- RESTAURANT -->
+      <div class="tab-panel" id="restaurant">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Documents requis</h3>
+            <ul class="list">
+              <li>Identité du gérant</li>
+              <li>Justificatif du restaurant (si exigé localement)</li>
+              <li>Coordonnées, adresse, horaires</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Étapes d’inscription</h3>
+            <ol class="list">
+              <li>Création compte (OTP), fiche resto</li>
+              <li>Ajout du menu (catégories, items, prix, options)</li>
+              <li>Activation commandes (optionnel) ou contact direct</li>
+            </ol>
+          </div>
+        </div>
+        <details style="margin-top:12px">
+          <summary>Règles & Fonctionnalités Restaurant</summary>
+          <ul class="list">
+            <li>Découverte par zone / mot-clé (“burger”), fiches avec menu.</li>
+            <li>Commande intégrée (commission) ou simple contact (option “lead”).</li>
+            <li>Assignation livreur TEKO (si commande intégrée).</li>
+          </ul>
+        </details>
+      </div>
+
+      <!-- ADMIN -->
+      <div class="tab-panel" id="admin">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Responsabilités</h3>
+            <ul class="list">
+              <li>Vérification KYC par rôle, modération & litiges</li>
+              <li>Paramétrage tarifs, pourcentages, zones</li>
+              <li>Supervision suspensions / réactivations</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Outils Back-office</h3>
+            <ul class="list">
+              <li>Tableau de bord temps réel (carte, volumes)</li>
+              <li>Jobs automatiques (calcul hebdo/mensuel, suspensions)</li>
+              <li>Analytics (recettes, qualité, rétention)</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ================== FEATURES ================== -->
+  <section id="features">
+    <div class="container">
+      <div class="section-title">
+        <h2>3) Fonctionnalités clés</h2>
+        <span class="pill">Générales & spécifiques par rôle</span>
+      </div>
+      <div class="grid grid-3 reveal">
+        <div class="card">
+          <h3>Générales</h3>
+          <ul class="list">
+            <li>Carte & géolocalisation en temps réel</li>
+            <li>Notifications push (demandes, rappels, qualité)</li>
+            <li>Historique & export (PDF si dispo)</li>
+            <li>SOS & partage de trajet</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Chauffeurs & Livreurs</h3>
+          <ul class="list">
+            <li>Tableau recettes <strong>journalières</strong> & <strong>hebdo</strong></li>
+            <li>Abonnement auto (% hebdo) avec échéance +3 jours</li>
+            <li>Suspension / réactivation automatisées</li>
+            <li>Notes moyennes & badges qualité</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Déménageurs & Ambulances</h3>
+          <ul class="list">
+            <li>Déménageurs : Moto-cargo / Camion, abo mensuel fixe</li>
+            <li>Ambulances : urgent/programmé, priorité dispatch</li>
+            <li>Preuves & journaux d’événements (photos, timestamps)</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== PRICING ================== -->
+  <section id="pricing">
+    <div class="container">
+      <div class="section-title">
+        <h2>4) Abonnements & règles financières</h2>
+        <span class="pill">Calculs & suspensions</span>
+      </div>
+      <table class="table reveal">
+        <thead>
+          <tr>
+            <th>Rôle</th>
+            <th>Modèle</th>
+            <th>Cycle & échéance</th>
+            <th>Suspension</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Chauffeur/Taxi</td>
+            <td><strong>10%</strong> des recettes hebdomadaires</td>
+            <td>Hebdo ; dû fin de semaine + <strong>3j</strong> de grâce</td>
+            <td>Si impayé après J+3 → suspension auto (réactivation après paiement)</td>
+          </tr>
+          <tr>
+            <td>Livreur</td>
+            <td>% des recettes hebdomadaires (config.)</td>
+            <td>Hebdo ; dû fin de semaine + 3j</td>
+            <td>Suspension si impayé ; réactivation paiement</td>
+          </tr>
+          <tr>
+            <td>Déménageur</td>
+            <td><strong>15 000 F</strong> mensuel fixe</td>
+            <td>Mensuel ; recommandé +5j de grâce</td>
+            <td>Suspension si impayé après délai</td>
+          </tr>
+          <tr>
+            <td>Restaurant</td>
+            <td>Commission sur commandes (si commande in-app)</td>
+            <td>Reversement hebdo (ou T+N)</td>
+            <td>Qualité/annulations excessives → mise en revue</td>
+          </tr>
+        </tbody>
+      </table>
+
+      <details style="margin-top:14px" class="reveal">
+        <summary>Automatisations (jobs)</summary>
+        <ul class="list">
+          <li><code>calc_weekly_earnings</code> : calcule recettes hebdo & abonnement dû par chauffeur/livreur</li>
+          <li><code>auto_suspend_overdue</code> : suspend comptes impayés (chauffeurs/livreurs)</li>
+          <li><code>calc_monthly_subscription</code> : facture déménageurs (mensuel)</li>
+          <li><code>payouts_job</code> : reversements restaurants (si commande in-app)</li>
+        </ul>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================== RATINGS ================== -->
+  <section id="ratings">
+    <div class="container">
+      <div class="section-title">
+        <h2>5) Évaluations & notifications</h2>
+        <span class="pill">Qualité de service & alertes</span>
+      </div>
+      <div class="grid grid-2 reveal">
+        <div class="card">
+          <h3>Évaluations</h3>
+          <ul class="list">
+            <li>Étoiles 1–5 + commentaire texte (facultatif) après chaque service</li>
+            <li>Note moyenne publique, badge “Top Service” si ≥ 4,5 (30 jours)</li>
+            <li>Signalement incidents, réponse du prestataire possible</li>
+          </ul>
+        </div>
+        <div class="card">
+          <h3>Notifications</h3>
+          <ul class="list">
+            <li>Prestataire : nouvelles demandes, rappel abonnement, suspension, nouvelle évaluation</li>
+            <li>Client : prise en charge, arrivée, fin, rappel d’évaluation</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ================== TECH ================== -->
+  <section id="tech">
+    <div class="container">
+      <div class="section-title">
+        <h2>6) Architecture & technologies</h2>
+        <span class="pill">Pour dev & intégrations futures</span>
+      </div>
+      <div class="grid grid-2 reveal">
+        <div class="card">
+          <h3>Stack cible</h3>
+          <p><strong>Mobile</strong> : Flutter / React Native<br/>
+             <strong>Backend</strong> : Node.js (Nest) / Laravel / Django<br/>
+             <strong>BD</strong> : PostgreSQL / MongoDB (Firebase si temps réel simple)<br/>
+             <strong>Services</strong> : Maps, FCM/OneSignal, paiements locaux (si ajout futur)</p>
+        </div>
+        <div class="card">
+          <h3>Modèle de données (extraits)</h3>
+          <ul class="list">
+            <li><code>User(id, role, phone, email, verified)</code></li>
+            <li><code>Driver/Courier/Mover(..., kyc_status, is_active, rating_avg)</code></li>
+            <li><code>Ride/Delivery/MoveJob(..., price, status, paid)</code></li>
+            <li><code>EarningsDaily / EarningsWeekly / SubscriptionMonthly</code></li>
+            <li><code>Rating(id, from_user, to_user, stars, comment)</code></li>
+          </ul>
+        </div>
+      </div>
+
+      <details style="margin-top:14px" class="reveal">
+        <summary>API (exemples)</summary>
+        <table class="table" style="margin-top:10px">
+          <thead><tr><th>Méthode</th><th>Endpoint</th><th>Description</th></tr></thead>
+          <tbody>
+            <tr><td>POST</td><td>/auth/otp</td><td>Demande d’OTP</td></tr>
+            <tr><td>POST</td><td>/auth/verify</td><td>Validation d’OTP</td></tr>
+            <tr><td>POST</td><td>/rides/quote • /rides</td><td>Devis & création d’une course</td></tr>
+            <tr><td>GET</td><td>/earnings/weekly</td><td>Récap hebdo (chauffeur/livreur)</td></tr>
+            <tr><td>POST</td><td>/subscription/pay</td><td>Paiement abonnement</td></tr>
+            <tr><td>POST</td><td>/ratings</td><td>Créer une évaluation</td></tr>
+          </tbody>
+        </table>
+      </details>
+    </div>
+  </section>
+
+  <!-- ================== FOOTER ================== -->
+  <footer>
+    <div class="container">
+      © 2025 TEKO — Cahier des charges & vitrine. Design dark néon. Fichier statique pour équipes produit & dev.
+    </div>
+  </footer>
+
+  <script>
+    // ------ Tabs logic
+    const tabs = document.querySelectorAll('.tab-btn');
+    const panels = document.querySelectorAll('.tab-panel');
+    tabs.forEach(btn => {
+      btn.addEventListener('click', () => {
+        tabs.forEach(b => b.classList.remove('active'));
+        panels.forEach(p => p.classList.remove('active'));
+        btn.classList.add('active');
+        document.getElementById(btn.dataset.tab).classList.add('active');
+        window.scrollTo({ top: document.getElementById('roles').offsetTop - 80, behavior: 'smooth' });
+      });
+    });
+
+    // ------ Reveal on scroll
+    const reveals = document.querySelectorAll('.reveal');
+    const onScroll = () => {
+      const trigger = window.innerHeight * 0.85;
+      reveals.forEach(el => {
+        const top = el.getBoundingClientRect().top;
+        if(top < trigger) el.classList.add('visible');
+      });
+    };
+    document.addEventListener('scroll', onScroll);
+    onScroll();
+  </script>
+</body>
+</html>
