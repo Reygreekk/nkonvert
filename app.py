@@ -149,6 +149,10 @@ def sante_page():
 def youtube_page():
     return render_template('tooltube.html')
     
+    @app.route('/teko')
+def youtube_page():
+    return render_template('teko.html')
+    
 @app.route('/shorten_page')
 def shorten_page():
     return render_template('shorten.html')
