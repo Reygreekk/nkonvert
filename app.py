@@ -150,7 +150,7 @@ def youtube_page():
     return render_template('tooltube.html')
     
     @app.route('/teko')
-def youtube_page():
+def teko_page():
     return render_template('teko.html')
     
 @app.route('/shorten_page')
